@@ -1,4 +1,4 @@
-# ChatApp
+﻿# ChatApp
 
 A real-time chat application built with PHP, MySQL, and vanilla JavaScript. Features personal messaging, group chats, media sharing, admin panel, and a comprehensive security layer.
 
@@ -39,7 +39,7 @@ A real-time chat application built with PHP, MySQL, and vanilla JavaScript. Feat
 - Gallery view with lightbox
 - File type validation and size limits
 
-### Profile & Settings
+### Profile and Settings
 - Avatar and cover photo upload
 - Bio and personal information editing
 - Theme switcher (dark/light)
@@ -54,7 +54,7 @@ A real-time chat application built with PHP, MySQL, and vanilla JavaScript. Feat
 ### Global Search
 - Search across users, friends, groups, and messages
 - Recent searches history
-- Keyboard shortcut (Cmd+K / Ctrl+K) quick search
+- Keyboard shortcut (Ctrl+K) quick search
 
 ### Admin Panel
 - Dashboard with charts (Chart.js)
@@ -79,14 +79,14 @@ A real-time chat application built with PHP, MySQL, and vanilla JavaScript. Feat
 
 ## Tech Stack
 
-| Layer        | Technology                          |
-|-------------|-------------------------------------|
-| Backend     | PHP 8.2+ with mysqli (procedural)   |
-| Database    | MySQL 8+                            |
-| Frontend    | Bootstrap 5                         |
-| JavaScript  | Vanilla JS with AJAX polling        |
-| Charts      | Chart.js                            |
-| UI Theme    | Dark professional, mobile responsive|
+| Layer | Technology |
+| --- | --- |
+| Backend | PHP 8.2+ with mysqli (procedural) |
+| Database | MySQL 8+ |
+| Frontend | Bootstrap 5 |
+| JavaScript | Vanilla JS with AJAX polling |
+| Charts | Chart.js |
+| UI Theme | Dark professional, mobile responsive |
 
 ---
 
@@ -114,7 +114,7 @@ A real-time chat application built with PHP, MySQL, and vanilla JavaScript. Feat
 git clone https://github.com/yourusername/chatapp.git
 ```
 
-Or download and extract the ZIP file to your web server root (e.g., `C:\xampp\htdocs\chatapp`).
+Or download and extract the ZIP file to your web server root.
 
 ### 2. Start Your Server
 
@@ -122,7 +122,7 @@ Start Apache and MySQL from XAMPP Control Panel (or your equivalent).
 
 ### 3. Create the Database
 
-1. Open **phpMyAdmin** (`http://localhost/phpmyadmin`)
+1. Open phpMyAdmin (`http://localhost/phpmyadmin`)
 2. Create a new database named `chatapp`
 3. Import the schema:
 
@@ -140,25 +140,16 @@ Or in phpMyAdmin:
 
 Edit `config/database.php` and update the connection details with your own credentials.
 
-### 5. Configure Session & Security
+### 5. Configure Session and Security
 
 Review and adjust settings in:
-- `config/session.php` — session lifetime, cookie settings
-- `config/security.php` — CSRF, rate limiting, lockout thresholds
-- `config/media.php` — upload limits, allowed file types
+- `config/session.php` - session lifetime, cookie settings
+- `config/security.php` - CSRF, rate limiting, lockout thresholds
+- `config/media.php` - upload limits, allowed file types
 
 ### 6. Set Directory Permissions
 
-Ensure the following directories are writable by the web server:
-
-```bash
-chmod -R 775 storage/
-chmod -R 775 storage/uploads/
-chmod -R 775 storage/thumbnails/
-chmod -R 775 storage/temp/
-```
-
-On Windows, ensure the IUSR/IIS_IUSRS or Everyone group has Modify permissions on the `storage` directory.
+Ensure the following directories are writable by the web server.
 
 ### 7. Access the Application
 
@@ -170,93 +161,93 @@ http://localhost/chatapp
 
 ---
 
-## API Documentation Overview
+## API Documentation
 
-All API endpoints are located in the `/api` directory and accept/return JSON. Requests should include the CSRF token (obtained from the session) in the `X-CSRF-Token` header or as a POST parameter.
+All API endpoints are located in the `/api` directory and accept/return JSON. Requests should include the CSRF token in the `X-CSRF-Token` header or as a POST parameter.
 
 ### Authentication Endpoints
 
-| Method | Endpoint          | Description              |
-|--------|-------------------|--------------------------|
-| POST   | `api/login.php`   | Authenticate user        |
-| POST   | `api/register.php`| Register new user        |
-| GET    | `api/logout.php`  | Destroy session          |
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `api/login.php` | Authenticate user |
+| POST | `api/register.php` | Register new user |
+| GET | `api/logout.php` | Destroy session |
 
 ### Chat Endpoints
 
-| Method | Endpoint             | Description                    |
-|--------|----------------------|--------------------------------|
-| POST   | `api/send-message.php` | Send a message               |
-| GET    | `api/get-messages.php` | Retrieve messages (polling)  |
-| DELETE | `api/delete-message.php` | Delete a message           |
-| POST   | `api/typing.php`       | Send typing indicator       |
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `api/send-message.php` | Send a message |
+| GET | `api/get-messages.php` | Retrieve messages (polling) |
+| DELETE | `api/delete-message.php` | Delete a message |
+| POST | `api/typing.php` | Send typing indicator |
 
 ### Friend Endpoints
 
-| Method | Endpoint                   | Description              |
-|--------|----------------------------|--------------------------|
-| POST   | `api/friends.php?action=search`  | Search users      |
-| POST   | `api/friends.php?action=request` | Send friend request|
-| POST   | `api/friends.php?action=accept`  | Accept request     |
-| POST   | `api/friends.php?action=reject`  | Reject request     |
-| POST   | `api/friends.php?action=remove`  | Remove friend      |
-| POST   | `api/friends.php?action=block`   | Block/unblock user |
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `api/friends.php?action=search` | Search users |
+| POST | `api/friends.php?action=request` | Send friend request |
+| POST | `api/friends.php?action=accept` | Accept request |
+| POST | `api/friends.php?action=reject` | Reject request |
+| POST | `api/friends.php?action=remove` | Remove friend |
+| POST | `api/friends.php?action=block` | Block/unblock user |
 
 ### Group Endpoints
 
-| Method | Endpoint                    | Description              |
-|--------|-----------------------------|--------------------------|
-| POST   | `api/groups.php?action=create`  | Create a group      |
-| POST   | `api/groups.php?action=invite`  | Invite user to group |
-| POST   | `api/groups.php?action=leave`   | Leave a group        |
-| POST   | `api/groups.php?action=remove`  | Remove member        |
-| POST   | `api/groups.php?action=message` | Send group message   |
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `api/groups.php?action=create` | Create a group |
+| POST | `api/groups.php?action=invite` | Invite user to group |
+| POST | `api/groups.php?action=leave` | Leave a group |
+| POST | `api/groups.php?action=remove` | Remove member |
+| POST | `api/groups.php?action=message` | Send group message |
 
 ### Media Endpoints
 
-| Method | Endpoint             | Description              |
-|--------|----------------------|--------------------------|
-| POST   | `api/media.php?action=upload` | Upload a file    |
-| GET    | `api/media.php?action=list`   | List media files |
-| DELETE | `api/media.php?action=delete` | Delete a file    |
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `api/media.php?action=upload` | Upload a file |
+| GET | `api/media.php?action=list` | List media files |
+| DELETE | `api/media.php?action=delete` | Delete a file |
 
 ### Notification Endpoints
 
-| Method | Endpoint                        | Description              |
-|--------|---------------------------------|--------------------------|
-| GET    | `api/notifications.php?action=list`     | List notifications |
-| POST   | `api/notifications.php?action=read`     | Mark as read       |
-| POST   | `api/notifications.php?action=read_all` | Mark all as read   |
-| GET    | `api/notifications.php?action=count`    | Get unread count   |
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | `api/notifications.php?action=list` | List notifications |
+| POST | `api/notifications.php?action=read` | Mark as read |
+| POST | `api/notifications.php?action=read_all` | Mark all as read |
+| GET | `api/notifications.php?action=count` | Get unread count |
 
 ### Search Endpoints
 
-| Method | Endpoint              | Description              |
-|--------|-----------------------|--------------------------|
-| GET    | `api/search.php?q=term` | Global search          |
-| GET    | `api/search.php?action=recent` | Recent searches |
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | `api/search.php?q=term` | Global search |
+| GET | `api/search.php?action=recent` | Recent searches |
 
-### Profile & Settings Endpoints
+### Profile and Settings Endpoints
 
-| Method | Endpoint                   | Description              |
-|--------|----------------------------|--------------------------|
-| POST   | `api/profile.php?action=avatar`    | Update avatar   |
-| POST   | `api/profile.php?action=cover`     | Update cover photo |
-| POST   | `api/profile.php?action=bio`       | Update bio       |
-| POST   | `api/settings.php?action=password` | Change password  |
-| POST   | `api/settings.php?action=privacy`  | Update privacy   |
-| POST   | `api/settings.php?action=theme`    | Switch theme     |
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `api/profile.php?action=avatar` | Update avatar |
+| POST | `api/profile.php?action=cover` | Update cover photo |
+| POST | `api/profile.php?action=bio` | Update bio |
+| POST | `api/settings.php?action=password` | Change password |
+| POST | `api/settings.php?action=privacy` | Update privacy |
+| POST | `api/settings.php?action=theme` | Switch theme |
 
 ### Admin Endpoints
 
-| Method | Endpoint                         | Description              |
-|--------|----------------------------------|--------------------------|
-| GET    | `api/admin.php?action=stats`     | Dashboard statistics     |
-| GET    | `api/admin.php?action=users`     | List all users           |
-| POST   | `api/admin.php?action=ban_user`  | Ban/unban user           |
-| GET    | `api/admin.php?action=groups`    | List all groups          |
-| GET    | `api/admin.php?action=reports`   | List reports             |
-| GET    | `api/admin.php?action=logs`      | Activity logs            |
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | `api/admin.php?action=stats` | Dashboard statistics |
+| GET | `api/admin.php?action=users` | List all users |
+| POST | `api/admin.php?action=ban_user` | Ban/unban user |
+| GET | `api/admin.php?action=groups` | List all groups |
+| GET | `api/admin.php?action=reports` | List reports |
+| GET | `api/admin.php?action=logs` | Activity logs |
 
 ---
 
@@ -265,61 +256,52 @@ All API endpoints are located in the `/api` directory and accept/return JSON. Re
 Navigate to `/admin` or `/admin/index.php` after logging in with an admin account.
 
 The admin panel provides:
-
-- **Dashboard** — Overview with user growth charts, message volume, and active sessions
-- **Users** — View, search, edit, ban, or delete user accounts
-- **Groups** — Monitor and moderate all groups
-- **Messages** — View message history across the platform
-- **Reports** — Review and resolve user reports
-- **Blocked** — Manage the global block list
-- **Logs** — View system activity and security logs
-- **Statistics** — Detailed analytics and metrics
-- **Settings** — Configure application-wide settings
+- **Dashboard** - Overview with user growth charts, message volume, and active sessions
+- **Users** - View, search, edit, ban, or delete user accounts
+- **Groups** - Monitor and moderate all groups
+- **Messages** - View message history across the platform
+- **Reports** - Review and resolve user reports
+- **Blocked** - Manage the global block list
+- **Logs** - View system activity and security logs
+- **Statistics** - Detailed analytics and metrics
+- **Settings** - Configure application-wide settings
 
 ---
 
 ## Security Features
 
-| Feature                | Description                                                    |
-|------------------------|----------------------------------------------------------------|
-| CSRF Protection        | All forms include CSRF tokens; validated on every POST request |
-| Rate Limiting          | API endpoints throttled to prevent abuse                       |
-| Login Lockout          | Accounts locked after configurable failed attempt threshold    |
-| Password History       | Prevents reuse of recent passwords                             |
-| Session Fingerprint    | Sessions bound to browser/IP to prevent hijacking              |
-| Content Security Policy| CSP headers restrict resource loading to trusted sources       |
-| Input Validation       | All user input is sanitized and validated server-side          |
-| File Upload Validation | MIME type checking, file size limits, and rename on upload     |
-| SQL Injection Prevention| Parameterized queries via mysqli prepared statements           |
-| XSS Prevention         | Output escaping on all rendered content                        |
+| Feature | Description |
+| --- | --- |
+| CSRF Protection | All forms include CSRF tokens; validated on every POST request |
+| Rate Limiting | API endpoints throttled to prevent abuse |
+| Login Lockout | Accounts locked after configurable failed attempt threshold |
+| Password History | Prevents reuse of recent passwords |
+| Session Fingerprint | Sessions bound to browser/IP to prevent hijacking |
+| Content Security Policy | CSP headers restrict resource loading to trusted sources |
+| Input Validation | All user input is sanitized and validated server-side |
+| File Upload Validation | MIME type checking, file size limits, and rename on upload |
+| SQL Injection Prevention | Parameterized queries via mysqli prepared statements |
+| XSS Prevention | Output escaping on all rendered content |
 
 ---
 
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/your-feature`)
-3. Commit your changes (`git commit -m 'Add your feature'`)
-4. Push to the branch (`git push origin feature/your-feature`)
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
 5. Open a Pull Request
 
 ### Guidelines
-
 - Follow existing code conventions (procedural PHP, no OOP except the Security class)
 - Test all changes against the existing API endpoints
 - Ensure mobile responsiveness for any UI changes
-- Update this README if adding new features or changing configuration
 
 ---
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
-## Support
-
-For issues and questions, please open an issue on the GitHub repository or contact the development team.
+This project is licensed under the MIT License.
 #   C h a t a p p - U s i n g - P h p  
  

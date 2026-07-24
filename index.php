@@ -7,7 +7,10 @@
  */
 define('APP_RUNNING', true);
 require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/security.php';
+require_once __DIR__ . '/includes/security.php';
 require_once __DIR__ . '/config/session.php';
+require_once __DIR__ . '/includes/functions.php';
 session_initialize();
 
 if (session_is_logged_in()) {
