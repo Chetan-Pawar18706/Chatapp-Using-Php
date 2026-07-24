@@ -1,0 +1,57 @@
+# =====================================================
+# ChatApp - Storage Security
+# Prevent direct access to uploaded files
+# =====================================================
+
+# Disable directory browsing
+Options -Indexes
+
+# Prevent script execution in uploads
+<FilesMatch "\.(php|php5|phtml|pl|py|jsp|asp|htm|shtml|sh|cgi)$">
+    Require all denied
+</FilesMatch>
+
+# Allow access to images, videos, documents
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|mp4|webm|ogg|pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar)$">
+    Require all granted
+</FilesMatch>
+
+# Set correct MIME types
+<IfModule mod_mime.c>
+    AddType image/jpeg .jpg .jpeg
+    AddType image/png .png
+    AddType image/gif .gif
+    AddType image/webp .webp
+    AddType image/svg+xml .svg
+    AddType video/mp4 .mp4
+    AddType video/webm .webm
+    AddType video/ogg .ogg
+    AddType application/pdf .pdf
+    AddType application/msword .doc
+    AddType application/vnd.openxmlformats-officedocument.wordprocessingml.document .docx
+    AddType application/vnd.ms-excel .xls
+    AddType application/vnd.openxmlformats-officedocument.spreadsheetml.sheet .xlsx
+    AddType application/vnd.ms-powerpoint .ppt
+    AddType application/vnd.openxmlformats-officedocument.presentationml.presentation .pptx
+    AddType application/zip .zip
+    AddType application/x-rar-compressed .rar
+</IfModule>
+
+# Enable compression for static files
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE image/jpeg image/png image/gif image/webp
+    AddOutputFilterByType DEFLATE video/mp4 video/webm
+    AddOutputFilterByType DEFLATE application/pdf
+</IfModule>
+
+# Cache static files
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType video/mp4 "access plus 1 month"
+    ExpiresByType video/webm "access plus 1 month"
+    ExpiresByType application/pdf "access plus 1 month"
+</IfModule>
