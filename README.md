@@ -54,7 +54,7 @@ A real-time chat application built with PHP, MySQL, and vanilla JavaScript. Feat
 ### Global Search
 - Search across users, friends, groups, and messages
 - Recent searches history
-- Keyboard shortcut (⌘K / Ctrl+K) quick search
+- Keyboard shortcut (Cmd+K / Ctrl+K) quick search
 
 ### Admin Panel
 - Dashboard with charts (Chart.js)
@@ -95,7 +95,6 @@ A real-time chat application built with PHP, MySQL, and vanilla JavaScript. Feat
 - **PHP** 8.2 or higher
 - **MySQL** 8.0 or higher
 - **XAMPP** / **WAMP** / **LAMP** stack (or any PHP-capable server)
-- **Composer** (not required, but optional for autoloading)
 - Web browser with JavaScript enabled
 
 ### PHP Extensions
@@ -128,7 +127,6 @@ Start Apache and MySQL from XAMPP Control Panel (or your equivalent).
 3. Import the schema:
 
 ```bash
-# Via command line (adjust paths as needed)
 mysql -u root -p chatapp < database_import.sql
 ```
 
@@ -140,16 +138,7 @@ Or in phpMyAdmin:
 
 ### 4. Configure Database Connection
 
-Edit `config/database.php` and update the connection details:
-
-```php
-<?php
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'chatapp');
-?>
-```
+Edit `config/database.php` and update the connection details with your own credentials.
 
 ### 5. Configure Session & Security
 
@@ -177,111 +166,6 @@ Open your browser and navigate to:
 
 ```
 http://localhost/chatapp
-```
-
----
-
-## Default Credentials
-
-| Account  | Username     | Password    |
-|----------|--------------|-------------|
-| Admin    | superadmin   | Admin@123   |
-| Demo User| demo         | User@123    |
-
-> **Important:** Change these credentials immediately after first login in a production environment.
-
----
-
-## Project Structure
-
-```
-chatapp/
-├── config/
-│   ├── database.php          # Database connection configuration
-│   ├── session.php           # Session and cookie settings
-│   ├── security.php          # Security settings (CSRF, rate limiting)
-│   └── media.php             # Media upload configuration
-│
-├── includes/
-│   ├── functions.php         # Core helper functions
-│   ├── compat.php            # PHP compatibility shims
-│   ├── security.php          # Security class (CSRF, rate limiting, etc.)
-│   ├── notification_helpers.php   # Notification utility functions
-│   ├── notification_component.php # Notification UI components
-│   ├── media_helpers.php     # Media handling utilities
-│   ├── search_helpers.php    # Search utility functions
-│   └── quick_search_component.php # Quick search UI component
-│
-├── api/
-│   ├── login.php             # User login endpoint
-│   ├── register.php          # User registration endpoint
-│   ├── logout.php            # User logout endpoint
-│   ├── send-message.php      # Send chat message
-│   ├── get-messages.php      # Retrieve chat messages
-│   ├── friends.php           # Friend management endpoints
-│   ├── groups.php            # Group management endpoints
-│   ├── media.php             # Media upload/retrieval endpoints
-│   ├── notifications.php     # Notification endpoints
-│   ├── search.php            # Search endpoints
-│   ├── profile.php           # Profile update endpoints
-│   ├── settings.php          # Settings update endpoints
-│   ├── admin.php             # Admin API endpoints
-│   └── ... (50+ endpoints)
-│
-├── pages/
-│   ├── dashboard.php         # User dashboard
-│   ├── chat.php              # Personal chat interface
-│   ├── group-chat.php        # Group chat interface
-│   ├── settings.php          # User settings page
-│   ├── media.php             # Media gallery page
-│   ├── notifications.php     # Notifications page
-│   ├── search.php            # Search results page
-│   └── profile.php           # User profile page
-│
-├── admin/
-│   ├── index.php             # Admin panel entry/redirect
-│   ├── dashboard.php         # Admin dashboard with charts
-│   ├── users.php             # User management
-│   ├── groups.php            # Group management
-│   ├── messages.php          # Message monitoring
-│   ├── reports.php           # Reports management
-│   ├── blocked.php           # Blocked users list
-│   ├── logs.php              # Activity logs
-│   ├── statistics.php        # System statistics
-│   └── settings.php          # Application settings
-│
-├── assets/
-│   ├── css/
-│   │   ├── style.css         # Base/global styles
-│   │   ├── dashboard.css     # Dashboard styles
-│   │   ├── friends.css       # Friends page styles
-│   │   ├── chat.css          # Chat interface styles
-│   │   ├── groups.css        # Group chat styles
-│   │   ├── media.css         # Media gallery styles
-│   │   ├── settings.css      # Settings page styles
-│   │   ├── notifications.css # Notifications styles
-│   │   ├── search.css        # Search page styles
-│   │   └── admin.css         # Admin panel styles
-│   │
-│   └── js/
-│       ├── app.js            # Core application logic
-│       ├── dashboard.js      # Dashboard functionality
-│       ├── friends.js        # Friend system logic
-│       ├── chat.js           # Chat functionality
-│       ├── group-chat.js     # Group chat logic
-│       ├── media.js          # Media upload/gallery logic
-│       ├── notifications.js  # Notification handling
-│       ├── search.js         # Search functionality
-│       └── admin.js          # Admin panel logic
-│
-├── storage/
-│   ├── uploads/              # User-uploaded files
-│   ├── thumbnails/           # Generated thumbnails
-│   └── temp/                 # Temporary files
-│
-├── database_import.sql       # Complete database schema
-├── index.php                 # Application entry point
-└── README.md                 # This file
 ```
 
 ---
@@ -408,31 +292,6 @@ The admin panel provides:
 | File Upload Validation | MIME type checking, file size limits, and rename on upload     |
 | SQL Injection Prevention| Parameterized queries via mysqli prepared statements           |
 | XSS Prevention         | Output escaping on all rendered content                        |
-
----
-
-## Configuration
-
-### Database (`config/database.php`)
-
-```php
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'chatapp');
-```
-
-### Session (`config/session.php`)
-
-Adjust session lifetime, cookie parameters, and secure cookie settings based on your environment (HTTP vs HTTPS).
-
-### Security (`config/security.php`)
-
-Configure rate limiting thresholds, lockout duration, CSRF token expiry, and CSP directives.
-
-### Media (`config/media.php`)
-
-Set maximum file upload size, allowed MIME types, thumbnail dimensions, and storage paths.
 
 ---
 
