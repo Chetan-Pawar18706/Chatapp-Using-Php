@@ -1,4 +1,4 @@
-﻿# ChatApp
+# ChatApp
 
 A real-time chat application built with PHP, MySQL, and vanilla JavaScript. Features personal messaging, group chats, media sharing, admin panel, and a comprehensive security layer.
 
@@ -304,4 +304,5 @@ The admin panel provides:
 
 This project is licensed under the MIT License.
 #   C h a t a p p - U s i n g - P h p  
+ #   C h a t a p p - U s i n g - P h p  
  
