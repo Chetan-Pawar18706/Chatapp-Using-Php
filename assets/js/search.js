@@ -147,7 +147,7 @@ const SearchModule = {
         this.showLoading();
         
         try {
-            const response = await fetch(`api/global-search.php?q=${encodeURIComponent(query)}&type=${this.currentFilter}`);
+            const response = await fetch(`../api/global-search.php?q=${encodeURIComponent(query)}&type=${this.currentFilter}`);
             const data = await response.json();
             
             if (data.success) {
@@ -423,7 +423,7 @@ const SearchModule = {
      */
     saveRecentSearch: async function(query) {
         try {
-            await fetch('api/recent-searches.php', {
+            await fetch('../api/recent-searches.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -440,7 +440,7 @@ const SearchModule = {
      */
     deleteRecentSearch: async function(id) {
         try {
-            const response = await fetch(`api/recent-searches.php?id=${id}`, {
+            const response = await fetch(`../api/recent-searches.php?id=${id}`, {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-Token': this.csrfToken
@@ -475,7 +475,7 @@ const SearchModule = {
         if (!confirm('Clear all recent searches?')) return;
         
         try {
-            const response = await fetch('api/recent-searches.php?action=clear', {
+            const response = await fetch('../api/recent-searches.php?action=clear', {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-Token': this.csrfToken
@@ -509,11 +509,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Add animation keyframe
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(-100%); opacity: 0; }
-    }
-`;
-document.head.appendChild(style);
+(function() {
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(-100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+})();

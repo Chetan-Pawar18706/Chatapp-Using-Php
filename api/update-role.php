@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * API: Update Member Role
@@ -77,7 +78,8 @@ if ($result) {
     foreach ($members as $m) {
         $notif_sql = "INSERT INTO group_notifications (group_id, user_id, notification_type, message, created_by, created_at)
                      VALUES (?, ?, 'role_changed', ?, ?, NOW())";
-        $msg = ($member['username'] ?? 'Someone') . ' was promoted to ' . ucfirst($new_role) . ' by ' . ($admin['username'] ?? 'Admin');
+        $action = ($new_role === 'admin' || ($new_role === 'moderator' && $target['role'] === 'member')) ? 'promoted' : 'changed';
+        $msg = ($member['username'] ?? 'Someone') . ' was ' . $action . ' to ' . ucfirst($new_role) . ' by ' . ($admin['username'] ?? 'Admin');
         db_execute($notif_sql, [$group_id, $m['user_id'], $msg, $user_id], 'iisi');
     }
     

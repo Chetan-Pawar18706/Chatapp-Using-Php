@@ -13,6 +13,7 @@ require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/notification_helpers.php';
 require_once __DIR__ . '/../includes/notification_component.php';
+require_once __DIR__ . '/../includes/sidebar.php';
 
 init_session();
 
@@ -52,7 +53,7 @@ $settings = json_decode($user['settings'] ?? '{}', true) ?: [];
 $privacy = $settings['privacy'] ?? [];
 $notifications = $settings['notifications'] ?? [];
 
-$csrf_token = generate_csrf_token();
+$csrf_token = session_generate_csrf();
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="<?php echo htmlspecialchars($user['theme'] ?? 'dark'); ?>">
@@ -61,67 +62,21 @@ $csrf_token = generate_csrf_token();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<?php echo $csrf_token; ?>">
     <title>Settings - ChatApp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link rel="stylesheet" href="../assets/css/settings-complete.css">
+    <link rel="stylesheet" href="../assets/css/notifications.css">
 </head>
-<body class="dark-theme">
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="navbar-brand">
-            <a href="dashboard.php" class="logo">
-                <i class="fas fa-comments"></i>
-                <span>ChatApp</span>
-            </a>
-        </div>
-        <div class="navbar-nav">
-            <a href="dashboard.php" class="nav-link">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="chat.php" class="nav-link">
-                <i class="fas fa-message"></i>
-                <span>Chats</span>
-            </a>
-            <a href="settings.php" class="nav-link active">
-                <i class="fas fa-cog"></i>
-                <span>Settings</span>
-            </a>
-        </div>
-        <div class="navbar-actions">
-            <?php echo render_notification_bell($user_id); ?>
-            
-            <div class="user-menu">
-                <button class="user-btn">
-                    <div class="avatar">
-                        <?php if ($user['avatar']): ?>
-                            <img src="<?php echo htmlspecialchars($user['avatar']); ?>" alt="Avatar">
-                        <?php else: ?>
-                            <div class="avatar-initials">
-                                <?php echo strtoupper(substr($user['username'], 0, 2)); ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </button>
-                <div class="dropdown-menu">
-                    <a href="dashboard.php" class="dropdown-item">
-                        <i class="fas fa-home"></i> Dashboard
-                    </a>
-                    <a href="settings.php" class="dropdown-item active">
-                        <i class="fas fa-cog"></i> Settings
-                    </a>
-                    <hr class="dropdown-divider">
-                    <a href="../api/logout.php" class="dropdown-item text-danger">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
+<body>
+    <?php echo render_sidebar('settings', $user, $user_id); ?>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- Main Content -->
-    <main class="main-content">
+    <div class="main-wrapper">
+        <?php echo render_top_navbar('Settings', $user, $user_id); ?>
+
+        <main class="main-content">
         <div class="settings-container">
             <!-- Settings Header -->
             <div class="settings-header">
@@ -132,16 +87,20 @@ $csrf_token = generate_csrf_token();
                 <!-- Sidebar Navigation -->
                 <aside class="settings-sidebar">
                     <nav class="settings-nav">
-                        <a href="#appearance" class="nav-item active" data-tab="appearance">
+                        <a href="#profile" class="nav-item active" data-tab="profile">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Profile</span>
+                        </a>
+                        <a href="#appearance" class="nav-item" data-tab="appearance">
                             <i class="fas fa-palette"></i>
                             <span>Appearance</span>
                         </a>
                         <a href="#account" class="nav-item" data-tab="account">
-                            <i class="fas fa-user"></i>
-                            <span>Account</span>
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Security</span>
                         </a>
                         <a href="#privacy" class="nav-item" data-tab="privacy">
-                            <i class="fas fa-shield-alt"></i>
+                            <i class="fas fa-user-lock"></i>
                             <span>Privacy</span>
                         </a>
                         <a href="#notifications" class="nav-item" data-tab="notifications">
@@ -167,8 +126,68 @@ $csrf_token = generate_csrf_token();
                 <!-- Main Settings Content -->
                 <div class="settings-content">
                     
+                    <!-- ==================== PROFILE TAB ==================== -->
+                    <div class="settings-tab active" id="profile">
+                        <div class="tab-header">
+                            <h3>Profile Settings</h3>
+                            <p>Manage your public profile information</p>
+                        </div>
+
+                        <!-- Profile Photo -->
+                        <div class="settings-section">
+                            <h4>Profile Photo</h4>
+                            <div class="avatar-upload-section">
+                                <div class="current-avatar">
+                                    <?php if ($user['avatar']): ?>
+                                        <img src="<?php echo htmlspecialchars($user['avatar']); ?>" alt="Avatar">
+                                    <?php else: ?>
+                                        <div class="avatar-initials large">
+                                            <?php echo strtoupper(substr($user['username'], 0, 2)); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="avatar-actions">
+                                    <button class="btn btn-primary" onclick="document.getElementById('avatarInput').click()">
+                                        <i class="fas fa-camera"></i> Change Photo
+                                    </button>
+                                    <button class="btn btn-outline-danger" id="removeAvatarBtn">
+                                        <i class="fas fa-trash"></i> Remove
+                                    </button>
+                                    <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                                    <p class="help-text">JPG, PNG or GIF. Max size 5MB.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Username & Bio -->
+                        <div class="settings-section">
+                            <h4>Personal Information</h4>
+                            <form id="profileForm">
+                                <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                
+                                <div class="form-group">
+                                    <label for="profileUsername">Username</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-at"></i>
+                                        <input type="text" id="profileUsername" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="profileBio">Bio</label>
+                                    <textarea id="profileBio" name="bio" rows="3" maxlength="150" placeholder="Write something about yourself..."><?php echo htmlspecialchars($user['bio'] ?? ''); ?></textarea>
+                                    <div class="char-counter"><span id="bioCount"><?php echo strlen($user['bio'] ?? ''); ?></span>/150</div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Profile
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
                     <!-- ==================== APPEARANCE TAB ==================== -->
-                    <div class="settings-tab active" id="appearance">
+                    <div class="settings-tab" id="appearance">
                         <div class="tab-header">
                             <h3>Appearance</h3>
                             <p>Customize how ChatApp looks and feels</p>
@@ -294,7 +313,7 @@ $csrf_token = generate_csrf_token();
                             
                             <div class="chat-style-options">
                                 <label class="style-option">
-                                    <input type="radio" name="chat_style" value="bubbles" checked>
+                                    <input type="radio" name="chat_style" value="bubbles" <?php echo ($user['chat_style'] ?? 'bubbles') === 'bubbles' ? 'checked' : ''; ?>>
                                     <div class="style-preview">
                                         <div class="bubble-preview">
                                             <div class="msg sent">Hello!</div>
@@ -320,67 +339,24 @@ $csrf_token = generate_csrf_token();
                     <!-- ==================== ACCOUNT TAB ==================== -->
                     <div class="settings-tab" id="account">
                         <div class="tab-header">
-                            <h3>Account Settings</h3>
-                            <p>Manage your account information</p>
+                            <h3>Security Settings</h3>
+                            <p>Manage your password and account security</p>
                         </div>
 
-                        <!-- Profile Photo -->
+                        <!-- Email -->
                         <div class="settings-section">
-                            <h4>Profile Photo</h4>
-                            <div class="avatar-upload-section">
-                                <div class="current-avatar">
-                                    <?php if ($user['avatar']): ?>
-                                        <img src="<?php echo htmlspecialchars($user['avatar']); ?>" alt="Avatar">
-                                    <?php else: ?>
-                                        <div class="avatar-initials large">
-                                            <?php echo strtoupper(substr($user['username'], 0, 2)); ?>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="avatar-actions">
-                                    <button class="btn btn-primary" onclick="document.getElementById('avatarInput').click()">
-                                        <i class="fas fa-camera"></i> Change Photo
-                                    </button>
-                                    <button class="btn btn-outline-danger" id="removeAvatarBtn">
-                                        <i class="fas fa-trash"></i> Remove
-                                    </button>
-                                    <input type="file" id="avatarInput" accept="image/*" style="display: none;">
-                                    <p class="help-text">JPG, PNG or GIF. Max size 5MB.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Username & Email -->
-                        <div class="settings-section">
-                            <h4>Basic Information</h4>
+                            <h4>Email Address</h4>
                             <form id="accountForm">
                                 <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
-                                
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="username">Username</label>
-                                        <div class="input-with-icon">
-                                            <i class="fas fa-at"></i>
-                                            <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($user['username']); ?>" required>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Email Address</label>
-                                        <div class="input-with-icon">
-                                            <i class="fas fa-envelope"></i>
-                                            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                
                                 <div class="form-group">
-                                    <label for="bio">Bio</label>
-                                    <textarea id="bio" name="bio" rows="3" maxlength="150" placeholder="Write something about yourself..."><?php echo htmlspecialchars($user['bio'] ?? ''); ?></textarea>
-                                    <div class="char-counter"><span id="bioCount"><?php echo strlen($user['bio'] ?? ''); ?></span>/150</div>
+                                    <label for="email">Email</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-envelope"></i>
+                                        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
+                                    </div>
                                 </div>
-                                
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save"></i> Save Changes
+                                    <i class="fas fa-save"></i> Update Email
                                 </button>
                             </form>
                         </div>
@@ -859,7 +835,8 @@ $csrf_token = generate_csrf_token();
                 </div>
             </div>
         </div>
-    </main>
+        </main>
+    </div>
 
     <!-- Deactivate Modal -->
     <div class="modal" id="deactivateModal">
@@ -927,8 +904,10 @@ $csrf_token = generate_csrf_token();
     <div id="toast-container"></div>
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/app.js"></script>
     <script src="../assets/js/settings-complete.js"></script>
     <script src="../assets/js/notifications.js"></script>
+    <?php echo render_sidebar_scripts(); ?>
 </body>
 </html>

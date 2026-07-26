@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * API: User Logout
@@ -39,9 +40,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $result = logout_user();
 
 if ($result['success']) {
+    // If direct browser request (not AJAX), redirect
+    if (!is_ajax_request()) {
+        header('Location: ../login.php');
+        exit;
+    }
     send_success($result['message'], [
         'redirect' => get_base_url() . '/login.php'
     ]);
 } else {
+    if (!is_ajax_request()) {
+        header('Location: ../login.php');
+        exit;
+    }
     send_error($result['message']);
 }

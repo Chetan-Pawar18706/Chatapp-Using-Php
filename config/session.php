@@ -118,7 +118,8 @@ function session_set_user($user_data, $remember_me = false) {
         'email' => $user_data['email'],
         'friend_code' => $user_data['friend_code'],
         'avatar' => $user_data['avatar'] ?? null,
-        'bio' => $user_data['bio'] ?? null
+        'bio' => $user_data['bio'] ?? null,
+        'theme' => $user_data['theme'] ?? 'dark'
     ];
     
     // Set session fingerprint using Security class
@@ -214,7 +215,11 @@ function session_generate_csrf() {
         $_SESSION['_csrf_time'] = time();
     }
     
-    return $_SESSION['csrf_token'];
+    $token = $_SESSION['csrf_token'];
+    if (is_array($token)) {
+        $token = $token['token'] ?? '';
+    }
+    return $token;
 }
 
 /**
@@ -231,15 +236,20 @@ function session_validate_csrf($token) {
     }
     
     // Fallback to basic validation
-    if (empty($token) || empty($_SESSION['csrf_token'])) {
+    $stored = $_SESSION['csrf_token'] ?? null;
+    if (empty($token) || empty($stored)) {
         return false;
+    }
+    
+    if (is_array($stored)) {
+        $stored = $stored['token'] ?? '';
     }
     
     if (time() - ($_SESSION['_csrf_time'] ?? 0) > 3600) {
         return false;
     }
     
-    return hash_equals($_SESSION['csrf_token'], $token);
+    return hash_equals($stored, $token);
 }
 
 /**

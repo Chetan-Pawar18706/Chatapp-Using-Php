@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * API: Search Users
@@ -29,16 +30,27 @@ if (empty($query) || strlen($query) < 2) {
     send_error('Search query must be at least 2 characters');
 }
 
+// Get blocked user IDs to exclude them
+$blocked_sql = "SELECT blocked_user_id FROM block_list WHERE user_id = ?
+                UNION
+                SELECT user_id FROM block_list WHERE blocked_user_id = ?";
+$blocked = db_fetch_all($blocked_sql, [$user_id, $user_id], 'ii');
+$blocked_ids = array_column($blocked, 'blocked_user_id');
+$blocked_ids[] = $user_id;
+$placeholders = str_repeat('?,', count($blocked_ids) - 1) . '?';
+
 // Search users by username, email, or friend code
 $sql = "SELECT id, username, email, friend_code, avatar, is_online
-        FROM users 
+        FROM users
         WHERE (username LIKE ? OR email LIKE ? OR friend_code LIKE ?)
-        AND id != ? 
+        AND id NOT IN ($placeholders)
         AND status = 'active'
         LIMIT 10";
 
 $search_term = "%{$query}%";
-$users = db_fetch_all($sql, [$search_term, $search_term, $search_term, $user_id], 'sssi');
+$params = array_merge([$search_term, $search_term, $search_term], $blocked_ids);
+$types = str_repeat('s', count($blocked_ids) + 3);
+$users = db_fetch_all($sql, $params, $types);
 
 $results = [];
 foreach ($users as $user) {

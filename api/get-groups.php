@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * API: Get Groups List
@@ -81,8 +82,3 @@ foreach ($groups as $group) {
 }
 
 send_success('Groups loaded', ['groups' => $formatted_groups]);
-
-function truncate_text($text, $length = 40) {
-    if (strlen($text) <= $length) return $text;
-    return substr($text, 0, $length) . '...';
-}

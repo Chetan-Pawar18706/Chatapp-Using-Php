@@ -11,6 +11,7 @@ define('APP_RUNNING', true);
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/sidebar.php';
 
 session_initialize();
 
@@ -32,7 +33,7 @@ $csrf_token = session_generate_csrf();
 $group_id = (int)($_GET['group_id'] ?? 0);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="<?php echo htmlspecialchars(get_user_theme()); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,10 +50,12 @@ $group_id = (int)($_GET['group_id'] ?? 0);
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Custom CSS -->
+    <link href="../assets/css/dashboard.css" rel="stylesheet">
     <link href="../assets/css/chat.css" rel="stylesheet">
     <link href="../assets/css/groups.css" rel="stylesheet">
 </head>
 <body>
+    <?php echo render_sidebar('group-chat', $user_data, $user_id); ?>
     <div class="chat-app">
         <!-- Left Sidebar - Groups List -->
         <aside class="chat-sidebar" id="chatSidebar">
@@ -122,9 +125,23 @@ $group_id = (int)($_GET['group_id'] ?? 0);
                         <button class="icon-btn" id="searchChatBtn" title="Search Messages">
                             <i class="fas fa-search"></i>
                         </button>
-                        <button class="icon-btn" id="groupInfoBtn" title="Group Info">
-                            <i class="fas fa-info-circle"></i>
-                        </button>
+                        <div class="chat-menu-wrapper">
+                            <button class="icon-btn" id="chatMenuBtn" title="More Options">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <div class="chat-dropdown-menu" id="chatDropdownMenu" style="display: none;">
+                                <button class="dropdown-item" id="menuGroupInfo">
+                                    <i class="fas fa-info-circle"></i> Group Info
+                                </button>
+                                <button class="dropdown-item" id="menuSearchMessages">
+                                    <i class="fas fa-search"></i> Search Messages
+                                </button>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item danger" id="menuLeaveGroup">
+                                    <i class="fas fa-right-from-bracket"></i> Leave Group
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -168,6 +185,30 @@ $group_id = (int)($_GET['group_id'] ?? 0);
                 <!-- Message Input -->
                 <div class="message-input-container">
                     <div class="input-actions-left">
+                        <button class="icon-btn attach-btn" id="attachBtn" title="Attach file">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <input type="file" id="fileInput" class="hidden-file-input" 
+                               accept=".jpg,.jpeg,.png,.gif,.webp,.mp4,.webm,.ogg,.mov,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar,.7z">
+                        <div class="auto-delete-wrapper">
+                            <button class="icon-btn auto-delete-btn" id="autoDeleteBtn" title="Auto-delete timer">
+                                <i class="fas fa-clock"></i>
+                            </button>
+                            <div class="auto-delete-dropdown" id="autoDeleteDropdown" style="display: none;">
+                                <button class="auto-delete-option active" data-value="none">
+                                    <i class="fas fa-infinity"></i> Keep forever
+                                </button>
+                                <button class="auto-delete-option" data-value="24hours">
+                                    <i class="fas fa-clock"></i> 24 hours
+                                </button>
+                                <button class="auto-delete-option" data-value="7days">
+                                    <i class="fas fa-clock"></i> 7 days
+                                </button>
+                                <button class="auto-delete-option" data-value="30days">
+                                    <i class="fas fa-clock"></i> 30 days
+                                </button>
+                            </div>
+                        </div>
                         <button class="icon-btn emoji-btn" id="emojiBtn" title="Emoji">
                             <i class="fas fa-smile"></i>
                         </button>
@@ -180,6 +221,14 @@ $group_id = (int)($_GET['group_id'] ?? 0);
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
+                </div>
+                
+                <!-- File Preview (Hidden by default) -->
+                <div class="file-preview-bar" id="filePreviewBar" style="display: none;">
+                    <div class="file-preview-content" id="filePreviewContent"></div>
+                    <button class="file-preview-close" id="filePreviewClose">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
                 
                 <!-- Emoji Picker -->

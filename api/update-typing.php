@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * API: Update Typing Status
@@ -29,7 +30,7 @@ if (!$input) {
 }
 
 $chat_with_user_id = (int)($input['user_id'] ?? 0);
-$is_typing = (bool)($input['is_typing'] ?? false);
+$is_typing = !empty($input['is_typing']) ? 1 : 0;
 $csrf_token = $input['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
 
 if (!session_validate_csrf($csrf_token) && !is_ajax_request()) {
@@ -38,13 +39,29 @@ if (!session_validate_csrf($csrf_token) && !is_ajax_request()) {
 
 $user_id = session_get_user_id();
 
+// Check if typing_status table exists
+$table_exists = false;
+try {
+    $check = db_fetch_single("SHOW TABLES LIKE 'typing_status'", [], '');
+    $table_exists = (bool)$check;
+} catch (Exception $e) {
+    $table_exists = false;
+}
+
+if (!$table_exists) {
+    send_success('Typing status updated', [
+        'is_typing' => $is_typing,
+        'chat_with_user_id' => $chat_with_user_id
+    ]);
+}
+
 // Update or insert typing status
 $sql = "INSERT INTO typing_status (user_id, chat_with_user_id, is_typing, last_typing_at) 
         VALUES (?, ?, ?, NOW())
         ON DUPLICATE KEY UPDATE 
         is_typing = VALUES(is_typing),
         last_typing_at = NOW()";
-$result = db_execute($sql, [$user_id, $chat_with_user_id, $is_typing], 'iib');
+$result = db_execute($sql, [$user_id, $chat_with_user_id, $is_typing], 'iii');
 
 if ($result) {
     send_success('Typing status updated', [

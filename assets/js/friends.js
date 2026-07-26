@@ -160,7 +160,7 @@ function createFriendItem(friend) {
     return `
         <div class="friend-item" data-user-id="${friend.id}">
             <div class="friend-avatar">
-                <div class="user-avatar">${friend.username.charAt(0).toUpperCase()}</div>
+                ${renderAvatar(friend.avatar, friend.username)}
                 <span class="status-indicator ${friend.is_online ? 'online' : 'offline'}"></span>
             </div>
             <div class="friend-info">
@@ -259,7 +259,7 @@ function createReceivedRequestItem(req) {
     return `
         <div class="request-item" data-request-id="${req.friendship_id}">
             <div class="request-avatar">
-                <div class="user-avatar">${req.username.charAt(0).toUpperCase()}</div>
+                ${renderAvatar(req.avatar, req.username)}
                 <span class="status-indicator ${req.is_online ? 'online' : 'offline'}"></span>
             </div>
             <div class="request-info">
@@ -288,7 +288,7 @@ function createSentRequestItem(req) {
     return `
         <div class="request-item" data-request-id="${req.friendship_id}">
             <div class="request-avatar">
-                <div class="user-avatar">${req.username.charAt(0).toUpperCase()}</div>
+                ${renderAvatar(req.avatar, req.username)}
                 <span class="status-indicator ${req.is_online ? 'online' : 'offline'}"></span>
             </div>
             <div class="request-info">
@@ -490,7 +490,7 @@ function createSearchResultItem(user) {
     return `
         <div class="search-result-item" data-user-id="${user.id}">
             <div class="result-avatar">
-                <div class="user-avatar">${user.username.charAt(0).toUpperCase()}</div>
+                ${renderAvatar(user.avatar, user.username)}
                 <span class="status-indicator ${user.is_online ? 'online' : 'offline'}"></span>
             </div>
             <div class="result-info">
@@ -572,14 +572,6 @@ async function updateDashboardStats() {
 }
 
 // =====================================================
-// Open Chat (Placeholder)
-// =====================================================
-function openChat(userId) {
-    // TODO: Implement chat functionality
-    ChatApp.showToast('Chat feature coming soon!', 'info');
-}
-
-// =====================================================
 // Helper Functions
 // =====================================================
 function escapeHtml(text) {
@@ -590,14 +582,16 @@ function escapeHtml(text) {
 }
 
 // Add fadeOut animation
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes fadeOut {
-        from { opacity: 1; transform: translateX(0); }
-        to { opacity: 0; transform: translateX(-20px); }
-    }
-`;
-document.head.appendChild(style);
+(function() {
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(-20px); }
+        }
+    `;
+    document.head.appendChild(style);
+})();
 
 // =====================================================
 // Initialize on DOM Ready

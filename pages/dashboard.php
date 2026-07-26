@@ -32,7 +32,7 @@ $user_data = session_get_user_data();
 $csrf_token = session_generate_csrf();
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="<?php echo htmlspecialchars(get_user_theme()); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,8 +70,8 @@ $csrf_token = session_generate_csrf();
         
         <!-- User Profile Mini -->
         <div class="sidebar-user">
-            <div class="user-avatar" id="sidebarAvatar">
-                <?php echo htmlspecialchars(substr($user_data['username'] ?? 'U', 0, 1)); ?>
+            <div id="sidebarAvatar">
+                <?php echo render_avatar_html($user_data['avatar'] ?? null, $user_data['username'] ?? 'User'); ?>
             </div>
             <div class="user-info">
                 <div class="user-name"><?php echo htmlspecialchars($user_data['username'] ?? 'User'); ?></div>
@@ -118,13 +118,37 @@ $csrf_token = session_generate_csrf();
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="chat.php" class="nav-link">
+                        <i class="fas fa-message"></i>
+                        <span>Open Chat</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="group-chat.php" class="nav-link">
+                        <i class="fas fa-people-group"></i>
+                        <span>Group Chat</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="notifications.php" class="nav-link">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="media.php" class="nav-link">
+                        <i class="fas fa-photo-film"></i>
+                        <span>Media</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="search.php" class="nav-link">
                         <i class="fas fa-search"></i>
                         <span>Search</span>
                     </a>
                 </li>
-                <li class="nav-item" data-section="settings">
-                    <a href="#" class="nav-link">
+                <li class="nav-item">
+                    <a href="settings.php" class="nav-link">
                         <i class="fas fa-cog"></i>
                         <span>Settings</span>
                     </a>
@@ -168,13 +192,13 @@ $csrf_token = session_generate_csrf();
                 
                 <!-- User Menu -->
                 <div class="navbar-user">
-                    <div class="user-avatar" id="navbarAvatar">
-                        <?php echo htmlspecialchars(substr($user_data['username'] ?? 'U', 0, 1)); ?>
+                    <div id="navbarAvatar">
+                        <?php echo render_avatar_html($user_data['avatar'] ?? null, $user_data['username'] ?? 'User'); ?>
                     </div>
                     <div class="user-dropdown" id="userDropdown">
                         <div class="dropdown-header">
-                            <div class="user-avatar large" id="dropdownAvatar">
-                                <?php echo htmlspecialchars(substr($user_data['username'] ?? 'U', 0, 1)); ?>
+                            <div id="dropdownAvatar">
+                                <?php echo render_avatar_html($user_data['avatar'] ?? null, $user_data['username'] ?? 'User', 'user-avatar large'); ?>
                             </div>
                             <div>
                                 <div class="user-name"><?php echo htmlspecialchars($user_data['username'] ?? 'User'); ?></div>
@@ -182,7 +206,7 @@ $csrf_token = session_generate_csrf();
                             </div>
                         </div>
                         <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item" data-section="settings">
+                        <a href="settings.php" class="dropdown-item">
                             <i class="fas fa-cog"></i>
                             <span>Settings</span>
                         </a>
@@ -260,7 +284,7 @@ $csrf_token = session_generate_csrf();
                         <div class="card-body">
                             <div class="profile-main">
                                 <div class="profile-avatar large" id="profileAvatar">
-                                    <?php echo htmlspecialchars(substr($user_data['username'] ?? 'U', 0, 1)); ?>
+                                    <?php echo render_avatar_html($user_data['avatar'] ?? null, $user_data['username'] ?? 'User', 'user-avatar large'); ?>
                                 </div>
                                 <div class="profile-details">
                                     <h4 class="profile-name"><?php echo htmlspecialchars($user_data['username'] ?? 'User'); ?></h4>
@@ -476,102 +500,6 @@ $csrf_token = session_generate_csrf();
                 </div>
             </section>
             
-            <!-- Settings Section -->
-            <section class="content-section" id="section-settings">
-                <div class="section-header">
-                    <h2>Settings</h2>
-                </div>
-                
-                <!-- Profile Settings -->
-                <div class="card settings-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-user"></i> Profile Settings</h3>
-                    </div>
-                    <div class="card-body">
-                        <form id="profileSettingsForm">
-                            <div class="form-group">
-                                <label for="settingsUsername">Username</label>
-                                <input type="text" class="form-control" id="settingsUsername" 
-                                       value="<?php echo htmlspecialchars($user_data['username'] ?? ''); ?>">
-                            </div>
-                            <div class="form-group">
-                                <label for="settingsBio">Bio</label>
-                                <textarea class="form-control" id="settingsBio" rows="3" 
-                                          placeholder="Tell us about yourself..."></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary" id="saveProfileBtn">
-                                <i class="fas fa-save"></i> Save Changes
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                
-                <!-- Email Settings -->
-                <div class="card settings-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-envelope"></i> Email Settings</h3>
-                    </div>
-                    <div class="card-body">
-                        <form id="emailSettingsForm">
-                            <div class="form-group">
-                                <label for="settingsEmail">New Email</label>
-                                <input type="email" class="form-control" id="settingsEmail" 
-                                       value="<?php echo htmlspecialchars($user_data['email'] ?? ''); ?>">
-                            </div>
-                            <div class="form-group">
-                                <label for="emailPassword">Current Password</label>
-                                <input type="password" class="form-control" id="emailPassword" 
-                                       placeholder="Enter current password to confirm">
-                            </div>
-                            <button type="submit" class="btn btn-primary" id="saveEmailBtn">
-                                <i class="fas fa-save"></i> Update Email
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                
-                <!-- Password Settings -->
-                <div class="card settings-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-lock"></i> Change Password</h3>
-                    </div>
-                    <div class="card-body">
-                        <form id="passwordSettingsForm">
-                            <div class="form-group">
-                                <label for="currentPassword">Current Password</label>
-                                <input type="password" class="form-control" id="currentPassword" 
-                                       placeholder="Enter current password">
-                            </div>
-                            <div class="form-group">
-                                <label for="newPassword">New Password</label>
-                                <input type="password" class="form-control" id="newPassword" 
-                                       placeholder="Enter new password">
-                            </div>
-                            <div class="form-group">
-                                <label for="confirmNewPassword">Confirm New Password</label>
-                                <input type="password" class="form-control" id="confirmNewPassword" 
-                                       placeholder="Confirm new password">
-                            </div>
-                            <button type="submit" class="btn btn-primary" id="savePasswordBtn">
-                                <i class="fas fa-save"></i> Change Password
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                
-                <!-- Danger Zone -->
-                <div class="card settings-card danger-zone">
-                    <div class="card-header">
-                        <h3><i class="fas fa-exclamation-triangle"></i> Danger Zone</h3>
-                    </div>
-                    <div class="card-body">
-                        <p>Once you delete your account, there is no going back. Please be certain.</p>
-                        <button class="btn btn-danger" id="deleteAccountBtn">
-                            <i class="fas fa-trash"></i> Delete Account
-                        </button>
-                    </div>
-                </div>
-            </section>
         </main>
     </div>
     

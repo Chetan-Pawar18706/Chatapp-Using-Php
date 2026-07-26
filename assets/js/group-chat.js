@@ -22,7 +22,9 @@ const GroupChat = {
     pollingInterval: null,
     typingTimeout: null,
     isTyping: false,
-    searchTimeout: null
+    searchTimeout: null,
+    selectedFile: null,
+    autoDelete: 'none'
 };
 
 // =====================================================
@@ -43,13 +45,14 @@ const EMOJIS = [
 // Initialize Group Chat
 // =====================================================
 document.addEventListener('DOMContentLoaded', function() {
-    initializeGroupsList();
     initializeMessageInput();
     initializeEmojiPicker();
     initializeContextMenu();
     initializeSearch();
     initializeModals();
     initializeGroupInfo();
+    initializeFileUpload();
+    initializeAutoDelete();
     
     loadGroupsList();
     
@@ -106,7 +109,7 @@ function createGroupListItem(group) {
     return `
         <div class="group-item ${GroupChat.selectedGroupId == group.id ? 'active' : ''}" 
              data-group-id="${group.id}" onclick="openGroupChat(${group.id})">
-            <div class="group-avatar">${group.name.charAt(0).toUpperCase()}</div>
+            <div class="group-avatar">${group.avatar ? `<img src="${group.avatar}" alt="${escapeHtml(group.name)}" class="user-avatar-img">` : `${group.name.charAt(0).toUpperCase()}`}</div>
             <div class="group-info">
                 <div class="group-name">
                     <span>${escapeHtml(group.name)}</span>
@@ -130,8 +133,10 @@ async function openGroupChat(groupId) {
     GroupChat.hasMoreMessages = true;
     GroupChat.messages = [];
     
-    document.getElementById('emptyChat').style.display = 'none';
-    document.getElementById('activeChat').style.display = 'flex';
+    var emptyChatEl = document.getElementById('emptyChat');
+    var activeChatEl = document.getElementById('activeChat');
+    if (emptyChatEl) emptyChatEl.style.display = 'none';
+    if (activeChatEl) activeChatEl.style.display = 'flex';
     
     document.querySelectorAll('.group-item').forEach(item => {
         item.classList.remove('active');
@@ -147,8 +152,19 @@ async function openGroupChat(groupId) {
     await loadGroupInfo(groupId);
     await loadGroupMessages(groupId);
     scrollToBottom();
-    await markGroupMessagesRead(groupId);
+    markGroupMessagesRead(groupId);
     clearUnreadBadge(groupId);
+}
+
+async function markGroupMessagesRead(groupId) {
+    try {
+        await ChatApp.apiRequest('/mark-group-read.php', 'POST', {
+            group_id: groupId,
+            csrf_token: GROUP_CONFIG.csrfToken
+        });
+    } catch (e) {
+        // Silent fail - not critical
+    }
 }
 
 async function loadGroupInfo(groupId) {
@@ -158,9 +174,19 @@ async function loadGroupInfo(groupId) {
         const group = result.data.group;
         GroupChat.groupMembers = result.data.members;
         
-        document.getElementById('chatAvatar').textContent = group.name.charAt(0).toUpperCase();
-        document.getElementById('chatGroupName').textContent = group.name;
-        document.getElementById('chatGroupMembers').textContent = `${group.member_count} members`;
+        var chatAvatarEl = document.getElementById('chatAvatar');
+        var chatGroupNameEl = document.getElementById('chatGroupName');
+        var chatGroupMembersEl = document.getElementById('chatGroupMembers');
+        if (chatAvatarEl) {
+            var avatarParent = chatAvatarEl.parentNode;
+            if (group.avatar) {
+                avatarParent.innerHTML = '<img src="' + group.avatar + '" alt="' + escapeHtml(group.name) + '" class="user-avatar-img">';
+            } else {
+                chatAvatarEl.textContent = group.name.charAt(0).toUpperCase();
+            }
+        }
+        if (chatGroupNameEl) chatGroupNameEl.textContent = group.name;
+        if (chatGroupMembersEl) chatGroupMembersEl.textContent = `${group.member_count} members`;
     }
 }
 
@@ -233,6 +259,25 @@ function createGroupMessageBubble(msg) {
         `;
     }
     
+    // Handle uploading state
+    if (msg.message_type === 'uploading') {
+        return `
+            <div class="message ${messageClass}" data-message-id="${msg.id}">
+                <div class="message-bubble">
+                    <div class="message-sender-name">${escapeHtml(msg.sender_name)}</div>
+                    <div class="message-text">${escapeHtml(msg.content)}</div>
+                    <div class="upload-progress-bar">
+                        <div class="upload-progress-fill"></div>
+                    </div>
+                    <div class="message-meta">
+                        <span class="message-time">${msg.timestamp}</span>
+                        <i class="fas fa-spinner fa-spin message-status uploading"></i>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
     let replyHtml = '';
     if (msg.reply_to) {
         replyHtml = `
@@ -249,12 +294,37 @@ function createGroupMessageBubble(msg) {
     const readHtml = isSender ? 
         `<div class="message-read-status">${msg.read_count} read</div>` : '';
     
+    // Media content
+    let mediaHtml = '';
+    if (msg.media_id && msg.media) {
+        const media = msg.media;
+        if (media.is_image) {
+            mediaHtml = `<div class="message-media"><img src="../api/preview-media.php?id=${media.id}" alt="${escapeHtml(media.original_name)}" loading="lazy"></div>`;
+        } else if (media.is_video) {
+            mediaHtml = `<div class="message-media"><video controls preload="metadata"><source src="../api/preview-media.php?id=${media.id}" type="${escapeHtml(media.file_type)}"></video></div>`;
+        } else {
+            const iconMap = { pdf: 'fa-file-pdf', doc: 'fa-file-word', docx: 'fa-file-word', xls: 'fa-file-excel', xlsx: 'fa-file-excel', ppt: 'fa-file-powerpoint', pptx: 'fa-file-powerpoint', txt: 'fa-file-alt', zip: 'fa-file-archive', rar: 'fa-file-archive', '7z': 'fa-file-archive' };
+            const ext = media.file_extension || '';
+            const iconClass = iconMap[ext] || 'fa-file';
+            mediaHtml = `
+                <div class="message-media document-attachment">
+                    <div class="doc-icon"><i class="fas ${iconClass}"></i></div>
+                    <div class="doc-info">
+                        <div class="doc-name">${escapeHtml(media.original_name)}</div>
+                        <div class="doc-size">${media.file_size_formatted || ''}</div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
     return `
         <div class="message ${messageClass}" data-message-id="${msg.id}">
             <div class="message-bubble" oncontextmenu="showContextMenu(event, ${msg.id})" onclick="hideContextMenu()">
                 ${senderHtml}
                 ${replyHtml}
-                <div class="message-text">${formatMessageContent(msg.content)}</div>
+                ${mediaHtml}
+                ${msg.content ? `<div class="message-text">${formatMessageContent(msg.content)}</div>` : ''}
                 <div class="message-meta">
                     <span class="message-time">${msg.timestamp}</span>
                     ${readHtml}
@@ -283,6 +353,149 @@ function updateLoadMoreButton() {
     if (loadMore) {
         loadMore.style.display = GroupChat.hasMoreMessages ? 'block' : 'none';
     }
+}
+
+// =====================================================
+// Auto-Delete Timer
+// =====================================================
+function initializeAutoDelete() {
+    const btn = document.getElementById('autoDeleteBtn');
+    const dropdown = document.getElementById('autoDeleteDropdown');
+    
+    if (btn && dropdown) {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target) && e.target !== btn) {
+                dropdown.style.display = 'none';
+            }
+        });
+        
+        dropdown.querySelectorAll('.auto-delete-option').forEach(function(opt) {
+            opt.addEventListener('click', function() {
+                dropdown.querySelectorAll('.auto-delete-option').forEach(function(o) { o.classList.remove('active'); });
+                this.classList.add('active');
+                GroupChat.autoDelete = this.dataset.value;
+                
+                if (GroupChat.autoDelete !== 'none') {
+                    btn.classList.add('active-timer');
+                } else {
+                    btn.classList.remove('active-timer');
+                }
+                dropdown.style.display = 'none';
+            });
+        });
+    }
+}
+
+// =====================================================
+// File Upload
+// =====================================================
+function initializeFileUpload() {
+    const attachBtn = document.getElementById('attachBtn');
+    const fileInput = document.getElementById('fileInput');
+    const filePreviewBar = document.getElementById('filePreviewBar');
+    const filePreviewContent = document.getElementById('filePreviewContent');
+    const filePreviewClose = document.getElementById('filePreviewClose');
+    const sendBtn = document.getElementById('sendBtn');
+
+    if (attachBtn && fileInput) {
+        attachBtn.addEventListener('click', function() {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                GroupChat.selectedFile = this.files[0];
+                showFilePreview(this.files[0]);
+                sendBtn.disabled = false;
+            }
+        });
+    }
+
+    if (filePreviewClose) {
+        filePreviewClose.addEventListener('click', clearFileSelection);
+    }
+
+    // Drag & Drop
+    const messagesContainer = document.getElementById('messagesContainer');
+    if (messagesContainer) {
+        messagesContainer.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.add('drag-over');
+        });
+        messagesContainer.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+        });
+        messagesContainer.addEventListener('drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.remove('drag-over');
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                GroupChat.selectedFile = e.dataTransfer.files[0];
+                showFilePreview(e.dataTransfer.files[0]);
+                sendBtn.disabled = false;
+            }
+        });
+    }
+}
+
+function showFilePreview(file) {
+    const bar = document.getElementById('filePreviewBar');
+    const content = document.getElementById('filePreviewContent');
+    if (!bar || !content) return;
+
+    let preview = '';
+    if (file.type.startsWith('image/')) {
+        const url = URL.createObjectURL(file);
+        preview = `<img src="${url}" alt="Preview" class="file-preview-thumb">`;
+    } else if (file.type.startsWith('video/')) {
+        preview = `<i class="fas fa-file-video file-preview-icon video"></i>`;
+    } else {
+        const ext = file.name.split('.').pop().toLowerCase();
+        let iconClass = 'fa-file';
+        if (ext === 'pdf') iconClass = 'fa-file-pdf';
+        else if (['doc', 'docx'].includes(ext)) iconClass = 'fa-file-word';
+        else if (['xls', 'xlsx'].includes(ext)) iconClass = 'fa-file-excel';
+        else if (['zip', 'rar', '7z'].includes(ext)) iconClass = 'fa-file-archive';
+        preview = `<i class="fas ${iconClass} file-preview-icon doc"></i>`;
+    }
+
+    const sizeStr = formatFileSize(file.size);
+    content.innerHTML = `
+        ${preview}
+        <div class="file-preview-info">
+            <span class="file-preview-name">${escapeHtml(file.name)}</span>
+            <span class="file-preview-size">${sizeStr}</span>
+        </div>
+    `;
+    bar.style.display = 'flex';
+}
+
+function clearFileSelection() {
+    GroupChat.selectedFile = null;
+    const bar = document.getElementById('filePreviewBar');
+    const fileInput = document.getElementById('fileInput');
+    if (bar) bar.style.display = 'none';
+    if (fileInput) fileInput.value = '';
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+function removeUploadPlaceholder(uploadId) {
+    const el = document.querySelector(`.message[data-message-id="${uploadId}"]`);
+    if (el) el.remove();
 }
 
 // =====================================================
@@ -327,34 +540,82 @@ function initializeMessageInput() {
 async function sendGroupMessage() {
     const input = document.getElementById('messageInput');
     const content = input.value.trim();
-    
-    if (!content || !GroupChat.selectedGroupId) return;
-    
-    const messageData = {
-        group_id: GroupChat.selectedGroupId,
-        content: content,
-        csrf_token: GROUP_CONFIG.csrfToken
-    };
-    
-    if (GroupChat.replyToMessage) {
-        messageData.reply_to_id = GroupChat.replyToMessage.id;
-    }
-    
+    const file = GroupChat.selectedFile;
+
+    if (!content && !file) return;
+    if (!GroupChat.selectedGroupId) return;
+
+    const hasFile = !!file;
+
     input.value = '';
     input.style.height = 'auto';
     document.getElementById('sendBtn').disabled = true;
+    clearFileSelection();
     cancelReply();
-    
-    const result = await ChatApp.apiRequest('/send-group-message.php', 'POST', messageData);
-    
-    if (result.success && result.data) {
-        appendGroupMessage(result.data.message);
-        updateGroupListLastMessage(GroupChat.selectedGroupId, content);
+
+    if (hasFile) {
+        const uploadId = 'upload-' + Date.now();
+        appendGroupMessage({
+            id: uploadId,
+            content: content || file.name,
+            message_type: 'uploading',
+            is_sender: true,
+            is_deleted: false,
+            sender_name: 'You',
+            timestamp: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+            upload_progress: 0
+        });
         scrollToBottom();
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('group_id', GroupChat.selectedGroupId);
+        formData.append('message', content);
+        formData.append('csrf_token', GROUP_CONFIG.csrfToken);
+        if (GroupChat.replyToMessage) {
+            formData.append('reply_to', GroupChat.replyToMessage.id);
+        }
+
+        try {
+            const result = await ChatApp.apiRequest('/send-message-media.php', 'POST', formData, true);
+            if (result.success && result.data) {
+                removeUploadPlaceholder(uploadId);
+                appendGroupMessage(result.data.message);
+                updateGroupListLastMessage(GroupChat.selectedGroupId, content || file.name);
+            } else {
+                removeUploadPlaceholder(uploadId);
+                input.value = content;
+                ChatApp.showToast(result.message || 'Failed to send file', 'error');
+            }
+        } catch (e) {
+            removeUploadPlaceholder(uploadId);
+            input.value = content;
+            ChatApp.showToast('Failed to send file', 'error');
+        }
     } else {
-        input.value = content;
-        ChatApp.showToast(result.message || 'Failed to send message', 'error');
+        const messageData = {
+            group_id: GroupChat.selectedGroupId,
+            content: content,
+            auto_delete: GroupChat.autoDelete,
+            csrf_token: GROUP_CONFIG.csrfToken
+        };
+
+        if (GroupChat.replyToMessage) {
+            messageData.reply_to_id = GroupChat.replyToMessage.id;
+        }
+
+        const result = await ChatApp.apiRequest('/send-group-message.php', 'POST', messageData);
+
+        if (result.success && result.data) {
+            appendGroupMessage(result.data.message);
+            updateGroupListLastMessage(GroupChat.selectedGroupId, content);
+        } else {
+            input.value = content;
+            ChatApp.showToast(result.message || 'Failed to send message', 'error');
+        }
     }
+
+    scrollToBottom();
 }
 
 function appendGroupMessage(msg) {
@@ -376,9 +637,11 @@ function replyToMessage(messageId) {
     GroupChat.replyToMessage = message;
     
     const preview = document.getElementById('replyPreview');
-    document.getElementById('replyTo').textContent = `Replying to ${message.sender_name}`;
-    document.getElementById('replyText').textContent = message.content;
-    preview.style.display = 'block';
+    var replyToEl = document.getElementById('replyTo');
+    var replyTextEl = document.getElementById('replyText');
+    if (replyToEl) replyToEl.textContent = `Replying to ${message.sender_name}`;
+    if (replyTextEl) replyTextEl.textContent = message.content;
+    if (preview) preview.style.display = 'block';
     
     document.getElementById('messageInput').focus();
     hideContextMenu();
@@ -462,7 +725,8 @@ function showContextMenu(event, messageId) {
 }
 
 function hideContextMenu() {
-    document.getElementById('contextMenu').style.display = 'none';
+    var menu = document.getElementById('contextMenu');
+    if (menu) menu.style.display = 'none';
 }
 
 // =====================================================
@@ -582,22 +846,67 @@ function escapeRegex(string) {
 }
 
 // =====================================================
-// Group Info Panel
+// Group Info Panel & Menu
 // =====================================================
 function initializeGroupInfo() {
-    const infoBtn = document.getElementById('groupInfoBtn');
     const closeBtn = document.getElementById('closeGroupInfo');
     const panel = document.getElementById('groupInfoPanel');
     
-    infoBtn?.addEventListener('click', function() {
-        panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
-        if (panel.style.display === 'flex') {
-            renderGroupInfo();
-        }
-    });
-    
     closeBtn?.addEventListener('click', function() {
         panel.style.display = 'none';
+    });
+    
+    // 3-dots dropdown menu
+    const menuBtn = document.getElementById('chatMenuBtn');
+    const dropdown = document.getElementById('chatDropdownMenu');
+    
+    if (menuBtn && dropdown) {
+        menuBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target) && e.target !== menuBtn) {
+                dropdown.style.display = 'none';
+            }
+        });
+    }
+    
+    // Menu items
+    document.getElementById('menuGroupInfo')?.addEventListener('click', function() {
+        if (GroupChat.selectedGroupId) {
+            panel.style.display = 'flex';
+            renderGroupInfo();
+        }
+        dropdown.style.display = 'none';
+    });
+    
+    document.getElementById('menuSearchMessages')?.addEventListener('click', function() {
+        const searchBar = document.getElementById('chatSearchBar');
+        const searchInput = document.getElementById('messageSearchInput');
+        if (searchBar) {
+            searchBar.style.display = 'block';
+            if (searchInput) searchInput.focus();
+        }
+        dropdown.style.display = 'none';
+    });
+    
+    document.getElementById('menuLeaveGroup')?.addEventListener('click', async function() {
+        if (!confirm('Are you sure you want to leave this group?')) return;
+        
+        const result = await ChatApp.apiRequest('/leave-group.php', 'POST', {
+            group_id: GroupChat.selectedGroupId,
+            csrf_token: GROUP_CONFIG.csrfToken
+        });
+        
+        if (result.success) {
+            ChatApp.showToast('Left group', 'success');
+            window.location.href = 'group-chat.php';
+        } else {
+            ChatApp.showToast(result.message || 'Failed to leave group', 'error');
+        }
+        dropdown.style.display = 'none';
     });
 }
 
@@ -612,7 +921,7 @@ async function renderGroupInfo() {
         const content = document.getElementById('groupInfoContent');
         content.innerHTML = `
             <div class="group-details">
-                <div class="user-avatar group-avatar group-avatar-lg">${group.name.charAt(0).toUpperCase()}</div>
+                <div class="group-avatar group-avatar-lg">${group.avatar ? `<img src="${group.avatar}" alt="${escapeHtml(group.name)}" class="user-avatar-img large">` : `${group.name.charAt(0).toUpperCase()}`}</div>
                 <div class="group-name">${escapeHtml(group.name)}</div>
                 <div class="group-description">${group.description ? escapeHtml(group.description) : 'No description'}</div>
                 <div class="group-meta">Created by ${escapeHtml(group.creator_name)} on ${group.created_at}</div>
@@ -672,8 +981,8 @@ function createMemberItem(member, myRole) {
     
     return `
         <div class="member-item">
-            <div class="user-avatar member-avatar">
-                ${member.username.charAt(0).toUpperCase()}
+            <div class="member-avatar">
+                ${renderAvatar(member.avatar, member.username)}
                 <span class="status-dot ${statusDot}"></span>
             </div>
             <div class="member-info">
@@ -712,8 +1021,10 @@ async function leaveGroup(groupId) {
     if (result.success) {
         ChatApp.showToast(result.message, 'success');
         GroupChat.selectedGroupId = null;
-        document.getElementById('activeChat').style.display = 'none';
-        document.getElementById('emptyChat').style.display = 'flex';
+        var activeChatEl = document.getElementById('activeChat');
+        var emptyChatEl = document.getElementById('emptyChat');
+        if (activeChatEl) activeChatEl.style.display = 'none';
+        if (emptyChatEl) emptyChatEl.style.display = 'flex';
         loadGroupsList();
     } else {
         ChatApp.showToast(result.message || 'Failed to leave group', 'error');
@@ -772,9 +1083,7 @@ async function showCreateGroupModal() {
         list.innerHTML = result.data.friends.map(friend => `
             <label class="friend-checkbox-item">
                 <input type="checkbox" name="members[]" value="${friend.id}">
-                <div class="user-avatar" style="width: 32px; height: 32px; font-size: 0.8rem;">
-                    ${friend.username.charAt(0).toUpperCase()}
-                </div>
+                ${renderAvatar(friend.avatar, friend.username)}
                 <div class="friend-info">
                     <div class="friend-name">${escapeHtml(friend.username)}</div>
                     <div class="friend-code">${escapeHtml(friend.friend_code)}</div>
@@ -833,9 +1142,7 @@ async function showInviteMembersModal() {
             list.innerHTML = availableFriends.map(friend => `
                 <label class="friend-checkbox-item">
                     <input type="checkbox" name="invite_members[]" value="${friend.id}">
-                    <div class="user-avatar" style="width: 32px; height: 32px; font-size: 0.8rem;">
-                        ${friend.username.charAt(0).toUpperCase()}
-                    </div>
+                    ${renderAvatar(friend.avatar, friend.username)}
                     <div class="friend-info">
                         <div class="friend-name">${escapeHtml(friend.username)}</div>
                     </div>
@@ -964,9 +1271,12 @@ function escapeHtml(text) {
 
 // Initialize back buttons
 document.getElementById('backToList')?.addEventListener('click', function() {
-    document.getElementById('chatSidebar').classList.remove('hidden');
-    document.getElementById('activeChat').style.display = 'none';
-    document.getElementById('emptyChat').style.display = 'flex';
+    var chatSidebarEl = document.getElementById('chatSidebar');
+    var activeChatEl = document.getElementById('activeChat');
+    var emptyChatEl = document.getElementById('emptyChat');
+    if (chatSidebarEl) chatSidebarEl.classList.remove('hidden');
+    if (activeChatEl) activeChatEl.style.display = 'none';
+    if (emptyChatEl) emptyChatEl.style.display = 'flex';
     GroupChat.selectedGroupId = null;
 });
 

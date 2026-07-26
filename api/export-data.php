@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * Export Data API
@@ -82,7 +83,7 @@ exit;
  * Export Messages
  */
 function exportMessages($user_id) {
-    global $conn;
+    $conn = db_connect();
     
     $query = "SELECT m.*, 
               sender.username as sender_name,
@@ -119,7 +120,7 @@ function exportMessages($user_id) {
  * Export Media
  */
 function exportMedia($user_id) {
-    global $conn;
+    $conn = db_connect();
     
     $query = "SELECT * FROM media WHERE user_id = ? ORDER BY created_at ASC";
     $stmt = mysqli_prepare($conn, $query);
@@ -146,7 +147,7 @@ function exportMedia($user_id) {
  * Export Friends
  */
 function exportFriends($user_id) {
-    global $conn;
+    $conn = db_connect();
     
     $query = "SELECT u.username, u.email, f.created_at as friends_since
               FROM friendships f
@@ -178,7 +179,7 @@ function exportFriends($user_id) {
  * Export Groups
  */
 function exportGroups($user_id) {
-    global $conn;
+    $conn = db_connect();
     
     $query = "SELECT g.id, g.name, g.description, gm.role, gm.joined_at
               FROM groups g

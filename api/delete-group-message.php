@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * API: Delete Group Message
@@ -71,10 +72,14 @@ if ($delete_type === 'for_everyone') {
     $sql = "UPDATE messages SET is_deleted = 1, content = 'This message was deleted' WHERE id = ?";
     $result = db_execute($sql, [$message_id], 'i');
 } else {
-    // For group messages, we mark as deleted for the user
-    // Since group messages don't have sender/receiver fields, we use a different approach
-    $sql = "UPDATE messages SET is_deleted = 1, content = 'This message was deleted' WHERE id = ? AND sender_id = ?";
-    $result = db_execute($sql, [$message_id, $user_id], 'ii');
+    // For group messages, soft delete only for this user using deleted_for_sender
+    // Only the sender can use this field; other members see the message
+    if ($is_sender) {
+        $sql = "UPDATE messages SET deleted_for_sender = 1 WHERE id = ?";
+        $result = db_execute($sql, [$message_id], 'i');
+    } else {
+        send_error('You can only delete your own messages from view');
+    }
 }
 
 if ($result) {

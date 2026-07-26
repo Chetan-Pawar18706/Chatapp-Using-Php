@@ -20,7 +20,7 @@ if (!defined('APP_RUNNING')) {
  * @return array Search results
  */
 function search_users($query, $user_id, $limit = 20) {
-    global $conn;
+    $conn = db_connect();
     
     $search_term = '%' . $query . '%';
     
@@ -63,7 +63,7 @@ function search_users($query, $user_id, $limit = 20) {
  * @return array Search results
  */
 function search_friends($query, $user_id, $limit = 20) {
-    global $conn;
+    $conn = db_connect();
     
     $search_term = '%' . $query . '%';
     
@@ -111,7 +111,7 @@ function search_friends($query, $user_id, $limit = 20) {
  * @return array Search results
  */
 function search_groups($query, $user_id, $limit = 20) {
-    global $conn;
+    $conn = db_connect();
     
     $search_term = '%' . $query . '%';
     
@@ -159,7 +159,7 @@ function search_groups($query, $user_id, $limit = 20) {
  * @return array Search results
  */
 function search_messages($query, $user_id, $limit = 20) {
-    global $conn;
+    $conn = db_connect();
     
     $search_term = '%' . $query . '%';
     
@@ -196,7 +196,7 @@ function search_messages($query, $user_id, $limit = 20) {
     
     $stmt = mysqli_prepare($conn, $sql);
     $starts_with = $query . '%';
-    mysqli_stmt_bind_param($stmt, 'isiiii', $user_id, $starts_with, $search_term, $user_id, $user_id, $user_id, $limit);
+    mysqli_stmt_bind_param($stmt, 'isssiii', $user_id, $starts_with, $search_term, $user_id, $user_id, $user_id, $limit);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     
@@ -227,7 +227,7 @@ function search_messages($query, $user_id, $limit = 20) {
  * @return int|false Search ID or false
  */
 function save_recent_search($user_id, $type, $query, $result_id = null, $result_name = null, $result_data = null) {
-    global $conn;
+    $conn = db_connect();
     
     // Check for duplicate (same query in last 5 minutes)
     $check_sql = "SELECT id FROM recent_searches 
@@ -266,7 +266,7 @@ function save_recent_search($user_id, $type, $query, $result_id = null, $result_
  * @return array Recent searches
  */
 function get_recent_searches($user_id, $type = null, $limit = 10) {
-    global $conn;
+    $conn = db_connect();
     
     $sql = "SELECT * FROM recent_searches WHERE user_id = ?";
     $params = [$user_id];
@@ -305,7 +305,7 @@ function get_recent_searches($user_id, $type = null, $limit = 10) {
  * @return bool Success
  */
 function delete_recent_search($search_id, $user_id) {
-    global $conn;
+    $conn = db_connect();
     
     $sql = "DELETE FROM recent_searches WHERE id = ? AND user_id = ?";
     $stmt = mysqli_prepare($conn, $sql);
@@ -322,7 +322,7 @@ function delete_recent_search($search_id, $user_id) {
  * @return bool Success
  */
 function clear_recent_searches($user_id, $type = null) {
-    global $conn;
+    $conn = db_connect();
     
     $sql = "DELETE FROM recent_searches WHERE user_id = ?";
     $params = [$user_id];

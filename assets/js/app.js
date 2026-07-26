@@ -11,7 +11,7 @@
 const APP_CONFIG = {
     baseUrl: window.location.origin + '/chatapp',
     apiPath: '/api',
-    csrfToken: '',
+    csrfToken: document.querySelector('meta[name="csrf-token"]')?.content || '',
     csrfHeader: 'X-CSRF-TOKEN'
 };
 
@@ -27,25 +27,28 @@ const APP_CONFIG = {
  * @param {object} data Request body
  * @returns {Promise<object>} Response data
  */
-async function apiRequest(endpoint, method = 'GET', data = null) {
+async function apiRequest(endpoint, method = 'GET', data = null, isFormData = false) {
     const url = APP_CONFIG.baseUrl + APP_CONFIG.apiPath + endpoint;
     
     const options = {
         method: method.toUpperCase(),
         headers: {
-            'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest'
         }
     };
+
+    if (!isFormData) {
+        options.headers['Content-Type'] = 'application/json';
+    }
     
     // Add CSRF token
-    if (APP_CONFIG.csrfToken) {
+    if (APP_CONFIG.csrfToken && !isFormData) {
         options.headers[APP_CONFIG.csrfHeader] = APP_CONFIG.csrfToken;
     }
     
     // Add body for POST/PUT requests
     if (data && (method === 'POST' || method === 'PUT')) {
-        options.body = JSON.stringify(data);
+        options.body = isFormData ? data : JSON.stringify(data);
     }
     
     try {
@@ -268,6 +271,26 @@ function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+}
+
+/**
+ * Render avatar - shows image if available, else letter initial
+ * @param {string} avatar Avatar URL/path
+ * @param {string} username Username for fallback initial
+ * @param {string} size CSS class for size (e.g., 'small', 'large')
+ * @returns {string} HTML string
+ */
+function renderAvatar(avatar, username, size) {
+    var sizeClass = size ? ' ' + size : '';
+    if (avatar) {
+        return '<img src="' + avatar + '" alt="' + escapeHtml(username || '') + '" class="user-avatar-img' + sizeClass + '">';
+    }
+    var initial = (username || 'U').charAt(0).toUpperCase();
+    return '<div class="user-avatar' + sizeClass + '">' + initial + '</div>';
+}
+
+function getAvatarUrl(avatar) {
+    return avatar || 'storage/uploads/avatars/default-avatar.svg';
 }
 
 /**
@@ -700,6 +723,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', handleLogin);
+    }
+    
+    // Password toggle (eye button)
+    const passwordToggle = document.getElementById('passwordToggle');
+    if (passwordToggle) {
+        passwordToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            togglePasswordVisibility('password', 'toggleIcon');
+        });
     }
     
     const forgotForm = document.getElementById('forgotForm');

@@ -13,6 +13,9 @@ require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../config/media.php';
 require_once __DIR__ . '/../includes/media_helpers.php';
+require_once __DIR__ . '/../includes/sidebar.php';
+require_once __DIR__ . '/../includes/notification_helpers.php';
+require_once __DIR__ . '/../includes/notification_component.php';
 
 init_session();
 
@@ -56,23 +59,25 @@ $video_count = count(array_filter($media_files, fn($m) => $m['category'] === 'vi
 $doc_count = count(array_filter($media_files, fn($m) => $m['category'] === 'documents'));
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="<?php echo htmlspecialchars(get_user_theme()); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="<?php echo generate_csrf_token(); ?>">
+    <meta name="csrf-token" content="<?php echo session_generate_csrf(); ?>">
     <title>Media Gallery - ChatApp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link rel="stylesheet" href="../assets/css/media.css">
+    <link rel="stylesheet" href="../assets/css/notifications.css">
     <style>
         .gallery-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-        
+
         .gallery-header {
             display: flex;
             align-items: center;
@@ -235,62 +240,14 @@ $doc_count = count(array_filter($media_files, fn($m) => $m['category'] === 'docu
         }
     </style>
 </head>
-<body class="dark-theme">
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="navbar-brand">
-            <a href="dashboard.php" class="logo">
-                <i class="fas fa-comments"></i>
-                <span>ChatApp</span>
-            </a>
-        </div>
-        <div class="navbar-nav">
-            <a href="dashboard.php" class="nav-link">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="chat.php" class="nav-link">
-                <i class="fas fa-message"></i>
-                <span>Chats</span>
-            </a>
-            <a href="media.php" class="nav-link active">
-                <i class="fas fa-photo-film"></i>
-                <span>Media</span>
-            </a>
-        </div>
-        <div class="navbar-user">
-            <div class="user-menu">
-                <button class="user-btn">
-                    <div class="avatar">
-                        <?php if ($user['avatar']): ?>
-                            <img src="<?php echo htmlspecialchars($user['avatar']); ?>" alt="Avatar">
-                        <?php else: ?>
-                            <div class="avatar-initials">
-                                <?php echo strtoupper(substr($user['username'], 0, 2)); ?>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                    <span class="user-name"><?php echo htmlspecialchars($user['username']); ?></span>
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="dropdown-menu">
-                    <a href="dashboard.php" class="dropdown-item">
-                        <i class="fas fa-home"></i> Dashboard
-                    </a>
-                    <a href="settings.php" class="dropdown-item">
-                        <i class="fas fa-cog"></i> Settings
-                    </a>
-                    <hr class="dropdown-divider">
-                    <a href="../api/logout.php" class="dropdown-item text-danger">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
+<body>
+    <?php echo render_sidebar('media', $user, $user_id); ?>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- Main Content -->
-    <main class="main-content">
+    <div class="main-wrapper">
+        <?php echo render_top_navbar('Media Gallery', $user, $user_id); ?>
+
+        <main class="main-content">
         <div class="gallery-container">
             <!-- Header -->
             <div class="gallery-header">
@@ -384,50 +341,49 @@ $doc_count = count(array_filter($media_files, fn($m) => $m['category'] === 'docu
                 <?php endif; ?>
             </div>
         </div>
-    </main>
+        </main>
+    </div>
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/app.js"></script>
     <script src="../assets/js/media.js"></script>
+    <script src="../assets/js/notifications.js"></script>
+    <?php echo render_sidebar_scripts(); ?>
     <script>
-        // Filter functionality
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                // Update active state
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                
-                const filter = this.dataset.filter;
-                const items = document.querySelectorAll('.media-grid-item');
-                
-                items.forEach(item => {
-                    if (filter === 'all') {
-                        item.style.display = '';
-                    } else {
-                        const category = item.dataset.category || 
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.gallery-filters .filter-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.gallery-filters .filter-btn').forEach(function(b) { b.classList.remove('active'); });
+                    this.classList.add('active');
+                    var filter = this.dataset.filter;
+                    var items = document.querySelectorAll('.media-grid-item');
+                    items.forEach(function(item) {
+                        if (filter === 'all') {
+                            item.style.display = '';
+                        } else {
+                            var category = item.dataset.category || 
                                          (item.querySelector('img') ? 'images' : 
                                           item.querySelector('video') ? 'videos' : 'documents');
-                        item.style.display = category === filter ? '' : 'none';
-                    }
+                            item.style.display = category === filter ? '' : 'none';
+                        }
+                    });
                 });
             });
+            
+            document.getElementById('globalFileInput').addEventListener('change', function(e) {
+                MediaModule.handleFiles(e.target.files);
+                this.value = '';
+            });
+            
+            MediaModule.onUploadComplete = function(data) {
+                var grid = document.getElementById('mediaGrid');
+                if (grid) {
+                    var noMedia = document.querySelector('.no-media');
+                    if (noMedia) noMedia.remove();
+                }
+            };
         });
-        
-        // Global file input handler
-        document.getElementById('globalFileInput').addEventListener('change', function(e) {
-            MediaModule.handleFiles(e.target.files);
-            this.value = '';
-        });
-        
-        // Upload complete callback
-        MediaModule.onUploadComplete = function(data) {
-            // Add to grid with new item
-            const grid = document.getElementById('mediaGrid');
-            if (grid) {
-                const noMedia = document.querySelector('.no-media');
-                if (noMedia) noMedia.remove();
-            }
-        };
     </script>
 </body>
 </html>

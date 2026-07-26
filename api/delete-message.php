@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * API: Delete Message
@@ -43,7 +44,7 @@ if (!$message_id) {
 }
 
 // Get the message
-$message_sql = "SELECT id, sender_id, receiver_id, content FROM messages WHERE id = ? LIMIT 1";
+$message_sql = "SELECT id, sender_id, receiver_id, content, created_at FROM messages WHERE id = ? LIMIT 1";
 $message = db_fetch_single($message_sql, [$message_id], 'i');
 
 if (!$message) {

@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * API: User Login
@@ -18,12 +19,6 @@ require_once __DIR__ . '/../includes/functions.php';
 
 // Initialize session
 session_initialize();
-
-// Send security headers
-if (class_exists('Security')) {
-    $security = Security::getInstance();
-    $security->sendSecurityHeaders();
-}
 
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -83,9 +78,10 @@ if (empty($identifier) || empty($password)) {
 $result = login_user($identifier, $password, $remember_me);
 
 if ($result['success']) {
-    // Record successful login using Security class
+    // Clear rate limit counter on successful login
     if (class_exists('Security')) {
         $security = Security::getInstance();
+        $security->clearRateLimit($client_ip, 'login');
         $security->recordLoginAttempt($identifier, true);
     }
     

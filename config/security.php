@@ -21,23 +21,23 @@ define('CSRF_TOKEN_EXPIRY', 3600); // 1 hour
 /**
  * ==================== RATE LIMITING ====================
  */
-define('RATE_LIMIT_WINDOW', 3600); // 1 hour in seconds
+define('RATE_LIMIT_WINDOW', 900); // 15 minutes in seconds
 define('RATE_LIMIT_MAX_ATTEMPTS', [
-    'login' => 5,
-    'register' => 3,
-    'password_reset' => 3,
-    'friend_request' => 10,
-    'message' => 60,
-    'upload' => 20,
-    'search' => 30,
-    'api_general' => 100
+    'login' => 10,
+    'register' => 5,
+    'password_reset' => 5,
+    'friend_request' => 30,
+    'message' => 120,
+    'upload' => 30,
+    'search' => 50,
+    'api_general' => 200
 ]);
 
 /**
  * ==================== LOGIN ATTEMPTS ====================
  */
-define('MAX_LOGIN_ATTEMPTS', 5);
-define('LOGIN_LOCKOUT_DURATION', 1800); // 30 minutes
+define('MAX_LOGIN_ATTEMPTS', 10);
+define('LOGIN_LOCKOUT_DURATION', 300); // 5 minutes
 define('LOGIN_ATTEMPT_WINDOW', 900); // 15 minutes
 
 /**

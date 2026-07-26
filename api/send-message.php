@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * API: Send Message
@@ -9,18 +10,10 @@
 define('APP_RUNNING', true);
 
 require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../config/security.php';
-require_once __DIR__ . '/../includes/security.php';
 require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../includes/functions.php';
 
 session_initialize();
-
-// Send security headers
-if (class_exists('Security')) {
-    $security = Security::getInstance();
-    $security->sendSecurityHeaders();
-}
 
 if (!session_verify_security() || !session_is_logged_in()) {
     send_error('Unauthorized', 401);
@@ -52,7 +45,14 @@ $receiver_id = (int)($input['receiver_id'] ?? 0);
 $content = trim($input['content'] ?? '');
 $message_type = $input['message_type'] ?? 'text';
 $reply_to_id = !empty($input['reply_to_id']) ? (int)$input['reply_to_id'] : null;
+$auto_delete = $input['auto_delete'] ?? 'none';
 $csrf_token = $input['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+
+// Validate auto_delete value
+$valid_auto_delete = ['none', '24hours', '1day', '7days', '30days'];
+if (!in_array($auto_delete, $valid_auto_delete)) {
+    $auto_delete = 'none';
+}
 
 if (!session_validate_csrf($csrf_token) && !is_ajax_request()) {
     send_error('Invalid security token', 403);
@@ -128,10 +128,25 @@ if ($reply_to_id) {
     }
 }
 
+// Check if auto_delete column exists
+$has_auto_delete = false;
+try {
+    $check_col = db_fetch_single("SHOW COLUMNS FROM messages LIKE 'auto_delete'", [], '');
+    $has_auto_delete = (bool)$check_col;
+} catch (Exception $e) {
+    $has_auto_delete = false;
+}
+
 // Insert message
-$sql = "INSERT INTO messages (sender_id, receiver_id, content, message_type, reply_to_id, created_at) 
-        VALUES (?, ?, ?, ?, ?, NOW())";
-$result = db_execute($sql, [$user_id, $receiver_id, $content, $message_type, $reply_to_id], 'iissi');
+if ($has_auto_delete) {
+    $sql = "INSERT INTO messages (sender_id, receiver_id, content, message_type, reply_to_id, auto_delete, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, NOW())";
+    $result = db_execute($sql, [$user_id, $receiver_id, $content, $message_type, $reply_to_id, $auto_delete], 'iissss');
+} else {
+    $sql = "INSERT INTO messages (sender_id, receiver_id, content, message_type, reply_to_id, created_at) 
+            VALUES (?, ?, ?, ?, ?, NOW())";
+    $result = db_execute($sql, [$user_id, $receiver_id, $content, $message_type, $reply_to_id], 'iisss');
+}
 
 if ($result) {
     $message_id = db_insert_id();

@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * API: Search Friends
@@ -114,15 +115,15 @@ foreach ($users as $user) {
     }
     
     // Get mutual friends count
-    $mutual_sql = "SELECT COUNT(*) as count FROM friendships f1
-                   INNER JOIN friendships f2 ON (
-                       (f1.friend_id = f2.user_id AND f1.user_id = f2.friend_id)
-                       OR (f1.user_id = f2.user_id AND f1.friend_id = f2.friend_id)
-                   )
-                   WHERE f1.user_id = ? AND f1.friend_id = ?
-                   AND f1.status = 'accepted' AND f2.status = 'accepted'
-                   AND f2.user_id != ?";
-    $mutual = db_fetch_single($mutual_sql, [$user_id, $user['id'], $user_id], 'iii');
+    $mutual_sql = "SELECT COUNT(DISTINCT mutual_id) as count FROM (
+        SELECT f2.friend_id as mutual_id FROM friendships f1
+        INNER JOIN friendships f2 ON f1.friend_id = f2.user_id
+        WHERE f1.user_id = ? AND f1.status = 'accepted' AND f2.friend_id != ?
+        AND f2.status = 'accepted'
+        AND f2.friend_id IN (SELECT friend_id FROM friendships WHERE user_id = ? AND status = 'accepted'
+                             UNION SELECT user_id FROM friendships WHERE friend_id = ? AND status = 'accepted')
+    ) as mutuals";
+    $mutual = db_fetch_single($mutual_sql, [$user_id, $user_id, $user['id'], $user['id']], 'iiii');
     
     $results[] = [
         'id' => (int)$user['id'],

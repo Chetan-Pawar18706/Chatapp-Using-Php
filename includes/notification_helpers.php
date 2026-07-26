@@ -23,7 +23,7 @@ if (!defined('APP_RUNNING')) {
  * @return int|false Notification ID or false
  */
 function create_notification($user_id, $sender_id, $type, $title, $message = null, $data = null) {
-    global $conn;
+    $conn = db_connect();
     
     // Don't notify yourself
     if ($user_id == $sender_id) {
@@ -57,7 +57,7 @@ function create_notification($user_id, $sender_id, $type, $title, $message = nul
  * @return bool True if enabled
  */
 function notification_enabled_for_user($user_id, $type) {
-    global $conn;
+    $conn = db_connect();
     
     $query = "SELECT * FROM notification_preferences WHERE user_id = ?";
     $stmt = mysqli_prepare($conn, $query);
@@ -95,7 +95,7 @@ function notification_enabled_for_user($user_id, $type) {
  * @return int Unread count
  */
 function get_unread_notification_count($user_id) {
-    global $conn;
+    $conn = db_connect();
     
     $query = "SELECT COUNT(*) as count FROM notifications WHERE user_id = ? AND is_read = 0";
     $stmt = mysqli_prepare($conn, $query);
@@ -117,7 +117,7 @@ function get_unread_notification_count($user_id) {
  * @return array Notifications
  */
 function get_user_notifications($user_id, $limit = 20, $offset = 0, $unreadOnly = false) {
-    global $conn;
+    $conn = db_connect();
     
     $where = "n.user_id = ?";
     if ($unreadOnly) {
@@ -156,7 +156,7 @@ function get_user_notifications($user_id, $limit = 20, $offset = 0, $unreadOnly 
  * @return bool Success
  */
 function mark_notification_read($notification_id, $user_id) {
-    global $conn;
+    $conn = db_connect();
     
     $query = "UPDATE notifications SET is_read = 1, read_at = NOW() WHERE id = ? AND user_id = ?";
     $stmt = mysqli_prepare($conn, $query);
@@ -172,7 +172,7 @@ function mark_notification_read($notification_id, $user_id) {
  * @return bool Success
  */
 function mark_all_notifications_read($user_id) {
-    global $conn;
+    $conn = db_connect();
     
     $query = "UPDATE notifications SET is_read = 1, read_at = NOW() WHERE user_id = ? AND is_read = 0";
     $stmt = mysqli_prepare($conn, $query);
@@ -189,7 +189,7 @@ function mark_all_notifications_read($user_id) {
  * @return bool Success
  */
 function delete_notification($notification_id, $user_id) {
-    global $conn;
+    $conn = db_connect();
     
     $query = "DELETE FROM notifications WHERE id = ? AND user_id = ?";
     $stmt = mysqli_prepare($conn, $query);
@@ -205,7 +205,7 @@ function delete_notification($notification_id, $user_id) {
  * @return bool Success
  */
 function clear_all_notifications($user_id) {
-    global $conn;
+    $conn = db_connect();
     
     $query = "DELETE FROM notifications WHERE user_id = ?";
     $stmt = mysqli_prepare($conn, $query);
@@ -311,25 +311,27 @@ function format_notification_message($notification) {
  * @param string $datetime DateTime string
  * @return string Time ago string
  */
-function time_elapsed_string($datetime) {
-    $now = new DateTime();
-    $past = new DateTime($datetime);
-    $diff = $now->diff($past);
-    
-    if ($diff->y > 0) {
-        return $diff->y . ' year' . ($diff->y > 1 ? 's' : '') . ' ago';
-    } elseif ($diff->m > 0) {
-        return $diff->m . ' month' . ($diff->m > 1 ? 's' : '') . ' ago';
-    } elseif ($diff->d > 0) {
-        if ($diff->d >= 7) {
-            return floor($diff->d / 7) . ' week' . (floor($diff->d / 7) > 1 ? 's' : '') . ' ago';
+if (!function_exists('time_elapsed_string')) {
+    function time_elapsed_string($datetime) {
+        $now = new DateTime();
+        $past = new DateTime($datetime);
+        $diff = $now->diff($past);
+        
+        if ($diff->y > 0) {
+            return $diff->y . ' year' . ($diff->y > 1 ? 's' : '') . ' ago';
+        } elseif ($diff->m > 0) {
+            return $diff->m . ' month' . ($diff->m > 1 ? 's' : '') . ' ago';
+        } elseif ($diff->d > 0) {
+            if ($diff->d >= 7) {
+                return floor($diff->d / 7) . ' week' . (floor($diff->d / 7) > 1 ? 's' : '') . ' ago';
+            }
+            return $diff->d . ' day' . ($diff->d > 1 ? 's' : '') . ' ago';
+        } elseif ($diff->h > 0) {
+            return $diff->h . ' hour' . ($diff->h > 1 ? 's' : '') . ' ago';
+        } elseif ($diff->i > 0) {
+            return $diff->i . ' minute' . ($diff->i > 1 ? 's' : '') . ' ago';
+        } else {
+            return 'Just now';
         }
-        return $diff->d . ' day' . ($diff->d > 1 ? 's' : '') . ' ago';
-    } elseif ($diff->h > 0) {
-        return $diff->h . ' hour' . ($diff->h > 1 ? 's' : '') . ' ago';
-    } elseif ($diff->i > 0) {
-        return $diff->i . ' minute' . ($diff->i > 1 ? 's' : '') . ' ago';
-    } else {
-        return 'Just now';
     }
 }

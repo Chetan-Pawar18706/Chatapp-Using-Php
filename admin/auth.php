@@ -64,7 +64,7 @@ function admin_get_data() {
  * Admin Login
  */
 function admin_login($username, $password, $remember = false) {
-    global $conn;
+    $conn = db_connect();
     
     $username = trim($username);
     
@@ -171,7 +171,7 @@ function admin_login($username, $password, $remember = false) {
  * Admin Logout
  */
 function admin_logout() {
-    global $conn;
+    $conn = db_connect();
     
     if (admin_is_logged_in()) {
         $admin_id = admin_get_id();
@@ -208,7 +208,7 @@ function admin_logout() {
  * Validate Remember Me Token
  */
 function admin_validate_remember() {
-    global $conn;
+    $conn = db_connect();
     
     if (!isset($_COOKIE['admin_remember'])) {
         return false;
@@ -278,7 +278,7 @@ function admin_verify_session() {
  * Log Admin Activity
  */
 function admin_log_activity($admin_id, $action, $target_type = null, $target_id = null, $details = []) {
-    global $conn;
+    $conn = db_connect();
     
     $ip = $_SERVER['REMOTE_ADDR'] ?? '';
     $ua = $_SERVER['HTTP_USER_AGENT'] ?? '';

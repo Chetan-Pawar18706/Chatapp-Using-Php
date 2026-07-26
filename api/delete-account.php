@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * Delete Account API
@@ -90,6 +91,10 @@ try {
         'group_members',
         'messages',
         'friendships',
+        'notifications',
+        'notification_preferences',
+        'recent_searches',
+        'password_resets',
         'user_sessions',
         'activity_log',
         'rate_limits'

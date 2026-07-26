@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * API: Remove Member from Group
@@ -57,14 +58,15 @@ if (!$target_role) {
     send_error('Member not found in this group');
 }
 
-// Check permissions
-if ($role['role'] !== 'admin') {
-    if ($role['role'] === 'moderator' && $target_role['role'] === 'admin') {
-        send_error('Moderators cannot remove admins');
-    }
-    if ($role['role'] !== 'admin' && $target_role['role'] === 'admin') {
-        send_error('Only admins can remove other admins');
-    }
+// Check permissions - only admins and moderators can remove members
+if (!in_array($role['role'], ['admin', 'moderator'])) {
+    send_error('Only admins and moderators can remove members');
+}
+if ($role['role'] === 'moderator' && in_array($target_role['role'], ['admin', 'moderator'])) {
+    send_error('Moderators cannot remove admins or other moderators');
+}
+if ($role['role'] !== 'admin' && $target_role['role'] === 'admin') {
+    send_error('Only admins can remove other admins');
 }
 
 // Cannot remove yourself

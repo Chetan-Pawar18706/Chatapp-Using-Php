@@ -15,6 +15,46 @@ if (!defined('APP_RUNNING')) {
 require_once __DIR__ . '/compat.php';
 
 /**
+ * Render avatar HTML - shows image if available, else letter initial
+ */
+if (!function_exists('render_avatar_html')) {
+    function render_avatar_html($avatar, $username, $class = 'user-avatar') {
+        if (!empty($avatar)) {
+            return '<img src="' . htmlspecialchars($avatar) . '" alt="' . htmlspecialchars($username ?? '') . '" class="' . htmlspecialchars($class) . '-img">';
+        }
+        $initial = htmlspecialchars(substr($username ?? 'U', 0, 1));
+        return '<div class="' . htmlspecialchars($class) . '">' . $initial . '</div>';
+    }
+}
+
+if (!function_exists('get_user_theme')) {
+    function get_user_theme() {
+        if (isset($_SESSION['user_data']['theme'])) {
+            return $_SESSION['user_data']['theme'];
+        }
+        if (isset($_SESSION['user_id'])) {
+            require_once __DIR__ . '/../config/database.php';
+            $user_id = $_SESSION['user_id'];
+            $result = db_fetch_single("SELECT theme FROM users WHERE id = ?", [$user_id], 'i');
+            if ($result) {
+                $_SESSION['user_data']['theme'] = $result['theme'];
+                return $result['theme'];
+            }
+        }
+        return 'dark';
+    }
+}
+
+if (!function_exists('get_avatar_url')) {
+    function get_avatar_url($avatar, $username = 'User') {
+        if (!empty($avatar)) {
+            return $avatar;
+        }
+        return 'storage/uploads/avatars/default-avatar.svg';
+    }
+}
+
+/**
  * =====================================================
  * Activity Logging
  * =====================================================

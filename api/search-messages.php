@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * API: Search Messages
@@ -54,7 +55,7 @@ $sql = "SELECT
 
 $messages = db_fetch_all($sql, [
     $user_id, $other_user_id, $other_user_id, $user_id, "%{$query}%"
-], 'iiiiii');
+], 'iiiis');
 
 $formatted_messages = [];
 foreach ($messages as $msg) {

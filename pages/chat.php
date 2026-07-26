@@ -11,6 +11,7 @@ define('APP_RUNNING', true);
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/sidebar.php';
 
 session_initialize();
 
@@ -33,7 +34,7 @@ $csrf_token = session_generate_csrf();
 $selected_user_id = (int)($_GET['user_id'] ?? 0);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="<?php echo htmlspecialchars(get_user_theme()); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -50,17 +51,19 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Custom CSS -->
+    <link href="../assets/css/dashboard.css" rel="stylesheet">
     <link href="../assets/css/chat.css" rel="stylesheet">
 </head>
 <body>
+    <?php echo render_sidebar('chat', $user_data, $user_id); ?>
     <div class="chat-app">
         <!-- Left Sidebar - Chat List -->
         <aside class="chat-sidebar" id="chatSidebar">
             <!-- Sidebar Header -->
             <div class="sidebar-header">
                 <div class="header-left">
-                    <div class="user-avatar" id="currentUserAvatar">
-                        <?php echo htmlspecialchars(substr($user_data['username'] ?? 'U', 0, 1)); ?>
+                    <div id="currentUserAvatar">
+                        <?php echo render_avatar_html($user_data['avatar'] ?? null, $user_data['username'] ?? 'User'); ?>
                     </div>
                     <h2>Chats</h2>
                 </div>
@@ -123,9 +126,44 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
                         <button class="icon-btn" id="searchChatBtn" title="Search Messages">
                             <i class="fas fa-search"></i>
                         </button>
-                        <button class="icon-btn" id="chatMenuBtn" title="More Options">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
+                        <div class="chat-menu-wrapper">
+                            <button class="icon-btn" id="chatMenuBtn" title="More Options">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <div class="chat-dropdown-menu" id="chatDropdownMenu" style="display: none;">
+                                <button class="dropdown-item" id="menuViewProfile">
+                                    <i class="fas fa-user"></i> View Profile
+                                </button>
+                                <button class="dropdown-item" id="menuChatInfo">
+                                    <i class="fas fa-info-circle"></i> Chat Info
+                                </button>
+                                <button class="dropdown-item" id="menuSearchMessages">
+                                    <i class="fas fa-search"></i> Search Messages
+                                </button>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" id="menuBlockUser">
+                                    <i class="fas fa-ban"></i> Block User
+                                </button>
+                                <button class="dropdown-item" id="menuUnblockUser" style="display: none;">
+                                    <i class="fas fa-unlock"></i> Unblock User
+                                </button>
+                                <button class="dropdown-item danger" id="menuBlockUser">
+                                    <i class="fas fa-ban"></i> Block User
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chat Info Panel (Hidden by default) -->
+                <div class="chat-info-panel" id="chatInfoPanel" style="display: none;">
+                    <div class="chat-info-header">
+                        <button class="icon-btn" id="closeChatInfo"><i class="fas fa-arrow-left"></i></button>
+                        <h4>Chat Info</h4>
+                    </div>
+                    <div class="chat-info-body" id="chatInfoBody">
+                        <div class="chat-info-profile" id="chatInfoProfile"></div>
+                        <div class="chat-info-stats" id="chatInfoStats"></div>
                     </div>
                 </div>
                 
@@ -184,6 +222,30 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
                 <!-- Message Input -->
                 <div class="message-input-container">
                     <div class="input-actions-left">
+                        <button class="icon-btn attach-btn" id="attachBtn" title="Attach file">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <input type="file" id="fileInput" class="hidden-file-input" 
+                               accept=".jpg,.jpeg,.png,.gif,.webp,.mp4,.webm,.ogg,.mov,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar,.7z">
+                        <div class="auto-delete-wrapper">
+                            <button class="icon-btn auto-delete-btn" id="autoDeleteBtn" title="Auto-delete timer">
+                                <i class="fas fa-clock"></i>
+                            </button>
+                            <div class="auto-delete-dropdown" id="autoDeleteDropdown" style="display: none;">
+                                <button class="auto-delete-option active" data-value="none">
+                                    <i class="fas fa-infinity"></i> Keep forever
+                                </button>
+                                <button class="auto-delete-option" data-value="24hours">
+                                    <i class="fas fa-clock"></i> 24 hours
+                                </button>
+                                <button class="auto-delete-option" data-value="7days">
+                                    <i class="fas fa-clock"></i> 7 days
+                                </button>
+                                <button class="auto-delete-option" data-value="30days">
+                                    <i class="fas fa-clock"></i> 30 days
+                                </button>
+                            </div>
+                        </div>
                         <button class="icon-btn emoji-btn" id="emojiBtn" title="Emoji">
                             <i class="fas fa-smile"></i>
                         </button>
@@ -196,6 +258,14 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
+                </div>
+                
+                <!-- File Preview (Hidden by default) -->
+                <div class="file-preview-bar" id="filePreviewBar" style="display: none;">
+                    <div class="file-preview-content" id="filePreviewContent"></div>
+                    <button class="file-preview-close" id="filePreviewClose">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
                 
                 <!-- Emoji Picker (Hidden by default) -->

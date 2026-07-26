@@ -194,9 +194,6 @@ function loadSectionData(section) {
         case 'groups':
             loadGroups(true);
             break;
-        case 'settings':
-            loadProfileSettings();
-            break;
     }
 }
 
@@ -230,7 +227,7 @@ function updateDashboardUI(data) {
     // Update avatars
     const avatarElements = document.querySelectorAll('#sidebarAvatar, #navbarAvatar, #profileAvatar, #dropdownAvatar');
     avatarElements.forEach(el => {
-        if (el) el.textContent = user.username.charAt(0).toUpperCase();
+        if (el) el.innerHTML = renderAvatar(user.avatar, user.username);
     });
     
     // Update sidebar user info
@@ -434,7 +431,7 @@ function createChatItem(chat) {
     return `
         <div class="chat-item" onclick="openChat(${chat.user_id})">
             <div class="chat-avatar">
-                <div class="user-avatar">${chat.username.charAt(0).toUpperCase()}</div>
+                ${renderAvatar(chat.avatar, chat.username)}
                 <span class="status-dot ${chat.is_online ? 'online' : 'offline'}"></span>
             </div>
             <div class="chat-info">
@@ -450,8 +447,7 @@ function createChatItem(chat) {
 }
 
 function openChat(userId) {
-    // TODO: Navigate to chat page
-    ChatApp.showToast('Chat feature coming soon!', 'info');
+    window.location.href = 'chat.php?user_id=' + userId;
 }
 
 // =====================================================
@@ -502,7 +498,7 @@ async function loadFriendRequests(fullList = false) {
 function createRequestItem(request) {
     return `
         <div class="request-item" id="request-${request.friendship_id}">
-            <div class="user-avatar">${request.username.charAt(0).toUpperCase()}</div>
+            ${renderAvatar(request.avatar, request.username)}
             <div class="request-info">
                 <div class="request-name">${escapeHtml(request.username)}</div>
                 <div class="request-time">${request.request_date}</div>
@@ -609,7 +605,7 @@ function createGroupCard(group) {
     return `
         <div class="group-card" onclick="openGroup(${group.group_id})">
             <div class="group-avatar">
-                <i class="fas fa-users"></i>
+                ${group.avatar ? `<img src="${group.avatar}" alt="${escapeHtml(group.name)}" class="user-avatar-img">` : `<div class="user-avatar">${group.name.charAt(0).toUpperCase()}</div>`}
             </div>
             <div class="group-name">${escapeHtml(group.name)}</div>
             <div class="group-members">${group.member_count} members</div>
@@ -618,178 +614,25 @@ function createGroupCard(group) {
 }
 
 function openGroup(groupId) {
-    // TODO: Navigate to group chat
-    ChatApp.showToast('Group chat coming soon!', 'info');
+    window.location.href = 'group-chat.php?group_id=' + groupId;
 }
 
 // =====================================================
 // Friends List
 // =====================================================
 async function loadFriendsList() {
-    // For now, we'll use a placeholder since we don't have a dedicated API
-    const friendsList = document.getElementById('friendsList');
-    if (friendsList) {
-        friendsList.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-user-group"></i>
-                <p>Friends list coming soon</p>
-                <span>Use the friend code feature to connect with others!</span>
-            </div>
-        `;
-    }
-}
-
-// =====================================================
-// Settings Functions
-// =====================================================
-function initializeSettings() {
-    // Profile Settings Form
-    const profileForm = document.getElementById('profileSettingsForm');
-    if (profileForm) {
-        profileForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('settingsUsername').value.trim();
-            const bio = document.getElementById('settingsBio').value.trim();
-            
-            if (!username) {
-                ChatApp.showToast('Username is required', 'error');
-                return;
-            }
-            
-            const saveBtn = document.getElementById('saveProfileBtn');
-            saveBtn.disabled = true;
-            saveBtn.innerHTML = '<span class="spinner"></span> Saving...';
-            
-            const result = await ChatApp.apiRequest('/update-settings.php', 'POST', {
-                type: 'profile',
-                username: username,
-                bio: bio,
-                csrf_token: APP_CONFIG.csrfToken
-            });
-            
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
-            
-            if (result.success) {
-                ChatApp.showToast(result.message, 'success');
-                // Update UI
-                document.querySelectorAll('.profile-name, .sidebar-user .user-name').forEach(el => {
-                    if (el) el.textContent = username;
-                });
-                document.querySelectorAll('.profile-avatar, .user-avatar').forEach(el => {
-                    if (el) el.textContent = username.charAt(0).toUpperCase();
-                });
-            } else {
-                ChatApp.showToast(result.message, 'error');
-            }
-        });
-    }
-    
-    // Email Settings Form
-    const emailForm = document.getElementById('emailSettingsForm');
-    if (emailForm) {
-        emailForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('settingsEmail').value.trim();
-            const password = document.getElementById('emailPassword').value;
-            
-            if (!email || !password) {
-                ChatApp.showToast('All fields are required', 'error');
-                return;
-            }
-            
-            const saveBtn = document.getElementById('saveEmailBtn');
-            saveBtn.disabled = true;
-            saveBtn.innerHTML = '<span class="spinner"></span> Updating...';
-            
-            const result = await ChatApp.apiRequest('/update-settings.php', 'POST', {
-                type: 'email',
-                email: email,
-                password: password,
-                csrf_token: APP_CONFIG.csrfToken
-            });
-            
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = '<i class="fas fa-save"></i> Update Email';
-            
-            if (result.success) {
-                ChatApp.showToast(result.message, 'success');
-                document.getElementById('emailPassword').value = '';
-            } else {
-                ChatApp.showToast(result.message, 'error');
-            }
-        });
-    }
-    
-    // Password Settings Form
-    const passwordForm = document.getElementById('passwordSettingsForm');
-    if (passwordForm) {
-        passwordForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const currentPassword = document.getElementById('currentPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmNewPassword').value;
-            
-            if (!currentPassword || !newPassword || !confirmPassword) {
-                ChatApp.showToast('All fields are required', 'error');
-                return;
-            }
-            
-            if (newPassword !== confirmPassword) {
-                ChatApp.showToast('New passwords do not match', 'error');
-                return;
-            }
-            
-            if (!ChatApp.validatePasswordStrength(newPassword).valid) {
-                ChatApp.showToast('Password must be at least 8 characters with uppercase, lowercase, and number', 'error');
-                return;
-            }
-            
-            const saveBtn = document.getElementById('savePasswordBtn');
-            saveBtn.disabled = true;
-            saveBtn.innerHTML = '<span class="spinner"></span> Changing...';
-            
-            const result = await ChatApp.apiRequest('/update-settings.php', 'POST', {
-                type: 'password',
-                current_password: currentPassword,
-                new_password: newPassword,
-                confirm_password: confirmPassword,
-                csrf_token: APP_CONFIG.csrfToken
-            });
-            
-            saveBtn.disabled = false;
-            saveBtn.innerHTML = '<i class="fas fa-save"></i> Change Password';
-            
-            if (result.success) {
-                ChatApp.showToast(result.message, 'success');
-                document.getElementById('currentPassword').value = '';
-                document.getElementById('newPassword').value = '';
-                document.getElementById('confirmNewPassword').value = '';
-            } else {
-                ChatApp.showToast(result.message, 'error');
-            }
-        });
-    }
-    
-    // Delete Account Button
-    const deleteBtn = document.getElementById('deleteAccountBtn');
-    if (deleteBtn) {
-        deleteBtn.addEventListener('click', function() {
-            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-                ChatApp.showToast('Account deletion is not yet implemented', 'warning');
-            }
-        });
-    }
-}
-
-function loadProfileSettings() {
-    if (Dashboard.userData) {
-        const settingsUsername = document.getElementById('settingsUsername');
-        if (settingsUsername) {
-            settingsUsername.value = Dashboard.userData.username;
+    if (typeof loadFriends === 'function') {
+        loadFriends();
+    } else {
+        const friendsList = document.getElementById('friendsList');
+        if (friendsList) {
+            friendsList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-user-group"></i>
+                    <p>Friends list coming soon</p>
+                    <span>Use the friend code feature to connect with others!</span>
+                </div>
+            `;
         }
     }
 }
@@ -819,7 +662,7 @@ function initializeSearch() {
                 if (result.success && result.data.users.length > 0) {
                     searchResults.innerHTML = result.data.users.map(user => `
                         <div class="search-result-item" onclick="selectSearchUser(${user.id}, '${escapeHtml(user.username)}')">
-                            <div class="user-avatar">${user.username.charAt(0).toUpperCase()}</div>
+                            ${renderAvatar(user.avatar, user.username)}
                             <div>
                                 <div class="user-name">${escapeHtml(user.username)}</div>
                                 <div class="user-code">${escapeHtml(user.friend_code)}</div>
@@ -844,10 +687,7 @@ function initializeSearch() {
 }
 
 function selectSearchUser(userId, username) {
-    // TODO: Open chat with user
-    ChatApp.showToast(`Opening chat with ${username}...`, 'info');
-    document.getElementById('searchResults').classList.remove('show');
-    document.getElementById('searchInput').value = '';
+    window.location.href = 'chat.php?user_id=' + userId;
 }
 
 // =====================================================

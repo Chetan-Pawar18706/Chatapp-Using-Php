@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * API: Get Messages
@@ -51,6 +52,7 @@ $sql = "SELECT
             m.content,
             m.message_type,
             m.reply_to_id,
+            m.media_id,
             m.is_read,
             m.is_deleted,
             m.deleted_for_sender,
@@ -78,6 +80,49 @@ $sql = "SELECT
         LIMIT ? OFFSET ?";
 
 $messages = db_fetch_all($sql, [$user_id, $other_user_id, $other_user_id, $user_id, $limit, $offset], 'iiiiii');
+
+// Fetch media data for messages with attachments
+$media_ids = array_filter(array_column($messages, 'media_id'));
+$media_map = [];
+if (!empty($media_ids)) {
+    $placeholders = implode(',', array_fill(0, count($media_ids), '?'));
+    $media_sql = "SELECT id, file_name, original_name, file_path, thumbnail_path, file_size, file_type, file_extension, category
+                  FROM media WHERE id IN ($placeholders)";
+    $media_types = str_repeat('i', count($media_ids));
+    $media_rows = db_fetch_all($media_sql, $media_ids, $media_types);
+    foreach ($media_rows as $m) {
+        $m['file_size_formatted'] = format_file_size($m['file_size']);
+        $m['is_image'] = $m['category'] === 'images';
+        $m['is_video'] = $m['category'] === 'videos';
+        $media_map[(int)$m['id']] = $m;
+    }
+}
+
+// Fetch reactions for all messages (graceful if table missing)
+$msg_ids = array_column($messages, 'id');
+$reactions_map = [];
+if (!empty($msg_ids)) {
+    $placeholders = implode(',', array_fill(0, count($msg_ids), '?'));
+    $react_types = str_repeat('i', count($msg_ids));
+    try {
+        $react_sql = "SELECT message_id, emoji, COUNT(*) as count, GROUP_CONCAT(user_id) as user_ids
+                      FROM message_reactions WHERE message_id IN ($placeholders)
+                      GROUP BY message_id, emoji";
+        $react_rows = db_fetch_all($react_sql, $msg_ids, $react_types);
+        foreach ($react_rows as $r) {
+            $mid = (int)$r['message_id'];
+            if (!isset($reactions_map[$mid])) $reactions_map[$mid] = [];
+            $reactions_map[$mid][] = [
+                'emoji' => $r['emoji'],
+                'count' => (int)$r['count'],
+                'user_ids' => array_map('intval', explode(',', $r['user_ids'])),
+                'reacted' => in_array($user_id, array_map('intval', explode(',', $r['user_ids'])))
+            ];
+        }
+    } catch (Exception $e) {
+        $reactions_map = [];
+    }
+}
 
 // Get total count
 $count_sql = "SELECT COUNT(*) as total FROM messages 
@@ -132,10 +177,13 @@ foreach ($messages as $msg) {
         'sender_id' => (int)$msg['sender_id'],
         'content' => $is_deleted_for_me ? 'This message was deleted' : $msg['content'],
         'message_type' => $msg['message_type'],
+        'media_id' => $msg['media_id'] ? (int)$msg['media_id'] : null,
+        'media' => $msg['media_id'] ? ($media_map[(int)$msg['media_id']] ?? null) : null,
         'is_sender' => $is_sender,
         'is_deleted' => (bool)$msg['is_deleted'],
         'is_deleted_for_me' => $is_deleted_for_me,
         'status' => $is_sender ? $status : null,
+        'reactions' => $reactions_map[(int)$msg['id']] ?? [],
         'reply_to' => $reply_data,
         'timestamp' => format_date($msg['created_at'], 'h:i A'),
         'date' => format_date($msg['created_at'], 'M d, Y')

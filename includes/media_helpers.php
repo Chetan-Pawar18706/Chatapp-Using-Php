@@ -19,7 +19,7 @@ if (!defined('APP_RUNNING')) {
  * @return string HTML output
  */
 function render_media_upload_form($receiver_id = 0, $group_id = 0) {
-    $csrf_token = generate_csrf_token();
+    $csrf_token = session_generate_csrf();
     
     $html = '
     <div class="media-upload-container">

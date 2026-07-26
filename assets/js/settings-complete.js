@@ -15,6 +15,8 @@ const SettingsModule = {
         this.csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
         this.initTabs();
         this.initTheme();
+        this.initLanguage();
+        this.initChatStyle();
         this.initForms();
         this.initPasswordStrength();
         this.initCharacterCounts();
@@ -73,8 +75,10 @@ const SettingsModule = {
      * Save Theme
      */
     saveTheme: async function(theme) {
+        document.documentElement.dataset.theme = theme;
+        
         try {
-            const response = await fetch('api/update-profile.php', {
+            const response = await fetch('../api/update-profile.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `csrf_token=${this.csrfToken}&theme=${theme}`
@@ -90,10 +94,79 @@ const SettingsModule = {
     },
     
     /**
+     * Initialize Language
+     */
+    initLanguage: function() {
+        const languageSelect = document.getElementById('language');
+        if (languageSelect) {
+            languageSelect.addEventListener('change', () => {
+                this.saveLanguage(languageSelect.value);
+            });
+        }
+    },
+    
+    /**
+     * Save Language
+     */
+    saveLanguage: async function(language) {
+        try {
+            const response = await fetch('../api/update-profile.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `csrf_token=${this.csrfToken}&language=${language}`
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                this.showToast('Language updated', 'success');
+            }
+        } catch (error) {
+            console.error('Failed to save language:', error);
+        }
+    },
+    
+    /**
+     * Initialize Chat Style
+     */
+    initChatStyle: function() {
+        document.querySelectorAll('input[name="chat_style"]').forEach(input => {
+            input.addEventListener('change', () => {
+                this.saveChatStyle(input.value);
+            });
+        });
+    },
+    
+    /**
+     * Save Chat Style
+     */
+    saveChatStyle: async function(chatStyle) {
+        try {
+            const response = await fetch('../api/update-profile.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `csrf_token=${this.csrfToken}&chat_style=${chatStyle}`
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                this.showToast('Chat style updated', 'success');
+            }
+        } catch (error) {
+            console.error('Failed to save chat style:', error);
+        }
+    },
+    
+    /**
      * Initialize Forms
      */
     initForms: function() {
-        // Account form
+        // Profile form
+        document.getElementById('profileForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.saveProfile();
+        });
+        
+        // Account form (email only)
         document.getElementById('accountForm')?.addEventListener('submit', (e) => {
             e.preventDefault();
             this.saveAccount();
@@ -147,7 +220,7 @@ const SettingsModule = {
         const formData = new FormData(form);
         
         try {
-            const response = await fetch('api/update-profile.php', {
+            const response = await fetch('../api/update-profile.php', {
                 method: 'POST',
                 body: formData
             });
@@ -155,14 +228,39 @@ const SettingsModule = {
             const data = await response.json();
             
             if (data.success) {
-                this.showToast('Account updated successfully', 'success');
+                this.showToast('Email updated successfully', 'success');
+            } else {
+                this.showToast(data.message, 'error');
+            }
+        } catch (error) {
+            this.showToast('Failed to update email', 'error');
+        }
+    },
+    
+    /**
+     * Save Profile
+     */
+    saveProfile: async function() {
+        const form = document.getElementById('profileForm');
+        const formData = new FormData(form);
+        
+        try {
+            const response = await fetch('../api/update-profile.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                this.showToast('Profile updated successfully', 'success');
                 const usernameEl = document.querySelector('.user-name');
                 if (usernameEl) usernameEl.textContent = formData.get('username');
             } else {
                 this.showToast(data.message, 'error');
             }
         } catch (error) {
-            this.showToast('Failed to update account', 'error');
+            this.showToast('Failed to update profile', 'error');
         }
     },
     
@@ -174,7 +272,7 @@ const SettingsModule = {
         const formData = new FormData(form);
         
         try {
-            const response = await fetch('api/change-password.php', {
+            const response = await fetch('../api/change-password.php', {
                 method: 'POST',
                 body: formData
             });
@@ -201,7 +299,7 @@ const SettingsModule = {
         const formData = new FormData(form);
         
         try {
-            const response = await fetch('api/update-settings.php', {
+            const response = await fetch('../api/update-settings.php', {
                 method: 'POST',
                 body: formData
             });
@@ -226,7 +324,7 @@ const SettingsModule = {
         const formData = new FormData(form);
         
         try {
-            const response = await fetch('api/update-settings.php', {
+            const response = await fetch('../api/update-settings.php', {
                 method: 'POST',
                 body: formData
             });
@@ -266,7 +364,7 @@ const SettingsModule = {
         formData.append('csrf_token', this.csrfToken);
         
         try {
-            const response = await fetch('api/upload-photo.php', {
+            const response = await fetch('../api/upload-photo.php', {
                 method: 'POST',
                 body: formData
             });
@@ -302,7 +400,7 @@ const SettingsModule = {
         if (!confirm('Remove your profile photo?')) return;
         
         try {
-            const response = await fetch('api/upload-photo.php', {
+            const response = await fetch('../api/upload-photo.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `csrf_token=${this.csrfToken}&type=avatar&remove=1`
@@ -381,7 +479,7 @@ const SettingsModule = {
      */
     unblockUser: async function(userId) {
         try {
-            const response = await fetch('api/unblock-user.php', {
+            const response = await fetch('../api/unblock-user.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `csrf_token=${this.csrfToken}&user_id=${userId}`
@@ -443,7 +541,7 @@ const SettingsModule = {
         }
         
         try {
-            const response = await fetch(`api/export-data.php?type=${type}`, {
+            const response = await fetch(`../api/export-data.php?type=${type}`, {
                 method: 'GET'
             });
             
@@ -521,7 +619,7 @@ function closeModal(modalId) {
 function deactivateAccount() {
     const username = document.getElementById('deactivateConfirm').value;
     
-    fetch('api/deactivate-account.php', {
+    fetch('../api/deactivate-account.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `csrf_token=${SettingsModule.csrfToken}&username=${encodeURIComponent(username)}`
@@ -540,7 +638,7 @@ function deactivateAccount() {
 function deleteAccount() {
     const confirmText = document.getElementById('deleteConfirm').value;
     
-    fetch('api/delete-account.php', {
+    fetch('../api/delete-account.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `csrf_token=${SettingsModule.csrfToken}&confirm_text=${encodeURIComponent(confirmText)}`
@@ -570,14 +668,16 @@ function togglePassword(inputId) {
 }
 
 // Add animation keyframe
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideOut {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(-100%); opacity: 0; }
-    }
-`;
-document.head.appendChild(style);
+(function() {
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(-100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+})();
 
 // Initialize on DOM load
 document.addEventListener('DOMContentLoaded', () => {

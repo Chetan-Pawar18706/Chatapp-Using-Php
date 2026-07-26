@@ -46,6 +46,9 @@ function db_connect() {
         return false;
     }
     
+    // Disable exception mode - handle errors gracefully
+    mysqli_report(MYSQLI_REPORT_OFF);
+    
     // Set charset
     if (!$conn->set_charset(DB_CHARSET)) {
         error_log('Database Charset Error: ' . $conn->error);
@@ -58,6 +61,7 @@ function db_connect() {
     
     // Store connection in global
     $GLOBALS['db'] = $conn;
+    $GLOBALS['conn'] = $conn;
     
     return $conn;
 }
@@ -79,7 +83,8 @@ function db_get_connection() {
 function db_close() {
     if ($GLOBALS['db'] !== null) {
         $GLOBALS['db']->close();
-        $GLOBALS['db'] = null;
+$GLOBALS['db'] = null;
+$GLOBALS['conn'] = null;
     }
 }
 
@@ -143,7 +148,14 @@ function db_execute($sql, $params = [], $types = '') {
         return false;
     }
     
-    $result = $stmt->execute();
+    try {
+        $result = $stmt->execute();
+    } catch (Exception $e) {
+        error_log('Execute Error: ' . $e->getMessage());
+        $stmt->close();
+        return false;
+    }
+    
     if (!$result) {
         error_log('Execute Error: ' . $stmt->error);
         $stmt->close();
@@ -240,3 +252,6 @@ function &db_get_conn() {
     $conn = db_connect();
     return $conn;
 }
+
+// Eagerly establish connection so $GLOBALS['conn'] is available for legacy code
+db_connect();

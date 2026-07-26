@@ -58,7 +58,7 @@ function render_notification_bell($user_id) {
             </div>
             
             <div class="dropdown-footer">
-                <a href="pages/notifications.php" class="view-all-link">View All Notifications</a>
+                <a href="../pages/notifications.php" class="view-all-link">View All Notifications</a>
             </div>
         </div>
     </div>';
@@ -95,14 +95,14 @@ function render_notification_item($notification) {
     $action_url = '#';
     switch ($type) {
         case 'friend_request':
-            $action_url = 'pages/dashboard.php#friends';
+            $action_url = '../pages/dashboard.php#friends';
             break;
         case 'message':
-            $action_url = 'pages/chat.php?user=' . ($notification['data']['sender_id'] ?? '');
+            $action_url = '../pages/chat.php?user_id=' . ($notification['data']['sender_id'] ?? '');
             break;
         case 'mention':
         case 'group_invite':
-            $action_url = 'pages/group-chat.php?id=' . ($notification['data']['group_id'] ?? '');
+            $action_url = '../pages/group-chat.php?id=' . ($notification['data']['group_id'] ?? '');
             break;
     }
     

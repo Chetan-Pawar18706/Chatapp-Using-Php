@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * API: Get Group Messages
@@ -47,14 +48,14 @@ $sql = "SELECT
             m.content,
             m.message_type,
             m.reply_to_id,
+            m.media_id,
             m.is_deleted,
             m.created_at,
             su.username as sender_name,
             su.avatar as sender_avatar,
             rm.content as reply_content,
             rm.sender_id as reply_sender_id,
-            ru.username as reply_sender_name,
-            (SELECT COUNT(*) FROM group_messages_read WHERE message_id = m.id) as read_count
+            ru.username as reply_sender_name
         FROM messages m
         LEFT JOIN users su ON m.sender_id = su.id
         LEFT JOIN messages rm ON m.reply_to_id = rm.id
@@ -65,7 +66,24 @@ $sql = "SELECT
         ORDER BY m.created_at DESC
         LIMIT ? OFFSET ?";
 
-$messages = db_fetch_all($sql, [$group_id, $membership['joined_at'], $limit, $offset], 'iisii');
+$messages = db_fetch_all($sql, [$group_id, $membership['joined_at'], $limit, $offset], 'isii');
+
+// Fetch media data for messages with attachments
+$media_ids = array_filter(array_column($messages, 'media_id'));
+$media_map = [];
+if (!empty($media_ids)) {
+    $placeholders = implode(',', array_fill(0, count($media_ids), '?'));
+    $media_sql = "SELECT id, file_name, original_name, file_path, thumbnail_path, file_size, file_type, file_extension, category
+                  FROM media WHERE id IN ($placeholders)";
+    $media_types = str_repeat('i', count($media_ids));
+    $media_rows = db_fetch_all($media_sql, $media_ids, $media_types);
+    foreach ($media_rows as $m) {
+        $m['file_size_formatted'] = format_file_size($m['file_size']);
+        $m['is_image'] = $m['category'] === 'images';
+        $m['is_video'] = $m['category'] === 'videos';
+        $media_map[(int)$m['id']] = $m;
+    }
+}
 
 // Get total count
 $count_sql = "SELECT COUNT(*) as total FROM messages 
@@ -73,16 +91,23 @@ $count_sql = "SELECT COUNT(*) as total FROM messages
 $count_result = db_fetch_single($count_sql, [$group_id, $membership['joined_at']], 'is');
 $total_messages = (int)($count_result['total'] ?? 0);
 
-// Mark as read
-$mark_sql = "INSERT IGNORE INTO group_messages_read (group_id, message_id, user_id, read_at)
-             SELECT ?, m.id, ?, NOW()
-             FROM messages m
-             WHERE m.group_id = ? AND m.sender_id != ?
-             AND m.created_at > COALESCE(
-                 (SELECT MAX(read_at) FROM group_messages_read WHERE group_id = ? AND user_id = ?),
-                 ?
-             )";
-db_execute($mark_sql, [$group_id, $user_id, $group_id, $user_id, $group_id, $user_id, $membership['joined_at']], 'iiiiiss');
+// Mark as read (graceful if table missing)
+try {
+    $check_table = db_fetch_single("SHOW TABLES LIKE 'group_messages_read'", [], '');
+    if ($check_table) {
+        $mark_sql = "INSERT IGNORE INTO group_messages_read (group_id, message_id, user_id, read_at)
+                     SELECT ?, m.id, ?, NOW()
+                     FROM messages m
+                     WHERE m.group_id = ? AND m.sender_id != ?
+                     AND m.created_at > COALESCE(
+                         (SELECT MAX(read_at) FROM group_messages_read WHERE group_id = ? AND user_id = ?),
+                         ?
+                     )";
+        db_execute($mark_sql, [$group_id, $user_id, $group_id, $user_id, $group_id, $user_id, $membership['joined_at']], 'iiiiiss');
+    }
+} catch (Exception $e) {
+    // table doesn't exist, skip
+}
 
 // Get group members for mention suggestions
 $members_sql = "SELECT user_id, username FROM group_members gm 
@@ -111,10 +136,11 @@ foreach ($messages as $msg) {
         'sender_avatar' => $msg['sender_avatar'],
         'content' => $msg['is_deleted'] ? 'This message was deleted' : $msg['content'],
         'message_type' => $msg['message_type'],
+        'media_id' => $msg['media_id'] ? (int)$msg['media_id'] : null,
+        'media' => $msg['media_id'] ? ($media_map[(int)$msg['media_id']] ?? null) : null,
         'is_sender' => $is_sender,
         'is_deleted' => (bool)$msg['is_deleted'],
         'reply_to' => $reply_data,
-        'read_count' => (int)$msg['read_count'],
         'timestamp' => format_date($msg['created_at'], 'h:i A'),
         'date' => format_date($msg['created_at'], 'M d, Y')
     ];

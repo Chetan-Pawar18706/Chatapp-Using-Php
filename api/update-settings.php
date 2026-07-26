@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * Update Settings API
@@ -41,18 +42,17 @@ $show_status = isset($_POST['show_status']) ? 1 : null;
 
 // Notification settings
 $notify_messages = isset($_POST['notify_messages']) ? 1 : null;
-$notify_friends = isset($_POST['notify_friends']) ? 1 : null;
+$notify_friends = isset($_POST['notify_friend_requests']) ? 1 : null;
 $notify_groups = isset($_POST['notify_groups']) ? 1 : null;
 $notify_sound = isset($_POST['notify_sound']) ? 1 : null;
 $email_messages = isset($_POST['email_messages']) ? 1 : null;
-$email_digest = isset($_POST['email_digest']) ? 1 : null;
 $email_security = isset($_POST['email_security']) ? 1 : null;
 
 // Privacy settings
-$profile_visibility = $_POST['profile_visibility'] ?? null;
-$online_status = $_POST['online_status'] ?? null;
+$profile_visibility = $_POST['who_can_see_profile'] ?? null;
+$online_status = $_POST['who_can_see_status'] ?? null;
 $allow_friend_requests = isset($_POST['allow_friend_requests']) ? 1 : null;
-$allow_messages = isset($_POST['allow_messages']) ? 1 : null;
+$allow_messages = $_POST['who_can_message'] ?? null;
 $show_read_receipts = isset($_POST['show_read_receipts']) ? 1 : null;
 $show_typing = isset($_POST['show_typing']) ? 1 : null;
 
@@ -70,35 +70,28 @@ if ($theme !== null) {
     }
 }
 
+// Store all non-column settings in JSON settings column
+$extra_settings = [];
 if ($message_style !== null) {
     $valid_styles = ['bubbles', 'flat'];
     if (in_array($message_style, $valid_styles)) {
-        $updates[] = 'message_style = ?';
-        $params[] = $message_style;
-        $types .= 's';
+        $extra_settings['message_style'] = $message_style;
     }
 }
-
 if ($compact_mode !== null) {
-    $updates[] = 'compact_mode = ?';
-    $params[] = $compact_mode;
-    $types .= 'i';
+    $extra_settings['compact_mode'] = $compact_mode;
 }
-
 if ($show_status !== null) {
-    $updates[] = 'show_online_status = ?';
-    $params[] = $show_status;
-    $types .= 'i';
+    $extra_settings['show_online_status'] = $show_status;
 }
 
 // Notification settings (store as JSON in settings column)
 $notification_settings = [];
 if ($notify_messages !== null) $notification_settings['notify_messages'] = $notify_messages;
-if ($notify_friends !== null) $notification_settings['notify_friends'] = $notify_friends;
+if ($notify_friends !== null) $notification_settings['notify_friend_requests'] = $notify_friends;
 if ($notify_groups !== null) $notification_settings['notify_groups'] = $notify_groups;
 if ($notify_sound !== null) $notification_settings['notify_sound'] = $notify_sound;
 if ($email_messages !== null) $notification_settings['email_messages'] = $email_messages;
-if ($email_digest !== null) $notification_settings['email_digest'] = $email_digest;
 if ($email_security !== null) $notification_settings['email_security'] = $email_security;
 
 // Privacy settings
@@ -111,16 +104,16 @@ if ($show_read_receipts !== null) $privacy_settings['show_read_receipts'] = $sho
 if ($show_typing !== null) $privacy_settings['show_typing'] = $show_typing;
 
 // Store settings as JSON
-if (!empty($notification_settings) || !empty($privacy_settings)) {
+if (!empty($notification_settings) || !empty($privacy_settings) || !empty($extra_settings)) {
     // Get current settings
     $query = "SELECT settings FROM users WHERE id = ?";
     $stmt = mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt, 'i', $user_id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
-    $user = mysqli_fetch_assoc($result);
+    $current = mysqli_fetch_assoc($result);
     
-    $settings = json_decode($user['settings'] ?? '{}', true) ?: [];
+    $settings = json_decode($current['settings'] ?? '{}', true) ?: [];
     
     if (!empty($notification_settings)) {
         $settings['notifications'] = array_merge($settings['notifications'] ?? [], $notification_settings);
@@ -128,6 +121,10 @@ if (!empty($notification_settings) || !empty($privacy_settings)) {
     
     if (!empty($privacy_settings)) {
         $settings['privacy'] = array_merge($settings['privacy'] ?? [], $privacy_settings);
+    }
+    
+    if (!empty($extra_settings)) {
+        $settings = array_merge($settings, $extra_settings);
     }
     
     $updates[] = 'settings = ?';

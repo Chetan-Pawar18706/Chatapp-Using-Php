@@ -77,7 +77,7 @@ $csrf_token = session_generate_csrf();
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-lock"></i></span>
                             <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
-                            <span class="input-group-text" onclick="togglePasswordVisibility('password', 'toggleIcon')">
+                            <span class="input-group-text password-toggle" id="passwordToggle">
                                 <i class="fas fa-eye" id="toggleIcon"></i>
                             </span>
                         </div>

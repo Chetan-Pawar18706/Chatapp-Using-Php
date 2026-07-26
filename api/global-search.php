@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * Global Search API
@@ -11,14 +12,15 @@ define('APP_RUNNING', true);
 header('Content-Type: application/json');
 
 require_once dirname(__DIR__) . '/config/database.php';
+require_once dirname(__DIR__) . '/config/security.php';
+require_once dirname(__DIR__) . '/includes/security.php';
 require_once dirname(__DIR__) . '/config/session.php';
 require_once dirname(__DIR__) . '/includes/functions.php';
 require_once dirname(__DIR__) . '/includes/search_helpers.php';
 
-init_session();
+session_initialize();
 
-// Check if user is logged in
-if (!is_logged_in()) {
+if (!session_is_logged_in()) {
     send_json_response(401, ['success' => false, 'message' => 'Unauthorized']);
 }
 
@@ -32,7 +34,7 @@ if (strlen($query) < 2) {
     send_json_response(400, ['success' => false, 'message' => 'Search query must be at least 2 characters']);
 }
 
-$user_id = get_user_id();
+$user_id = session_get_user_id();
 
 // Build filters
 $filters = [

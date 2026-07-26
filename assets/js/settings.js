@@ -184,7 +184,7 @@ const SettingsModule = {
         const formData = new FormData(form);
         
         try {
-            const response = await fetch('api/update-profile.php', {
+            const response = await fetch('../api/update-profile.php', {
                 method: 'POST',
                 body: formData
             });
@@ -214,7 +214,7 @@ const SettingsModule = {
         formData.append('csrf_token', this.csrfToken);
         
         try {
-            const response = await fetch('api/update-settings.php', {
+            const response = await fetch('../api/update-settings.php', {
                 method: 'POST',
                 body: formData
             });
@@ -243,7 +243,7 @@ const SettingsModule = {
         const formData = new FormData(form);
         
         try {
-            const response = await fetch('api/change-password.php', {
+            const response = await fetch('../api/change-password.php', {
                 method: 'POST',
                 body: formData
             });
@@ -270,7 +270,7 @@ const SettingsModule = {
         const formData = new FormData(form);
         
         try {
-            const response = await fetch('api/update-settings.php', {
+            const response = await fetch('../api/update-settings.php', {
                 method: 'POST',
                 body: formData
             });
@@ -295,7 +295,7 @@ const SettingsModule = {
         const formData = new FormData(form);
         
         try {
-            const response = await fetch('api/update-settings.php', {
+            const response = await fetch('../api/update-settings.php', {
                 method: 'POST',
                 body: formData
             });
@@ -336,7 +336,7 @@ const SettingsModule = {
         formData.append('csrf_token', this.csrfToken);
         
         try {
-            const response = await fetch('api/upload-photo.php', {
+            const response = await fetch('../api/upload-photo.php', {
                 method: 'POST',
                 body: formData
             });
@@ -431,7 +431,7 @@ function closeModal(modalId) {
 function deactivateAccount() {
     const username = document.getElementById('deactivateConfirm').value;
     
-    fetch('api/deactivate-account.php', {
+    fetch('../api/deactivate-account.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -454,7 +454,7 @@ function deactivateAccount() {
 function deleteAccount() {
     const confirmText = document.getElementById('deleteConfirm').value;
     
-    fetch('api/delete-account.php', {
+    fetch('../api/delete-account.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'

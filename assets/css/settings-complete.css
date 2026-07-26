@@ -543,7 +543,7 @@
     font-size: 36px;
     font-weight: 600;
     color: white;
-    background: linear-gradient(135deg, var(--primary-color), #667eea);
+    background: linear-gradient(135deg, var(--primary), #667eea);
 }
 
 .avatar-actions {

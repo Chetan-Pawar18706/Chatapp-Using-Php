@@ -1,0 +1,1702 @@
+[24-Jul-2026 11:41:12 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: Cannot access offset of type string on string in C:\xampp\htdocs\chatapp\includes\security.php:141
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\session.php(230): Security->validateCSRFToken('7a214a3cff9ddd4...')
+#1 C:\xampp\htdocs\chatapp\api\register.php(51): session_validate_csrf('7a214a3cff9ddd4...')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\includes\security.php on line 141
+[24-Jul-2026 11:54:06 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\includes\search_helpers.php:199
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\includes\search_helpers.php(199): mysqli_stmt_bind_param(Object(mysqli_stmt), 'isiiii', 1, 'demo%', '%demo%', 1, 1, 1, 20)
+#1 C:\xampp\htdocs\chatapp\includes\search_helpers.php(416): search_messages('demo', 1, 20)
+#2 C:\xampp\htdocs\chatapp\api\global-search.php(46): global_search('demo', 1, Array)
+#3 {main}
+  thrown in C:\xampp\htdocs\chatapp\includes\search_helpers.php on line 199
+[26-Jul-2026 06:40:29 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: hash_equals(): Argument #1 ($known_string) must be of type string, array given in C:\xampp\htdocs\chatapp\config\session.php:242
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\session.php(242): hash_equals(Object(SensitiveParameterValue), Object(SensitiveParameterValue))
+#1 C:\xampp\htdocs\chatapp\includes\compat.php(51): session_validate_csrf('ab5a0b95c0bfb30...')
+#2 C:\xampp\htdocs\chatapp\api\recent-searches.php(46): verify_csrf_token('ab5a0b95c0bfb30...')
+#3 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\session.php on line 242
+[26-Jul-2026 06:40:29 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: hash_equals(): Argument #1 ($known_string) must be of type string, array given in C:\xampp\htdocs\chatapp\config\session.php:242
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\session.php(242): hash_equals(Object(SensitiveParameterValue), Object(SensitiveParameterValue))
+#1 C:\xampp\htdocs\chatapp\includes\compat.php(51): session_validate_csrf('ab5a0b95c0bfb30...')
+#2 C:\xampp\htdocs\chatapp\api\recent-searches.php(46): verify_csrf_token('ab5a0b95c0bfb30...')
+#3 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\session.php on line 242
+[26-Jul-2026 06:50:36 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: hash_equals(): Argument #1 ($known_string) must be of type string, array given in C:\xampp\htdocs\chatapp\config\session.php:242
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\session.php(242): hash_equals(Object(SensitiveParameterValue), Object(SensitiveParameterValue))
+#1 C:\xampp\htdocs\chatapp\includes\compat.php(51): session_validate_csrf('<br />\n<b>Warni...')
+#2 C:\xampp\htdocs\chatapp\api\update-profile.php(31): verify_csrf_token('<br />\n<b>Warni...')
+#3 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\session.php on line 242
+[26-Jul-2026 06:50:43 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: hash_equals(): Argument #1 ($known_string) must be of type string, array given in C:\xampp\htdocs\chatapp\config\session.php:242
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\session.php(242): hash_equals(Object(SensitiveParameterValue), Object(SensitiveParameterValue))
+#1 C:\xampp\htdocs\chatapp\includes\compat.php(51): session_validate_csrf('<br />\n<b>Warni...')
+#2 C:\xampp\htdocs\chatapp\api\update-profile.php(31): verify_csrf_token('<br />\n<b>Warni...')
+#3 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\session.php on line 242
+[26-Jul-2026 06:50:44 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: hash_equals(): Argument #1 ($known_string) must be of type string, array given in C:\xampp\htdocs\chatapp\config\session.php:242
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\session.php(242): hash_equals(Object(SensitiveParameterValue), Object(SensitiveParameterValue))
+#1 C:\xampp\htdocs\chatapp\includes\compat.php(51): session_validate_csrf('<br />\n<b>Warni...')
+#2 C:\xampp\htdocs\chatapp\api\update-profile.php(31): verify_csrf_token('<br />\n<b>Warni...')
+#3 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\session.php on line 242
+[26-Jul-2026 08:01:08 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:01:10 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:01:23 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:01:26 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:01:28 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:01:30 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:01:32 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:01:34 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:03:02 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:03:05 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:03:10 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:03:12 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:03:42 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:03:44 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:05:10 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:05:13 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:05:22 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:05:26 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:05:30 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:05:38 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:06:21 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:06:25 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:07:20 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 08:07:22 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 09:11:15 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:15 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:17 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:19 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:21 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:23 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:25 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:27 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:29 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:32 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:34 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:36 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:38 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:40 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:42 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:44 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:46 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:48 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:52 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:54 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:56 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:11:58 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:00 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:11 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:11 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:13 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:18 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:20 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:22 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:24 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:25 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:26 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:28 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:30 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:32 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:34 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:36 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:38 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:40 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:42 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:44 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:49 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:12:50 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:38:46 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:38:48 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:38:50 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:38:52 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:38:54 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:38:56 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:38:58 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:00 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:04 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:06 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:16 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:20 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:22 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:24 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:27 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:28 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:30 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:35 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:36 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:38 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:40 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:42 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:44 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:47 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:48 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:50 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:53 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:54 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:39:56 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:40:00 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:40:23 Europe/Berlin] PHP Fatal error:  Uncaught ArgumentCountError: The number of elements in the type definition string must match the number of bind variables in C:\xampp\htdocs\chatapp\config\database.php:124
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(124): mysqli_stmt->bind_param('iisii', 1, '2026-07-26 12:4...', 50, 0)
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT \n       ...', Array, 'iisii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT \n       ...', Array, 'iisii')
+#3 C:\xampp\htdocs\chatapp\api\get-group-messages.php(69): db_fetch_all('SELECT \n       ...', Array, 'iisii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 124
+[26-Jul-2026 09:57:03 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: CONSTRAINT `activity_log.details` failed for `chatapp_db`.`activity_log` in C:\xampp\htdocs\chatapp\includes\compat.php:277
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\includes\compat.php(277): mysqli_stmt_execute(Object(mysqli_stmt))
+#1 C:\xampp\htdocs\chatapp\api\upload-photo.php(144): log_activity(5, 'photo_upload', 'Updated avatar ...')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\includes\compat.php on line 277
+[26-Jul-2026 09:57:22 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: CONSTRAINT `activity_log.details` failed for `chatapp_db`.`activity_log` in C:\xampp\htdocs\chatapp\includes\compat.php:277
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\includes\compat.php(277): mysqli_stmt_execute(Object(mysqli_stmt))
+#1 C:\xampp\htdocs\chatapp\api\upload-photo.php(144): log_activity(5, 'photo_upload', 'Updated avatar ...')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\includes\compat.php on line 277
+[26-Jul-2026 09:57:27 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Data truncated for column 'status' at row 1 in C:\xampp\htdocs\chatapp\api\update-profile.php:137
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\api\update-profile.php(137): mysqli_stmt_execute(Object(mysqli_stmt))
+#1 {main}
+  thrown in C:\xampp\htdocs\chatapp\api\update-profile.php on line 137
+[26-Jul-2026 09:57:29 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Data truncated for column 'status' at row 1 in C:\xampp\htdocs\chatapp\api\update-profile.php:137
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\api\update-profile.php(137): mysqli_stmt_execute(Object(mysqli_stmt))
+#1 {main}
+  thrown in C:\xampp\htdocs\chatapp\api\update-profile.php on line 137
+[26-Jul-2026 10:12:22 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: CONSTRAINT `activity_log.details` failed for `chatapp_db`.`activity_log` in C:\xampp\htdocs\chatapp\includes\compat.php:277
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\includes\compat.php(277): mysqli_stmt_execute(Object(mysqli_stmt))
+#1 C:\xampp\htdocs\chatapp\api\export-data.php(70): log_activity(5, 'data_export', 'Exported all da...')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\includes\compat.php on line 277
+[26-Jul-2026 10:33:12 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 10:33:15 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 10:33:15 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'auto_delete' in 'field list' in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('INSERT INTO mes...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('INSERT INTO mes...', Array, 'iiisss')
+#2 C:\xampp\htdocs\chatapp\api\send-message.php(134): db_execute('INSERT INTO mes...', Array, 'iiisss')
+#3 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 10:33:20 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'auto_delete' in 'field list' in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('INSERT INTO mes...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('INSERT INTO mes...', Array, 'iiisss')
+#2 C:\xampp\htdocs\chatapp\api\send-message.php(134): db_execute('INSERT INTO mes...', Array, 'iiisss')
+#3 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:10:35 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:10:45 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:10:45 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:10:47 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:10:49 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:11:58 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:11:59 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:19:34 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:19:36 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:19:38 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:19:40 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:19:42 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:19:44 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:19:46 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 11:19:46 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:19:47 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'auto_delete' in 'field list' in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('INSERT INTO mes...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('INSERT INTO mes...', Array, 'iiisss')
+#2 C:\xampp\htdocs\chatapp\api\send-message.php(134): db_execute('INSERT INTO mes...', Array, 'iiisss')
+#3 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:19:48 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 11:19:48 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:19:50 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 11:19:50 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:19:52 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(48): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 11:19:52 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:19:53 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'auto_delete' in 'field list' in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('INSERT INTO mes...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('INSERT INTO mes...', Array, 'iiisss')
+#2 C:\xampp\htdocs\chatapp\api\send-message.php(134): db_execute('INSERT INTO mes...', Array, 'iiisss')
+#3 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:19:54 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:19:56 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:19:58 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:20:00 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:21:58 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:21:59 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:22:02 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:22:04 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:22:06 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:22:08 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:22:10 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:22:12 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:22:14 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:22:16 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:22:18 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:22:30 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:22:48 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:23:00 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:26:24 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:27:13 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:28:13 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'chatapp_db.message_reactions' doesn't exist in C:\xampp\htdocs\chatapp\config\database.php:102
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(102): mysqli->prepare('SELECT message_...')
+#1 C:\xampp\htdocs\chatapp\config\database.php(143): db_prepare('SELECT message_...', Array, 'iiiiiii')
+#2 C:\xampp\htdocs\chatapp\config\database.php(190): db_execute('SELECT message_...', Array, 'iiiiiii')
+#3 C:\xampp\htdocs\chatapp\api\get-messages.php(110): db_fetch_all('SELECT message_...', Array, 'iiiiiii')
+#4 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 102
+[26-Jul-2026 11:41:48 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: CONSTRAINT `activity_log.details` failed for `chatapp_db`.`activity_log` in C:\xampp\htdocs\chatapp\includes\compat.php:277
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\includes\compat.php(277): mysqli_stmt_execute(Object(mysqli_stmt))
+#1 C:\xampp\htdocs\chatapp\api\upload-photo.php(144): log_activity(5, 'photo_upload', 'Updated avatar ...')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\includes\compat.php on line 277
+[26-Jul-2026 11:47:11 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(64): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 11:47:14 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(64): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 11:55:29 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: CONSTRAINT `activity_log.details` failed for `chatapp_db`.`activity_log` in C:\xampp\htdocs\chatapp\includes\compat.php:277
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\includes\compat.php(277): mysqli_stmt_execute(Object(mysqli_stmt))
+#1 C:\xampp\htdocs\chatapp\api\upload-photo.php(144): log_activity(5, 'photo_upload', 'Updated avatar ...')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\includes\compat.php on line 277
+[26-Jul-2026 11:55:33 Europe/Berlin] PHP Warning:  Undefined variable $status in C:\xampp\htdocs\chatapp\api\update-profile.php on line 176
+[26-Jul-2026 11:56:03 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: CONSTRAINT `activity_log.details` failed for `chatapp_db`.`activity_log` in C:\xampp\htdocs\chatapp\includes\compat.php:277
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\includes\compat.php(277): mysqli_stmt_execute(Object(mysqli_stmt))
+#1 C:\xampp\htdocs\chatapp\api\upload-photo.php(144): log_activity(5, 'photo_upload', 'Updated avatar ...')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\includes\compat.php on line 277
+[26-Jul-2026 12:01:47 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Data truncated for column 'category' at row 1 in C:\xampp\htdocs\chatapp\api\upload-media.php:166
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\api\upload-media.php(166): mysqli_stmt_execute(Object(mysqli_stmt))
+#1 {main}
+  thrown in C:\xampp\htdocs\chatapp\api\upload-media.php on line 166
+[26-Jul-2026 15:28:38 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(64): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 15:28:40 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(64): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 15:29:16 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Data truncated for column 'category' at row 1 in C:\xampp\htdocs\chatapp\api\upload-media.php:171
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\api\upload-media.php(171): mysqli_stmt_execute(Object(mysqli_stmt))
+#1 {main}
+  thrown in C:\xampp\htdocs\chatapp\api\upload-media.php on line 171
+[26-Jul-2026 15:32:03 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: CONSTRAINT `activity_log.details` failed for `chatapp_db`.`activity_log` in C:\xampp\htdocs\chatapp\includes\compat.php:277
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\includes\compat.php(277): mysqli_stmt_execute(Object(mysqli_stmt))
+#1 C:\xampp\htdocs\chatapp\api\upload-photo.php(172): log_activity(5, 'photo_upload', 'Updated avatar ...')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\includes\compat.php on line 277
+[26-Jul-2026 15:32:09 Europe/Berlin] PHP Warning:  Undefined variable $status in C:\xampp\htdocs\chatapp\api\update-profile.php on line 176
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:43 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:41:44 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:43:14 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:54:36 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Data truncated for column 'category' at row 1 in C:\xampp\htdocs\chatapp\api\upload-media.php:171
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\api\upload-media.php(171): mysqli_stmt_execute(Object(mysqli_stmt))
+#1 {main}
+  thrown in C:\xampp\htdocs\chatapp\api\upload-media.php on line 171
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:25 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 15:55:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:00:33 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(64): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 16:00:36 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(64): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 16:00:39 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(64): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 16:00:41 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(64): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 16:05:58 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(64): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 16:06:00 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect integer value: '' for column `chatapp_db`.`typing_status`.`is_typing` at row 1 in C:\xampp\htdocs\chatapp\config\database.php:148
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(148): mysqli_stmt->execute()
+#1 C:\xampp\htdocs\chatapp\api\update-typing.php(64): db_execute('INSERT INTO typ...', Array, 'iib')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 148
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:27 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:28 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:30 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:08:57 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:04 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:09:07 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:19 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:22 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:29:23 Europe/Berlin] PHP Warning:  Undefined array key "field" in C:\xampp\htdocs\chatapp\api\update-profile.php on line 49
+[26-Jul-2026 16:36:17 Europe/Berlin] Prepare Error: Unknown column 'from_user_id' in 'field list'

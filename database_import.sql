@@ -612,11 +612,11 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 -- Default Super Admin (Password: Admin@123)
 INSERT INTO `admin_users` (`username`, `email`, `password`, `full_name`, `role`) VALUES
-('superadmin', 'admin@chatapp.com', '$2y$12$LJ3m4ys3Lz0YbY1.xTqKq.xKzQKxKxKxKxKxKxKxKxKxKxKxKx', 'System Administrator', 'super_admin');
+('superadmin', 'admin@chatapp.com', '$2y$10$YaoxJ4DEIjFQy3V5jvYOneAhQ7rzCf98Sw.bLTGTqcLrwuxUh94w6', 'System Administrator', 'super_admin');
 
 -- Default Demo User (Password: User@123)
 INSERT INTO `users` (`username`, `email`, `password`, `friend_code`, `status`, `email_verified`) VALUES
-('demo', 'demo@chatapp.com', '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'USR-DEMO01', 'active', 1);
+('demo', 'demo@chatapp.com', '$2y$10$Q/LHn4H5CGJ3btRxDBZr..ugbzKXJ7nGzVM6vW0phi0wtrnG1n6ey', 'USR-DEMO01', 'active', 1);
 
 -- Default System Settings
 INSERT INTO `system_settings` (`setting_key`, `setting_value`, `setting_type`, `description`) VALUES

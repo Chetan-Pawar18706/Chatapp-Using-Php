@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * API: User Registration
@@ -18,12 +19,6 @@ require_once __DIR__ . '/../includes/functions.php';
 
 // Initialize session
 session_initialize();
-
-// Send security headers
-if (class_exists('Security')) {
-    $security = Security::getInstance();
-    $security->sendSecurityHeaders();
-}
 
 // Only accept POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

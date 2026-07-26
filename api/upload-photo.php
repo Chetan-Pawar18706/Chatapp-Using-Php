@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * Upload Profile Photo API
@@ -43,6 +44,34 @@ if (!check_rate_limit('photo_upload_' . $user_id, 5, 60)) {
 $type = $_POST['type'] ?? 'avatar';
 if (!in_array($type, ['avatar', 'cover'])) {
     send_json_response(400, ['success' => false, 'message' => 'Invalid upload type']);
+}
+
+// Handle avatar removal
+if (isset($_POST['remove']) && $_POST['remove'] == '1' && $type === 'avatar') {
+    $user_query = "SELECT avatar FROM users WHERE id = ?";
+    $user_stmt = mysqli_prepare($conn, $user_query);
+    mysqli_stmt_bind_param($user_stmt, 'i', $user_id);
+    mysqli_stmt_execute($user_stmt);
+    $user_result = mysqli_stmt_get_result($user_stmt);
+    $user = mysqli_fetch_assoc($user_result);
+    
+    // Delete old avatar file
+    if (!empty($user['avatar']) && file_exists(dirname(__DIR__) . '/' . $user['avatar'])) {
+        unlink(dirname(__DIR__) . '/' . $user['avatar']);
+    }
+    
+    // Set avatar to NULL
+    $query = "UPDATE users SET avatar = NULL, updated_at = NOW() WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, 'i', $user_id);
+    
+    if (mysqli_stmt_execute($stmt)) {
+        log_activity($user_id, 'photo_remove', 'Removed avatar');
+        send_json_response(200, ['success' => true, 'message' => 'Avatar removed successfully']);
+    } else {
+        send_json_response(500, ['success' => false, 'message' => 'Failed to remove avatar']);
+    }
+    exit;
 }
 
 // Check if file was uploaded
@@ -111,8 +140,8 @@ if (!move_uploaded_file($file['tmp_name'], $filePath)) {
 // Set permissions
 chmod($filePath, 0644);
 
-// Get relative path
-$relativePath = 'storage/uploads/avatars/' . $uniqueFilename;
+// Get relative path (with ../ for pages in /pages/ directory)
+$relativePath = '../storage/uploads/avatars/' . $uniqueFilename;
 
 // Get current user info to delete old photo
 $user_query = "SELECT avatar, cover_photo FROM users WHERE id = ?";

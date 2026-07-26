@@ -21,7 +21,9 @@ const Chat = {
     pollingInterval: null,
     typingTimeout: null,
     isTyping: false,
-    searchTimeout: null
+    searchTimeout: null,
+    selectedFile: null,
+    autoDelete: 'none'
 };
 
 // =====================================================
@@ -52,6 +54,9 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeContextMenu();
     initializeSearch();
     initializeBackButton();
+    initializeFileUpload();
+    initializeChatMenu();
+    initializeAutoDelete();
     
     // Load chat list
     loadChatList();
@@ -68,6 +73,20 @@ document.addEventListener('DOMContentLoaded', function() {
 // =====================================================
 // Chat List Functions
 // =====================================================
+function initializeChatList() {
+    const searchInput = document.getElementById('chatSearchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim().toLowerCase();
+            const items = document.querySelectorAll('#chatList .chat-item');
+            items.forEach(item => {
+                const name = item.querySelector('.chat-name span')?.textContent.toLowerCase() || '';
+                item.style.display = name.includes(query) ? '' : 'none';
+            });
+        });
+    }
+}
+
 async function loadChatList() {
     const result = await ChatApp.apiRequest('/chat-list.php', 'GET');
     
@@ -116,7 +135,7 @@ function createChatListItem(chat) {
         <div class="chat-item ${Chat.selectedUserId == chat.user_id ? 'active' : ''}" 
              data-user-id="${chat.user_id}" onclick="openChat(${chat.user_id})">
             <div class="chat-avatar">
-                <div class="user-avatar">${chat.username.charAt(0).toUpperCase()}</div>
+                ${renderAvatar(chat.avatar, chat.username)}
                 <span class="status-dot ${chat.is_online ? 'online' : 'offline'}"></span>
             </div>
             <div class="chat-info">
@@ -143,8 +162,10 @@ async function openChat(userId) {
     Chat.messages = [];
     
     // Update UI
-    document.getElementById('emptyChat').style.display = 'none';
-    document.getElementById('activeChat').style.display = 'flex';
+    var emptyChatEl = document.getElementById('emptyChat');
+    var activeChatEl = document.getElementById('activeChat');
+    if (emptyChatEl) emptyChatEl.style.display = 'none';
+    if (activeChatEl) activeChatEl.style.display = 'flex';
     
     // Update sidebar active state
     document.querySelectorAll('.chat-item').forEach(item => {
@@ -181,11 +202,21 @@ async function loadChatUserInfo(userId) {
     if (result.success && result.data) {
         const user = result.data;
         
-        document.getElementById('chatAvatar').textContent = user.username.charAt(0).toUpperCase();
-        document.getElementById('chatUsername').textContent = user.username;
+        var chatAvatarEl = document.getElementById('chatAvatar');
+        var chatUsernameEl = document.getElementById('chatUsername');
+        if (chatAvatarEl) {
+            var avatarParent = chatAvatarEl.parentNode;
+            if (user.avatar) {
+                avatarParent.innerHTML = '<img src="' + user.avatar + '" alt="' + escapeHtml(user.username) + '" class="user-avatar-img">' +
+                    '<span class="status-dot" id="chatStatusDot"></span>';
+            } else {
+                chatAvatarEl.textContent = user.username.charAt(0).toUpperCase();
+            }
+        }
+        if (chatUsernameEl) chatUsernameEl.textContent = user.username;
         
         const statusDot = document.getElementById('chatStatusDot');
-        statusDot.className = `status-dot ${user.is_online ? 'online' : 'offline'}`;
+        if (statusDot) statusDot.className = `status-dot ${user.is_online ? 'online' : 'offline'}`;
         
         const statusText = document.getElementById('chatUserStatus');
         if (user.is_typing) {
@@ -270,6 +301,24 @@ function createMessageBubble(msg) {
         `;
     }
     
+    // Handle uploading state
+    if (msg.message_type === 'uploading') {
+        return `
+            <div class="message ${messageClass}" data-message-id="${msg.id}">
+                <div class="message-bubble">
+                    <div class="message-text">${escapeHtml(msg.content)}</div>
+                    <div class="upload-progress-bar">
+                        <div class="upload-progress-fill"></div>
+                    </div>
+                    <div class="message-meta">
+                        <span class="message-time">${msg.timestamp}</span>
+                        <i class="fas fa-spinner fa-spin message-status uploading"></i>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
     // Reply content
     let replyHtml = '';
     if (msg.reply_to) {
@@ -281,6 +330,30 @@ function createMessageBubble(msg) {
         `;
     }
     
+    // Media content
+    let mediaHtml = '';
+    if (msg.media_id && msg.media) {
+        const media = msg.media;
+        if (media.is_image) {
+            mediaHtml = `<div class="message-media"><img src="../api/preview-media.php?id=${media.id}" alt="${escapeHtml(media.original_name)}" loading="lazy" onclick="window.open('../api/preview-media.php?id=${media.id}', '_blank')"></div>`;
+        } else if (media.is_video) {
+            mediaHtml = `<div class="message-media"><video controls preload="metadata"><source src="../api/preview-media.php?id=${media.id}" type="${escapeHtml(media.file_type)}"></video></div>`;
+        } else {
+            const iconMap = { pdf: 'fa-file-pdf', doc: 'fa-file-word', docx: 'fa-file-word', xls: 'fa-file-excel', xlsx: 'fa-file-excel', ppt: 'fa-file-powerpoint', pptx: 'fa-file-powerpoint', txt: 'fa-file-alt', zip: 'fa-file-archive', rar: 'fa-file-archive', '7z': 'fa-file-archive' };
+            const ext = media.file_extension || '';
+            const iconClass = iconMap[ext] || 'fa-file';
+            mediaHtml = `
+                <div class="message-media document-attachment" onclick="window.open('../api/preview-media.php?id=${media.id}', '_blank')">
+                    <div class="doc-icon"><i class="fas ${iconClass}"></i></div>
+                    <div class="doc-info">
+                        <div class="doc-name">${escapeHtml(media.original_name)}</div>
+                        <div class="doc-size">${media.file_size_formatted || ''}</div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
     // Message status icon
     let statusHtml = '';
     if (isSender && msg.status) {
@@ -289,18 +362,84 @@ function createMessageBubble(msg) {
         statusHtml = `<i class="fas ${statusIcon} message-status ${msg.status}"></i>`;
     }
     
+    // Reactions
+    let reactionsHtml = '';
+    if (msg.reactions && msg.reactions.length > 0) {
+        const reactionItems = msg.reactions.map(r => 
+            `<button class="reaction-chip ${r.reacted ? 'reacted' : ''}" onclick="toggleReaction(${msg.id}, '${r.emoji}')" title="${r.count} reaction${r.count > 1 ? 's' : ''}">${r.emoji} <span>${r.count > 1 ? r.count : ''}</span></button>`
+        ).join('');
+        reactionsHtml = `<div class="message-reactions">${reactionItems}</div>`;
+    }
+    
     return `
         <div class="message ${messageClass}" data-message-id="${msg.id}">
-            <div class="message-bubble" oncontextmenu="showContextMenu(event, ${msg.id})" onclick="hideContextMenu()">
+            <div class="message-bubble" oncontextmenu="showContextMenu(event, ${msg.id})" onclick="hideContextMenu()" ondblclick="showReactionPicker(event, ${msg.id})">
                 ${replyHtml}
-                <div class="message-text">${formatMessageContent(msg.content)}</div>
+                ${mediaHtml}
+                ${msg.content ? `<div class="message-text">${formatMessageContent(msg.content)}</div>` : ''}
                 <div class="message-meta">
                     <span class="message-time">${msg.timestamp}</span>
                     ${statusHtml}
                 </div>
             </div>
+            ${reactionsHtml}
         </div>
     `;
+}
+
+function removeUploadPlaceholder(uploadId) {
+    const el = document.querySelector(`.message[data-message-id="${uploadId}"]`);
+    if (el) el.remove();
+}
+
+// =====================================================
+// Message Reactions
+// =====================================================
+const QUICK_REACTIONS = ['👍', '❤️', '😂', '😮', '😢', '🙏', '🔥', '👏'];
+
+function showReactionPicker(event, messageId) {
+    event.stopPropagation();
+    hideReactionPicker();
+    
+    const picker = document.createElement('div');
+    picker.className = 'reaction-picker';
+    picker.id = 'reactionPicker';
+    picker.innerHTML = QUICK_REACTIONS.map(e => 
+        `<button class="reaction-option" onclick="toggleReaction(${messageId}, '${e}')">${e}</button>`
+    ).join('');
+    
+    document.body.appendChild(picker);
+    
+    const msgEl = document.querySelector(`.message[data-message-id="${messageId}"] .message-bubble`);
+    if (msgEl) {
+        const rect = msgEl.getBoundingClientRect();
+        picker.style.left = Math.min(rect.left, window.innerWidth - 280) + 'px';
+        picker.style.top = (rect.top - 48) + 'px';
+    }
+    
+    setTimeout(() => {
+        document.addEventListener('click', hideReactionPicker, { once: true });
+    }, 10);
+}
+
+function hideReactionPicker() {
+    const p = document.getElementById('reactionPicker');
+    if (p) p.remove();
+}
+
+async function toggleReaction(messageId, emoji) {
+    hideReactionPicker();
+    
+    const result = await ChatApp.apiRequest('/toggle-reaction.php', 'POST', {
+        message_id: messageId,
+        emoji: emoji,
+        csrf_token: CHAT_CONFIG.csrfToken
+    });
+    
+    if (result.success) {
+        // Refresh messages to show updated reactions
+        loadMessages(Chat.selectedUserId);
+    }
 }
 
 function formatMessageContent(content) {
@@ -373,49 +512,226 @@ function initializeMessageInput() {
     }
 }
 
+// =====================================================
+// Auto-Delete Timer
+// =====================================================
+function initializeAutoDelete() {
+    const btn = document.getElementById('autoDeleteBtn');
+    const dropdown = document.getElementById('autoDeleteDropdown');
+    
+    if (btn && dropdown) {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target) && e.target !== btn) {
+                dropdown.style.display = 'none';
+            }
+        });
+        
+        dropdown.querySelectorAll('.auto-delete-option').forEach(function(opt) {
+            opt.addEventListener('click', function() {
+                dropdown.querySelectorAll('.auto-delete-option').forEach(function(o) { o.classList.remove('active'); });
+                this.classList.add('active');
+                Chat.autoDelete = this.dataset.value;
+                
+                if (Chat.autoDelete !== 'none') {
+                    btn.classList.add('active-timer');
+                } else {
+                    btn.classList.remove('active-timer');
+                }
+                dropdown.style.display = 'none';
+            });
+        });
+    }
+}
+
+// =====================================================
+// File Upload
+// =====================================================
+function initializeFileUpload() {
+    const attachBtn = document.getElementById('attachBtn');
+    const fileInput = document.getElementById('fileInput');
+    const filePreviewBar = document.getElementById('filePreviewBar');
+    const filePreviewContent = document.getElementById('filePreviewContent');
+    const filePreviewClose = document.getElementById('filePreviewClose');
+    const sendBtn = document.getElementById('sendBtn');
+
+    if (attachBtn && fileInput) {
+        attachBtn.addEventListener('click', function() {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                Chat.selectedFile = this.files[0];
+                showFilePreview(this.files[0]);
+                sendBtn.disabled = false;
+            }
+        });
+    }
+
+    if (filePreviewClose) {
+        filePreviewClose.addEventListener('click', clearFileSelection);
+    }
+
+    // Drag & Drop
+    const messagesContainer = document.getElementById('messagesContainer');
+    if (messagesContainer) {
+        messagesContainer.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.add('drag-over');
+        });
+        messagesContainer.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+        });
+        messagesContainer.addEventListener('drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.remove('drag-over');
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                Chat.selectedFile = e.dataTransfer.files[0];
+                showFilePreview(e.dataTransfer.files[0]);
+                sendBtn.disabled = false;
+            }
+        });
+    }
+}
+
+function showFilePreview(file) {
+    const bar = document.getElementById('filePreviewBar');
+    const content = document.getElementById('filePreviewContent');
+    if (!bar || !content) return;
+
+    let preview = '';
+    if (file.type.startsWith('image/')) {
+        const url = URL.createObjectURL(file);
+        preview = `<img src="${url}" alt="Preview" class="file-preview-thumb">`;
+    } else if (file.type.startsWith('video/')) {
+        preview = `<i class="fas fa-file-video file-preview-icon video"></i>`;
+    } else {
+        const ext = file.name.split('.').pop().toLowerCase();
+        let iconClass = 'fa-file';
+        if (ext === 'pdf') iconClass = 'fa-file-pdf';
+        else if (['doc', 'docx'].includes(ext)) iconClass = 'fa-file-word';
+        else if (['xls', 'xlsx'].includes(ext)) iconClass = 'fa-file-excel';
+        else if (['zip', 'rar', '7z'].includes(ext)) iconClass = 'fa-file-archive';
+        preview = `<i class="fas ${iconClass} file-preview-icon doc"></i>`;
+    }
+
+    const sizeStr = formatFileSize(file.size);
+    content.innerHTML = `
+        ${preview}
+        <div class="file-preview-info">
+            <span class="file-preview-name">${escapeHtml(file.name)}</span>
+            <span class="file-preview-size">${sizeStr}</span>
+        </div>
+    `;
+    bar.style.display = 'flex';
+}
+
+function clearFileSelection() {
+    Chat.selectedFile = null;
+    const bar = document.getElementById('filePreviewBar');
+    const fileInput = document.getElementById('fileInput');
+    if (bar) bar.style.display = 'none';
+    if (fileInput) fileInput.value = '';
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
 async function sendMessage() {
     const input = document.getElementById('messageInput');
     const content = input.value.trim();
-    
-    if (!content || !Chat.selectedUserId) return;
-    
-    const messageData = {
-        receiver_id: Chat.selectedUserId,
-        content: content,
-        message_type: 'text',
-        csrf_token: CHAT_CONFIG.csrfToken
-    };
-    
-    // Add reply_to if set
-    if (Chat.replyToMessage) {
-        messageData.reply_to_id = Chat.replyToMessage.id;
-    }
-    
+    const file = Chat.selectedFile;
+
+    if (!content && !file) return;
+    if (!Chat.selectedUserId) return;
+
+    const hasFile = !!file;
+
     // Clear input immediately
     input.value = '';
     input.style.height = 'auto';
     document.getElementById('sendBtn').disabled = true;
-    
-    // Cancel reply
+    clearFileSelection();
     cancelReply();
-    
-    // Send request
-    const result = await ChatApp.apiRequest('/send-message.php', 'POST', messageData);
-    
-    if (result.success && result.data) {
-        // Add message to UI
-        appendMessage(result.data.message);
-        
-        // Update chat list
-        updateChatListLastMessage(Chat.selectedUserId, content);
-        
-        // Scroll to bottom
+
+    if (hasFile) {
+        // Show uploading state
+        const uploadId = 'upload-' + Date.now();
+        appendMessage({
+            id: uploadId,
+            content: content || file.name,
+            message_type: 'uploading',
+            is_sender: true,
+            is_deleted: false,
+            timestamp: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+            upload_progress: 0
+        });
         scrollToBottom();
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('receiver_id', Chat.selectedUserId);
+        formData.append('message', content);
+        formData.append('csrf_token', CHAT_CONFIG.csrfToken);
+        if (Chat.replyToMessage) {
+            formData.append('reply_to', Chat.replyToMessage.id);
+        }
+
+        try {
+            const result = await ChatApp.apiRequest('/send-message-media.php', 'POST', formData, true);
+            if (result.success && result.data) {
+                // Remove uploading placeholder, add real message
+                removeUploadPlaceholder(uploadId);
+                appendMessage(result.data.message);
+                updateChatListLastMessage(Chat.selectedUserId, content || file.name);
+            } else {
+                removeUploadPlaceholder(uploadId);
+                input.value = content;
+                ChatApp.showToast(result.message || 'Failed to send file', 'error');
+            }
+        } catch (e) {
+            removeUploadPlaceholder(uploadId);
+            input.value = content;
+            ChatApp.showToast('Failed to send file', 'error');
+        }
     } else {
-        // Show error and restore input
-        input.value = content;
-        ChatApp.showToast(result.message || 'Failed to send message', 'error');
+        const messageData = {
+            receiver_id: Chat.selectedUserId,
+            content: content,
+            message_type: 'text',
+            auto_delete: Chat.autoDelete,
+            csrf_token: CHAT_CONFIG.csrfToken
+        };
+
+        if (Chat.replyToMessage) {
+            messageData.reply_to_id = Chat.replyToMessage.id;
+        }
+
+        const result = await ChatApp.apiRequest('/send-message.php', 'POST', messageData);
+
+        if (result.success && result.data) {
+            appendMessage(result.data.message);
+            updateChatListLastMessage(Chat.selectedUserId, content);
+        } else {
+            input.value = content;
+            ChatApp.showToast(result.message || 'Failed to send message', 'error');
+        }
     }
+
+    scrollToBottom();
 }
 
 function appendMessage(msg) {
@@ -455,7 +771,8 @@ function replyToMessage(messageId) {
 
 function cancelReply() {
     Chat.replyToMessage = null;
-    document.getElementById('replyPreview').style.display = 'none';
+    var replyPreview = document.getElementById('replyPreview');
+    if (replyPreview) replyPreview.style.display = 'none';
 }
 
 // =====================================================
@@ -580,6 +897,7 @@ function showContextMenu(event, messageId) {
     showDeleteOptions(messageId);
     
     const menu = document.getElementById('contextMenu');
+    if (!menu) return;
     menu.style.display = 'block';
     
     // Position menu
@@ -590,7 +908,8 @@ function showContextMenu(event, messageId) {
 }
 
 function hideContextMenu() {
-    document.getElementById('contextMenu').style.display = 'none';
+    var menu = document.getElementById('contextMenu');
+    if (menu) menu.style.display = 'none';
 }
 
 // =====================================================
@@ -748,15 +1067,16 @@ async function updateTypingStatus(isTyping) {
 
 function showTypingIndicator(username) {
     const indicator = document.getElementById('typingIndicator');
+    if (!indicator) return;
     const avatar = indicator.querySelector('.typing-avatar');
-    
-    avatar.textContent = username.charAt(0).toUpperCase();
+    if (avatar) avatar.textContent = username.charAt(0).toUpperCase();
     indicator.style.display = 'flex';
     scrollToBottom();
 }
 
 function hideTypingIndicator() {
-    document.getElementById('typingIndicator').style.display = 'none';
+    var indicator = document.getElementById('typingIndicator');
+    if (indicator) indicator.style.display = 'none';
 }
 
 // =====================================================
@@ -890,6 +1210,171 @@ function scrollToMessage(messageId) {
 }
 
 // =====================================================
+// Chat Menu (3-dots dropdown)
+// =====================================================
+function initializeChatMenu() {
+    const menuBtn = document.getElementById('chatMenuBtn');
+    const dropdown = document.getElementById('chatDropdownMenu');
+    
+    if (menuBtn && dropdown) {
+        menuBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target) && e.target !== menuBtn) {
+                dropdown.style.display = 'none';
+            }
+        });
+    }
+
+    // View Profile
+    document.getElementById('menuViewProfile')?.addEventListener('click', function() {
+        if (Chat.selectedUserId) {
+            window.open('profile.php?user_id=' + Chat.selectedUserId, '_blank');
+        }
+        dropdown.style.display = 'none';
+    });
+
+    // Chat Info
+    document.getElementById('menuChatInfo')?.addEventListener('click', function() {
+        if (Chat.selectedUserId) {
+            loadChatInfo(Chat.selectedUserId);
+        }
+        dropdown.style.display = 'none';
+    });
+
+    // Search Messages (from dropdown)
+    document.getElementById('menuSearchMessages')?.addEventListener('click', function() {
+        const searchBar = document.getElementById('chatSearchBar');
+        const searchInput = document.getElementById('messageSearchInput');
+        if (searchBar) {
+            searchBar.style.display = 'block';
+            if (searchInput) searchInput.focus();
+        }
+        dropdown.style.display = 'none';
+    });
+
+    // Clear Chat
+    document.getElementById('menuClearChat')?.addEventListener('click', async function() {
+        if (!confirm('Clear all messages in this chat? This cannot be undone.')) return;
+        
+        const result = await ChatApp.apiRequest('/clear-chat.php', 'POST', {
+            user_id: Chat.selectedUserId,
+            csrf_token: CHAT_CONFIG.csrfToken
+        });
+        
+        if (result.success) {
+            document.getElementById('messagesList').innerHTML = '';
+            Chat.messages = [];
+            ChatApp.showToast('Chat cleared', 'success');
+        } else {
+            ChatApp.showToast(result.message || 'Failed to clear chat', 'error');
+        }
+        dropdown.style.display = 'none';
+    });
+
+    // Block User
+    document.getElementById('menuBlockUser')?.addEventListener('click', async function() {
+        if (!confirm('Block this user? They won\'t be able to send you messages.')) return;
+        
+        const result = await ChatApp.apiRequest('/block-user.php', 'POST', {
+            user_id: Chat.selectedUserId,
+            csrf_token: CHAT_CONFIG.csrfToken
+        });
+        
+        if (result.success) {
+            ChatApp.showToast('User blocked', 'success');
+        } else {
+            ChatApp.showToast(result.message || 'Failed to block user', 'error');
+        }
+        dropdown.style.display = 'none';
+    });
+
+    // Close chat info panel
+    document.getElementById('closeChatInfo')?.addEventListener('click', function() {
+        document.getElementById('chatInfoPanel').style.display = 'none';
+        document.getElementById('activeChat').style.display = 'flex';
+    });
+}
+
+async function loadChatInfo(userId) {
+    const result = await ChatApp.apiRequest(`/chat-user-info.php?user_id=${userId}`, 'GET');
+    
+    if (result.success && result.data) {
+        const user = result.data;
+        const profileEl = document.getElementById('chatInfoProfile');
+        const statsEl = document.getElementById('chatInfoStats');
+        
+        if (profileEl) {
+            profileEl.innerHTML = `
+                <div class="info-avatar">${user.avatar ? `<img src="${user.avatar}" alt="${escapeHtml(user.username)}">` : `<span class="avatar-initials">${user.username.charAt(0).toUpperCase()}</span>`}</div>
+                <h3>${escapeHtml(user.username)}</h3>
+                <p class="user-bio">${escapeHtml(user.bio || 'No bio')}</p>
+                <p class="user-status-text">${user.is_online ? 'Online' : 'Last seen ' + user.last_seen}</p>
+            `;
+        }
+        
+        // Count messages
+        const msgCount = Chat.messages.length;
+        const mediaCount = Chat.messages.filter(m => m.media_id).length;
+        
+        if (statsEl) {
+            statsEl.innerHTML = `
+                <div class="info-stat-row"><span>Messages</span><strong>${msgCount}</strong></div>
+                <div class="info-stat-row"><span>Media Shared</span><strong>${mediaCount}</strong></div>
+                <div class="info-stat-row"><span>Chat Started</span><strong>${Chat.messages.length > 0 ? Chat.messages[0].date : 'N/A'}</strong></div>
+                
+                <div class="info-section">
+                    <h4>Auto-Delete Messages</h4>
+                    <p class="info-section-desc">Set default auto-delete for new messages in this chat</p>
+                    <div class="auto-delete-settings">
+                        <button class="auto-delete-setting ${Chat.autoDelete === 'none' ? 'active' : ''}" data-value="none" onclick="setChatAutoDelete('none')">
+                            <i class="fas fa-infinity"></i> Keep forever
+                        </button>
+                        <button class="auto-delete-setting ${Chat.autoDelete === '24hours' ? 'active' : ''}" data-value="24hours" onclick="setChatAutoDelete('24hours')">
+                            <i class="fas fa-clock"></i> 24 hours
+                        </button>
+                        <button class="auto-delete-setting ${Chat.autoDelete === '7days' ? 'active' : ''}" data-value="7days" onclick="setChatAutoDelete('7days')">
+                            <i class="fas fa-clock"></i> 7 days
+                        </button>
+                        <button class="auto-delete-setting ${Chat.autoDelete === '30days' ? 'active' : ''}" data-value="30days" onclick="setChatAutoDelete('30days')">
+                            <i class="fas fa-clock"></i> 30 days
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        document.getElementById('chatInfoPanel').style.display = 'flex';
+        document.getElementById('activeChat').style.display = 'none';
+    }
+}
+
+function setChatAutoDelete(value) {
+    Chat.autoDelete = value;
+    
+    // Update UI in chat info panel
+    document.querySelectorAll('.auto-delete-setting').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.value === value);
+    });
+    
+    // Update input area button
+    const btn = document.getElementById('autoDeleteBtn');
+    if (btn) {
+        btn.classList.toggle('active-timer', value !== 'none');
+    }
+    
+    // Update dropdown selection
+    document.querySelectorAll('#autoDeleteDropdown .auto-delete-option').forEach(opt => {
+        opt.classList.toggle('active', opt.dataset.value === value);
+    });
+    
+    ChatApp.showToast('Auto-delete updated for this chat', 'success');
+}
+
+// =====================================================
 // Chat List Updates
 // =====================================================
 function updateChatListLastMessage(userId, content) {
@@ -913,9 +1398,12 @@ function updateChatListLastMessage(userId, content) {
 // =====================================================
 function initializeBackButton() {
     document.getElementById('backToList')?.addEventListener('click', function() {
-        document.getElementById('chatSidebar').classList.remove('hidden');
-        document.getElementById('activeChat').style.display = 'none';
-        document.getElementById('emptyChat').style.display = 'flex';
+        var chatSidebarEl = document.getElementById('chatSidebar');
+        var activeChatEl = document.getElementById('activeChat');
+        var emptyChatEl = document.getElementById('emptyChat');
+        if (chatSidebarEl) chatSidebarEl.classList.remove('hidden');
+        if (activeChatEl) activeChatEl.style.display = 'none';
+        if (emptyChatEl) emptyChatEl.style.display = 'flex';
         Chat.selectedUserId = null;
     });
     

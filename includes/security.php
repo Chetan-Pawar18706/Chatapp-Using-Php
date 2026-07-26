@@ -31,13 +31,7 @@ class Security {
     }
     
     private function __construct() {
-        // Use db_connect() to get the connection
-        if (function_exists('db_connect')) {
-            $this->db = db_connect();
-        } else {
-            global $conn;
-            $this->db = $conn;
-        }
+        $this->db = db_connect();
     }
     
     /**
@@ -84,10 +78,10 @@ class Security {
         $csp = [
             "default-src 'self'",
             "script-src 'self' 'nonce-{$nonce}' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
-            "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com",
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com",
             "img-src 'self' data: blob: https:",
-            "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com",
-            "connect-src 'self'",
+            "font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com https://cdn.jsdelivr.net",
+            "connect-src 'self' https://cdn.jsdelivr.net",
             "media-src 'self'",
             "object-src 'none'",
             "frame-ancestors 'self'",
@@ -143,14 +137,18 @@ class Security {
             return false;
         }
         
-        // Check expiry
-        if (time() - $storedToken['created'] > CSRF_TOKEN_EXPIRY) {
-            unset($_SESSION[CSRF_TOKEN_NAME]);
-            return false;
+        // Handle both formats: plain string (fallback) and array with expiry (Security class)
+        if (is_array($storedToken)) {
+            // Array format from Security class: ['token' => ..., 'created' => ...]
+            if (time() - ($storedToken['created'] ?? 0) > CSRF_TOKEN_EXPIRY) {
+                unset($_SESSION[CSRF_TOKEN_NAME]);
+                return false;
+            }
+            return hash_equals($storedToken['token'] ?? '', $inputToken);
+        } else {
+            // Plain string format from fallback
+            return hash_equals((string)$storedToken, $inputToken);
         }
-        
-        // Compare tokens (timing-safe)
-        return hash_equals($storedToken['token'], $inputToken);
     }
     
     /**
@@ -208,6 +206,17 @@ class Security {
             mysqli_stmt_execute($stmt);
         }
         
+        return true;
+    }
+    
+    /**
+     * Clear rate limit for an identifier (call on successful action)
+     */
+    public function clearRateLimit($identifier, $action) {
+        $query = "DELETE FROM rate_limits WHERE ip_address = ? AND action_type = ?";
+        $stmt = mysqli_prepare($this->db, $query);
+        mysqli_stmt_bind_param($stmt, 'ss', $identifier, $action);
+        mysqli_stmt_execute($stmt);
         return true;
     }
     
@@ -275,8 +284,9 @@ class Security {
                   WHERE identifier = ? 
                   AND attempted_at > DATE_SUB(NOW(), INTERVAL ? SECOND)";
         
+        $window = LOGIN_ATTEMPT_WINDOW;
         $stmt = mysqli_prepare($this->db, $query);
-        mysqli_stmt_bind_param($stmt, 'si', $identifier, LOGIN_ATTEMPT_WINDOW);
+        mysqli_stmt_bind_param($stmt, 'si', $identifier, $window);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $row = mysqli_fetch_assoc($result);
@@ -307,8 +317,9 @@ class Security {
                   VALUES (?, NOW(), DATE_ADD(NOW(), INTERVAL ? SECOND))
                   ON DUPLICATE KEY UPDATE locked_until = DATE_ADD(NOW(), INTERVAL ? SECOND)";
         
+        $duration = LOGIN_LOCKOUT_DURATION;
         $stmt = mysqli_prepare($this->db, $query);
-        mysqli_stmt_bind_param($stmt, 'sii', $identifier, LOGIN_LOCKOUT_DURATION, LOGIN_LOCKOUT_DURATION);
+        mysqli_stmt_bind_param($stmt, 'sii', $identifier, $duration, $duration);
         mysqli_stmt_execute($stmt);
     }
     
@@ -431,8 +442,9 @@ class Security {
                   ORDER BY created_at DESC 
                   LIMIT ?";
         
+        $historyCount = PASSWORD_HISTORY_COUNT;
         $stmt = mysqli_prepare($this->db, $query);
-        mysqli_stmt_bind_param($stmt, 'ii', $userId, PASSWORD_HISTORY_COUNT);
+        mysqli_stmt_bind_param($stmt, 'ii', $userId, $historyCount);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         
@@ -1014,7 +1026,7 @@ class Security {
      * Log security event
      */
     public function logSecurityEvent($event, $details = []) {
-        global $conn;
+        $conn = db_connect();
         
         $query = "INSERT INTO security_log (event, ip_address, user_agent, user_id, details, created_at) 
                   VALUES (?, ?, ?, ?, ?, NOW())";

@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/_init.php';
 /**
  * =====================================================
  * Media Upload API
@@ -62,13 +63,9 @@ if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
 
 $file = $_FILES['file'];
 
-// Get receiver ID or group ID
-$receiver_id = intval($_POST['receiver_id'] ?? 0);
-$group_id = intval($_POST['group_id'] ?? 0);
-
-if ($receiver_id <= 0 && $group_id <= 0) {
-    send_json_response(400, ['success' => false, 'message' => 'Invalid receiver or group']);
-}
+// Get receiver ID or group ID (optional for gallery uploads)
+$receiver_id = !empty($_POST['receiver_id']) ? intval($_POST['receiver_id']) : null;
+$group_id = !empty($_POST['group_id']) ? intval($_POST['group_id']) : null;
 
 // Get file extension
 $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
@@ -127,6 +124,11 @@ if (!is_dir($storagePath)) {
     mkdir($storagePath, 0755, true);
 }
 
+// Ensure thumbnail directory exists
+if (!is_dir(THUMBNAIL_PATH)) {
+    mkdir(THUMBNAIL_PATH, 0755, true);
+}
+
 $filePath = $storagePath . '/' . $uniqueFilename;
 
 // Move uploaded file
@@ -152,7 +154,7 @@ $query = "INSERT INTO media (user_id, file_name, original_name, file_path, thumb
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
 $stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, 'issssssiiis',
+mysqli_stmt_bind_param($stmt, 'isssssssiii',
     $user_id,
     $uniqueFilename,
     $file['name'],
