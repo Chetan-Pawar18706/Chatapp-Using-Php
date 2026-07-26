@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeNavigation();
     initializeFriendCode();
     initializeAddFriend();
-    initializeSettings();
     initializeSearch();
     
     // Load dashboard data
@@ -34,41 +33,58 @@ document.addEventListener('DOMContentLoaded', function() {
 // Sidebar Functions
 // =====================================================
 function initializeSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    const sidebarClose = document.getElementById('sidebarClose');
-    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    var sidebar = document.getElementById("sidebar");
+    var sidebarToggle = document.getElementById("sidebarToggle");
+    var sidebarClose = document.getElementById("sidebarClose");
+    var sidebarOverlay = document.getElementById("sidebarOverlay");
     
-    // Toggle sidebar on mobile
+    function isMobile() {
+        return window.innerWidth <= 768;
+    }
+    
     if (sidebarToggle) {
-        sidebarToggle.addEventListener('click', function() {
-            sidebar.classList.add('show');
-            sidebarOverlay.classList.add('show');
-            document.body.style.overflow = 'hidden';
+        sidebarToggle.addEventListener("click", function() {
+            if (isMobile()) {
+                sidebar.classList.add("show");
+                sidebarOverlay.classList.add("show");
+                document.body.style.overflow = "hidden";
+            } else {
+                sidebar.classList.toggle("collapsed");
+                localStorage.setItem("sidebar_collapsed", sidebar.classList.contains("collapsed") ? "1" : "0");
+            }
         });
     }
     
-    // Close sidebar
     function closeSidebar() {
-        sidebar.classList.remove('show');
-        sidebarOverlay.classList.remove('show');
-        document.body.style.overflow = '';
+        sidebar.classList.remove("show");
+        sidebarOverlay.classList.remove("show");
+        document.body.style.overflow = "";
     }
     
     if (sidebarClose) {
-        sidebarClose.addEventListener('click', closeSidebar);
+        sidebarClose.addEventListener("click", closeSidebar);
     }
     
     if (sidebarOverlay) {
-        sidebarOverlay.addEventListener('click', closeSidebar);
+        sidebarOverlay.addEventListener("click", closeSidebar);
+    }
+    
+    // Restore sidebar state
+    if (!isMobile()) {
+        var saved = localStorage.getItem("sidebar_collapsed");
+        if (saved === "1") {
+            sidebar.classList.add("collapsed");
+        } else if (saved === "0") {
+            sidebar.classList.remove("collapsed");
+        }
     }
     
     // Handle logout
-    const logoutBtns = document.querySelectorAll('[data-action="logout"]');
-    logoutBtns.forEach(btn => {
-        btn.addEventListener('click', function(e) {
+    var logoutBtns = document.querySelectorAll("[data-action=\"logout\"]");
+    logoutBtns.forEach(function(btn) {
+        btn.addEventListener("click", function(e) {
             e.preventDefault();
-            if (confirm('Are you sure you want to logout?')) {
+            if (confirm("Are you sure you want to logout?")) {
                 handleLogout();
             }
         });
@@ -102,53 +118,75 @@ function initializeNavbar() {
 // Navigation Functions
 // =====================================================
 function initializeNavigation() {
-    // Sidebar navigation
-    const navItems = document.querySelectorAll('.nav-item[data-section]');
-    navItems.forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
-            const section = this.dataset.section;
-            navigateToSection(section);
-        });
-    });
-    
-    // View all links
-    const viewAllLinks = document.querySelectorAll('.view-all[data-section]');
-    viewAllLinks.forEach(link => {
+    // Handle sidebar link clicks (shared sidebar uses href like dashboard.php#friends)
+    document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function(e) {
+            var href = this.getAttribute('href') || '';
+            var hashIndex = href.indexOf('#');
+            if (hashIndex !== -1) {
+                var hash = href.substring(hashIndex + 1);
+                if (hash && document.getElementById('section-' + hash)) {
+                    e.preventDefault();
+                    window.location.hash = hash;
+                    navigateToSection(hash);
+                }
+            }
+        });
+    });
+    
+    // Handle old data-section nav items
+    var navItems = document.querySelectorAll('.nav-item[data-section]');
+    navItems.forEach(function(item) {
+        item.addEventListener('click', function(e) {
             e.preventDefault();
-            const section = this.dataset.section;
+            var section = this.dataset.section;
             navigateToSection(section);
         });
     });
     
-    // Dropdown menu items
-    const dropdownItems = document.querySelectorAll('.dropdown-item[data-section]');
-    dropdownItems.forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
-            const section = this.dataset.section;
-            navigateToSection(section);
-            document.getElementById('userDropdown').classList.remove('show');
-        });
+    // Handle hashchange
+    window.addEventListener('hashchange', function() {
+        var hash = window.location.hash.replace('#', '');
+        if (hash && document.getElementById('section-' + hash)) {
+            navigateToSection(hash);
+        }
     });
+    
+    // On page load, navigate to hash section if present
+    var initialHash = window.location.hash.replace('#', '');
+    if (initialHash && document.getElementById('section-' + initialHash)) {
+        navigateToSection(initialHash);
+    }
 }
 
 function navigateToSection(sectionName) {
     // Update active nav item
-    document.querySelectorAll('.nav-item').forEach(item => {
+    document.querySelectorAll('.nav-item').forEach(function(item) {
         item.classList.remove('active');
     });
-    const activeNavItem = document.querySelector(`.nav-item[data-section="${sectionName}"]`);
+    
+    // Try data-section first (old dashboard nav)
+    var activeNavItem = document.querySelector('.nav-item[data-section="' + sectionName + '"]');
+    
+    // If not found, try matching by href (shared sidebar)
+    if (!activeNavItem) {
+        document.querySelectorAll('.nav-link').forEach(function(link) {
+            var href = link.getAttribute('href') || '';
+            if (href.indexOf('#' + sectionName) !== -1) {
+                activeNavItem = link.closest('.nav-item');
+            }
+        });
+    }
+    
     if (activeNavItem) {
         activeNavItem.classList.add('active');
     }
     
     // Show/hide sections
-    document.querySelectorAll('.content-section').forEach(section => {
+    document.querySelectorAll('.content-section').forEach(function(section) {
         section.classList.remove('active');
     });
-    const activeSection = document.getElementById(`section-${sectionName}`);
+    var activeSection = document.getElementById('section-' + sectionName);
     if (activeSection) {
         activeSection.classList.add('active');
     }

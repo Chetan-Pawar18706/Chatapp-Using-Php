@@ -1045,30 +1045,44 @@ class Security {
 /**
  * Global security helper functions
  */
-function security() {
-    return Security::getInstance();
+if (!function_exists('security')) {
+    function security() {
+        return Security::getInstance();
+    }
 }
 
-function csrf_token() {
-    return security()->getCSRFToken();
+if (!function_exists('csrf_token')) {
+    function csrf_token() {
+        return security()->getCSRFToken();
+    }
 }
 
-function csrf_field() {
-    return security()->csrfField();
+if (!function_exists('csrf_field')) {
+    function csrf_field() {
+        return security()->csrfField();
+    }
 }
 
-function csrf_verify($token = null) {
-    return security()->validateCSRFToken($token);
+if (!function_exists('csrf_verify')) {
+    function csrf_verify($token = null) {
+        return security()->validateCSRFToken($token);
+    }
 }
 
-function sanitize($input, $type = 'string') {
-    return security()->sanitizeInput($input, $type);
+if (!function_exists('sanitize')) {
+    function sanitize($input, $type = 'string') {
+        return security()->sanitizeInput($input, $type);
+    }
 }
 
-function escape($input) {
-    return security()->escape($input);
+if (!function_exists('escape')) {
+    function escape($input) {
+        return security()->escape($input);
+    }
 }
 
-function is_rate_limited($identifier, $action) {
-    return !security()->checkRateLimit($identifier, $action);
+if (!function_exists('is_rate_limited')) {
+    function is_rate_limited($identifier, $action) {
+        return !security()->checkRateLimit($identifier, $action);
+    }
 }

@@ -24,10 +24,10 @@ function render_sidebar($active_page, $user_data, $user_id) {
     
     $nav_items = [
         ['page' => 'dashboard', 'icon' => 'fa-home', 'label' => 'Dashboard', 'url' => 'dashboard.php'],
-        ['page' => 'chat', 'icon' => 'fa-message', 'label' => 'Chats', 'url' => 'chat.php'],
-        ['page' => 'friends', 'icon' => 'fa-user-group', 'label' => 'Friends', 'url' => 'dashboard.php#friends'],
-        ['page' => 'requests', 'icon' => 'fa-user-plus', 'label' => 'Requests', 'url' => 'dashboard.php#requests'],
-        ['page' => 'groups', 'icon' => 'fa-people-group', 'label' => 'Groups', 'url' => 'dashboard.php#groups'],
+        ['page' => 'chats', 'icon' => 'fa-message', 'label' => 'Chats', 'url' => 'chat.php'],
+        ['page' => 'friends', 'icon' => 'fa-user-group', 'label' => 'Friends', 'url' => 'dashboard.php', 'section' => 'friends'],
+        ['page' => 'requests', 'icon' => 'fa-user-plus', 'label' => 'Requests', 'url' => 'dashboard.php', 'section' => 'requests'],
+        ['page' => 'groups', 'icon' => 'fa-people-group', 'label' => 'Groups', 'url' => 'dashboard.php', 'section' => 'groups'],
         ['page' => 'group-chat', 'icon' => 'fa-people-group', 'label' => 'Group Chat', 'url' => 'group-chat.php'],
         ['page' => 'notifications', 'icon' => 'fa-bell', 'label' => 'Notifications', 'url' => 'notifications.php'],
         ['page' => 'media', 'icon' => 'fa-photo-film', 'label' => 'Media', 'url' => 'media.php'],
@@ -60,8 +60,12 @@ function render_sidebar($active_page, $user_data, $user_id) {
     
     foreach ($nav_items as $item) {
         $active_class = ($item['page'] === $active_page) ? ' active' : '';
+        $url = $item['url'];
+        if (isset($item['section'])) {
+            $url .= '#' . $item['section'];
+        }
         $html .= '<li class="nav-item' . $active_class . '">
-                    <a href="' . $item['url'] . '" class="nav-link">
+                    <a href="' . $url . '" class="nav-link">
                         <i class="fas ' . $item['icon'] . '"></i>
                         <span>' . $item['label'] . '</span>
                     </a>
@@ -151,11 +155,20 @@ function render_sidebar_scripts() {
         var navbarAvatar = document.getElementById("navbarAvatar");
         var userDropdown = document.getElementById("userDropdown");
         
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+        
         if (sidebarToggle) {
             sidebarToggle.addEventListener("click", function() {
-                sidebar.classList.add("show");
-                sidebarOverlay.classList.add("show");
-                document.body.style.overflow = "hidden";
+                if (isMobile()) {
+                    sidebar.classList.add("show");
+                    sidebarOverlay.classList.add("show");
+                    document.body.style.overflow = "hidden";
+                } else {
+                    sidebar.classList.toggle("collapsed");
+                    localStorage.setItem("sidebar_collapsed", sidebar.classList.contains("collapsed") ? "1" : "0");
+                }
             });
         }
         
@@ -167,6 +180,16 @@ function render_sidebar_scripts() {
         
         if (sidebarClose) sidebarClose.addEventListener("click", closeSidebar);
         if (sidebarOverlay) sidebarOverlay.addEventListener("click", closeSidebar);
+        
+        // Restore sidebar state
+        if (!isMobile()) {
+            var saved = localStorage.getItem("sidebar_collapsed");
+            if (saved === "1") {
+                sidebar.classList.add("collapsed");
+            } else if (saved === "0") {
+                sidebar.classList.remove("collapsed");
+            }
+        }
         
         if (navbarAvatar && userDropdown) {
             navbarAvatar.addEventListener("click", function(e) {

@@ -9,8 +9,11 @@
 define('APP_RUNNING', true);
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/security.php';
 require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/security.php';
+require_once __DIR__ . '/../includes/sidebar.php';
 require_once __DIR__ . '/../includes/notification_helpers.php';
 require_once __DIR__ . '/../includes/notification_component.php';
 
@@ -54,116 +57,8 @@ $csrf_token = session_generate_csrf();
     <link href="../assets/css/notifications.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-logo">
-                <span class="logo-icon">
-                    <i class="fas fa-comments"></i>
-                </span>
-                <span class="logo-text">ChatApp</span>
-            </div>
-            <button class="sidebar-close" id="sidebarClose">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <!-- User Profile Mini -->
-        <div class="sidebar-user">
-            <div id="sidebarAvatar">
-                <?php echo render_avatar_html($user_data['avatar'] ?? null, $user_data['username'] ?? 'User'); ?>
-            </div>
-            <div class="user-info">
-                <div class="user-name"><?php echo htmlspecialchars($user_data['username'] ?? 'User'); ?></div>
-                <div class="user-status">
-                    <span class="status-dot online"></span>
-                    <span>Online</span>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Navigation Menu -->
-        <nav class="sidebar-nav">
-            <ul class="nav-list">
-                <li class="nav-item active" data-section="dashboard">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-home"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item" data-section="chats">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-message"></i>
-                        <span>Chats</span>
-                        <span class="badge" id="unreadBadge">0</span>
-                    </a>
-                </li>
-                <li class="nav-item" data-section="friends">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-user-group"></i>
-                        <span>Friends</span>
-                    </a>
-                </li>
-                <li class="nav-item" data-section="requests">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-user-plus"></i>
-                        <span>Requests</span>
-                        <span class="badge" id="requestBadge">0</span>
-                    </a>
-                </li>
-                <li class="nav-item" data-section="groups">
-                    <a href="#" class="nav-link">
-                        <i class="fas fa-people-group"></i>
-                        <span>Groups</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="chat.php" class="nav-link">
-                        <i class="fas fa-message"></i>
-                        <span>Open Chat</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="group-chat.php" class="nav-link">
-                        <i class="fas fa-people-group"></i>
-                        <span>Group Chat</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="notifications.php" class="nav-link">
-                        <i class="fas fa-bell"></i>
-                        <span>Notifications</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="media.php" class="nav-link">
-                        <i class="fas fa-photo-film"></i>
-                        <span>Media</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="search.php" class="nav-link">
-                        <i class="fas fa-search"></i>
-                        <span>Search</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="settings.php" class="nav-link">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        
-        <!-- Sidebar Footer -->
-        <div class="sidebar-footer">
-            <a href="#" class="nav-link logout-btn" data-action="logout">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-            </a>
-        </div>
-    </aside>
+    <!-- Sidebar (shared component) -->
+    <?php echo render_sidebar('dashboard', $user_data, $user_id); ?>
     
     <!-- Sidebar Overlay -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>

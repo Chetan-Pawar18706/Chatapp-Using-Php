@@ -51,6 +51,7 @@ $sql = "SELECT
             (ts.user_id = ? AND ts.chat_with_user_id = u.id)
         )
         WHERE u.id != ? AND u.status = 'active'
+        GROUP BY u.id
         ORDER BY u.is_online DESC, u.username ASC";
 
 $friends = db_fetch_all($sql, [$user_id, $user_id, $user_id, $user_id, $user_id], 'iiiii');
