@@ -569,6 +569,7 @@ a:hover {
     justify-content: space-between;
     padding: 0 1.5rem;
     z-index: 100;
+    overflow: visible;
 }
 
 .navbar-left {
@@ -885,8 +886,16 @@ a:hover {
     to { opacity: 1; }
 }
 
+/* =====================================================
+   Section Header (enhanced)
+   ===================================================== */
 .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .section-header h2 {
@@ -894,6 +903,18 @@ a:hover {
     font-weight: 600;
     color: var(--text-white);
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-header h2 i {
+    color: var(--primary-light);
+}
+
+.section-header .btn {
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
 }
 
 /* =====================================================

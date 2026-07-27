@@ -240,7 +240,8 @@ const MediaModule = {
                     this.onUploadError(progressId, response.message);
                 }
             } else {
-                this.onUploadError(progressId, 'Upload failed');
+                console.error('Upload error response:', xhr.status, xhr.responseText);
+                this.onUploadError(progressId, 'Upload failed: ' + (xhr.responseText || xhr.statusText));
             }
         });
         
@@ -433,7 +434,7 @@ const MediaModule = {
         
         if (data.is_image) {
             item.innerHTML = `
-                <img src="../api/preview-media.php?id=${data.id}" alt="${this.escapeHtml(data.original_name)}">
+                <img src="/chatapp/api/preview-media.php?id=${data.id}" alt="${this.escapeHtml(data.original_name)}">
                 <div class="file-info">
                     <div class="file-name">${this.escapeHtml(data.original_name)}</div>
                     <div class="file-size">${data.file_size_formatted}</div>
@@ -442,7 +443,7 @@ const MediaModule = {
         } else if (data.is_video) {
             item.innerHTML = `
                 <video class="video-thumbnail" preload="metadata">
-                    <source src="../api/preview-media.php?id=${data.id}" type="${data.file_type}">
+                    <source src="/chatapp/api/preview-media.php?id=${data.id}" type="${data.file_type}">
                 </video>
                 <div class="play-overlay">
                     <i class="fas fa-play-circle"></i>
@@ -486,11 +487,11 @@ const MediaModule = {
         const mediaContainer = lightbox.querySelector('.lightbox-media');
         
         if (data.is_image) {
-            mediaContainer.innerHTML = `<img src="../api/preview-media.php?id=${data.id}" alt="${this.escapeHtml(data.original_name)}">`;
+            mediaContainer.innerHTML = `<img src="/chatapp/api/preview-media.php?id=${data.id}" alt="${this.escapeHtml(data.original_name)}">`;
         } else if (data.is_video) {
             mediaContainer.innerHTML = `
                 <video controls autoplay>
-                    <source src="../api/preview-media.php?id=${data.id}" type="${data.file_type}">
+                    <source src="/chatapp/api/preview-media.php?id=${data.id}" type="${data.file_type}">
                     Your browser does not support video playback.
                 </video>
             `;

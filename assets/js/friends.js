@@ -27,6 +27,7 @@ function initializeFriendSystem() {
     initializeFriendsFilter();
     initializeRequestTabs();
     initializeTypingStatus();
+    initializeAddFriendForm();
     
     // Load friends data
     loadFriends();
@@ -568,6 +569,69 @@ async function updateDashboardStats() {
         
         if (statFriends) statFriends.textContent = stats.friends;
         if (statRequests) statRequests.textContent = stats.requests;
+    }
+}
+
+// =====================================================
+// Add Friend Form (for standalone pages)
+// =====================================================
+function initializeAddFriendForm() {
+    const addFriendBtn = document.getElementById('addFriendBtn');
+    const friendCodeInput = document.getElementById('friendCodeInput');
+    
+    if (addFriendBtn && friendCodeInput) {
+        addFriendBtn.addEventListener('click', async function() {
+            const friendCode = friendCodeInput.value.trim();
+            
+            if (!friendCode) {
+                showAddFriendAlert('Please enter a friend code', 'error');
+                return;
+            }
+            
+            // Validate format
+            if (!/^[A-Z]{3}-[A-Z0-9]{6}$/.test(friendCode)) {
+                showAddFriendAlert('Invalid format. Use: XXX-XXXXXX', 'error');
+                return;
+            }
+            
+            addFriendBtn.disabled = true;
+            addFriendBtn.innerHTML = '<span class="spinner"></span> Sending...';
+            
+            const result = await ChatApp.apiRequest('/add-friend.php', 'POST', {
+                friend_code: friendCode,
+                csrf_token: APP_CONFIG.csrfToken
+            });
+            
+            addFriendBtn.disabled = false;
+            addFriendBtn.innerHTML = '<i class="fas fa-user-plus"></i> Add Friend';
+            
+            if (result.success) {
+                showAddFriendAlert(result.message, 'success');
+                friendCodeInput.value = '';
+                ChatApp.showToast(result.message, 'success');
+            } else {
+                showAddFriendAlert(result.message, 'error');
+            }
+        });
+        
+        // Enter key support
+        friendCodeInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addFriendBtn.click();
+            }
+        });
+    }
+}
+
+function showAddFriendAlert(message, type) {
+    const alert = document.getElementById('addFriendAlert');
+    if (alert) {
+        alert.className = `alert alert-${type} show`;
+        alert.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>${message}`;
+        
+        setTimeout(() => {
+            alert.classList.remove('show');
+        }, 5000);
     }
 }
 

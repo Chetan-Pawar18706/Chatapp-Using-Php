@@ -172,9 +172,18 @@ const NotificationModule = {
         
         const icon = this.getIcon(type);
         const color = this.getColor(type);
-        const avatar = sender_avatar 
-            ? `<img src="${sender_avatar}" alt="${sender_username}">`
-            : `<div class="avatar-initials small">${(sender_username || 'S').substring(0, 2).toUpperCase()}</div>`;
+        const initials = (sender_username || 'S').substring(0, 2).toUpperCase();
+        
+        let avatarHtml;
+        if (sender_avatar && sender_avatar.trim() !== '') {
+            avatarHtml = `
+                <img src="${sender_avatar}" alt="${sender_username}" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="avatar-initials" style="display:none;">${initials}</div>
+            `;
+        } else {
+            avatarHtml = `<div class="avatar-initials">${initials}</div>`;
+        }
         
         const actionUrl = this.getActionUrl(type, data);
         
@@ -185,7 +194,7 @@ const NotificationModule = {
                  onclick="NotificationModule.handleClick(${id}, '${actionUrl}')">
                 
                 <div class="notification-avatar ${color}">
-                    ${avatar}
+                    ${avatarHtml}
                     <span class="type-icon">
                         <i class="fas ${icon}"></i>
                     </span>

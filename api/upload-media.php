@@ -17,6 +17,7 @@ header('Content-Type: application/json');
 require_once dirname(__DIR__) . '/config/database.php';
 require_once dirname(__DIR__) . '/config/session.php';
 require_once dirname(__DIR__) . '/includes/functions.php';
+require_once dirname(__DIR__) . '/includes/compat.php';
 require_once dirname(__DIR__) . '/config/media.php';
 
 // Start session
@@ -84,6 +85,9 @@ if (!$category) {
     send_json_response(400, ['success' => false, 'message' => 'Invalid file category']);
 }
 
+error_log("Upload Debug: extension=$extension, category=$category, category_type=" . gettype($category));
+error_log("Upload Debug: category_hex=" . bin2hex($category) . ", receiver_id=" . var_export($receiver_id, true) . ", group_id=" . var_export($group_id, true) . ", file_size=" . $file['size']);
+
 // Check file size
 $maxSize = SIZE_LIMITS[$category] ?? MAX_FILE_SIZE;
 if ($file['size'] > $maxSize) {
@@ -94,9 +98,28 @@ if ($file['size'] > $maxSize) {
 }
 
 // Validate MIME type
-$finfo = finfo_open(FILEINFO_MIME_TYPE);
-$mimeType = finfo_file($finfo, $file['tmp_name']);
-finfo_close($finfo);
+$finfo = @finfo_open(FILEINFO_MIME_TYPE);
+$mimeType = $finfo ? @finfo_file($finfo, $file['tmp_name']) : 'application/octet-stream';
+if ($finfo) finfo_close($finfo);
+
+if ($mimeType === 'application/octet-stream' || $mimeType === 'application/x-empty') {
+    $fallbackMimes = [
+        'pdf' => 'application/pdf',
+        'doc' => 'application/msword',
+        'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'xls' => 'application/vnd.ms-excel',
+        'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheet.sheet',
+        'ppt' => 'application/vnd.ms-powerpoint',
+        'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'txt' => 'text/plain',
+        'zip' => 'application/zip',
+        'rar' => 'application/x-rar-compressed',
+        '7z' => 'application/x-7z-compressed',
+    ];
+    $mimeType = $fallbackMimes[$extension] ?? $mimeType;
+}
+
+error_log("upload-media: ext=$extension, mime=$mimeType, allowed=" . (is_mime_allowed($mimeType, $category) ? 'yes' : 'no'));
 
 if (!is_mime_allowed($mimeType, $category)) {
     send_json_response(400, [
@@ -153,25 +176,15 @@ $thumbnailRelativePath = $thumbnailPath ? 'storage/thumbnails/thumb_' . $uniqueF
 $query = "INSERT INTO media (user_id, file_name, original_name, file_path, thumbnail_path, file_size, file_type, file_extension, category, receiver_id, group_id, created_at) 
           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
-$stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, 'isssssssiii',
-    $user_id,
-    $uniqueFilename,
-    $file['name'],
-    $relativePath,
-    $thumbnailRelativePath,
-    $file['size'],
-    $mimeType,
-    $extension,
-    $category,
-    $receiver_id,
-    $group_id
-);
+$insertResult = db_execute($query, [
+    $user_id, $uniqueFilename, $file['name'], $relativePath,
+    $thumbnailRelativePath, (int)$file['size'], $mimeType, $extension,
+    $category, $receiver_id, $group_id
+], 'isssssssssi');
 
-if (mysqli_stmt_execute($stmt)) {
-    $media_id = mysqli_insert_id($conn);
+if ($insertResult) {
+    $media_id = mysqli_insert_id(db_connect());
     
-    // Log activity
     log_activity($user_id, 'media_upload', "Uploaded file: " . $file['name']);
     
     send_json_response(200, [
@@ -194,8 +207,9 @@ if (mysqli_stmt_execute($stmt)) {
         ]
     ]);
 } else {
-    // Delete file if database insert fails
-    unlink($filePath);
+    $dbError = mysqli_error(db_connect());
+    error_log("Upload DB Error: " . $dbError);
+    if (file_exists($filePath)) unlink($filePath);
     if ($thumbnailPath && file_exists($thumbnailPath)) {
         unlink($thumbnailPath);
     }

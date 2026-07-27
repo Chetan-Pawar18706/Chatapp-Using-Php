@@ -32,44 +32,66 @@ if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
 }
 
 $user_id = get_user_id();
-$receiver_id = intval($_POST['receiver_id'] ?? 0);
-$group_id = intval($_POST['group_id'] ?? 0);
+$receiver_id = intval($_POST['receiver_id'] ?? 0) ?: null;
+$group_id = intval($_POST['group_id'] ?? 0) ?: null;
 $content = trim($_POST['message'] ?? '');
 $media_id = intval($_POST['media_id'] ?? 0);
 $reply_to_id = intval($_POST['reply_to'] ?? 0);
 
-if ($receiver_id <= 0 && $group_id <= 0) {
-    send_json_response(400, ['success' => false, 'message' => 'Invalid receiver or group']);
-}
+error_log("send-media: uid=$user_id, receiver=$receiver_id, group=$group_id, content=" . strlen($content) . ", media_id=$media_id, files=" . (isset($_FILES['file']) ? 'yes' : 'no'));
 
-if (empty($content) && $media_id <= 0) {
-    send_json_response(400, ['success' => false, 'message' => 'Message or media required']);
+if (!$receiver_id && !$group_id) {
+    error_log("send-media: FAIL - Invalid receiver or group");
+    send_json_response(400, ['success' => false, 'message' => 'Invalid receiver or group']);
 }
 
 if (!check_rate_limit('send_message_' . $user_id, 60, 60)) {
     send_json_response(429, ['success' => false, 'message' => 'Too many messages. Please wait.']);
 }
 
+if (isset($_FILES['file'])) {
+    error_log("send-media-file-info: error={$_FILES['file']['error']}, name={$_FILES['file']['name']}, size={$_FILES['file']['size']}, tmp={$_FILES['file']['tmp_name']}");
+}
+
 if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
     $file = $_FILES['file'];
     $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-
-    if (!is_extension_allowed($extension)) {
-        send_json_response(400, ['success' => false, 'message' => 'File type not allowed']);
-    }
-
     $category = get_file_category($extension);
     $maxSize = SIZE_LIMITS[$category] ?? MAX_FILE_SIZE;
-    if ($file['size'] > $maxSize) {
+
+    $finfo = @finfo_open(FILEINFO_MIME_TYPE);
+    $mimeType = $finfo ? @finfo_file($finfo, $file['tmp_name']) : 'application/octet-stream';
+    if ($finfo) finfo_close($finfo);
+
+    if ($mimeType === 'application/octet-stream' || $mimeType === 'application/x-empty') {
+        $fallbackMimes = [
+            'pdf' => 'application/pdf',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'xls' => 'application/vnd.ms-excel',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheet.sheet',
+            'ppt' => 'application/vnd.ms-powerpoint',
+            'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'txt' => 'text/plain',
+            'zip' => 'application/zip',
+            'rar' => 'application/x-rar-compressed',
+            '7z' => 'application/x-7z-compressed',
+        ];
+        $mimeType = $fallbackMimes[$extension] ?? $mimeType;
+    }
+
+    error_log("send-media-file: ext=$extension, cat=$category, mime=$mimeType, size={$file['size']}, maxSize=$maxSize, ext_ok=" . (is_extension_allowed($extension) ? 'yes' : 'no') . ", mime_ok=" . (is_mime_allowed($mimeType, $category) ? 'yes' : 'no'));
+
+    if (!is_extension_allowed($extension)) {
+        send_json_response(400, ['success' => false, 'message' => 'File type not allowed: ' . $extension]);
+    }
+
+    if ($category && $file['size'] > $maxSize) {
         send_json_response(400, ['success' => false, 'message' => 'File too large. Maximum size: ' . format_file_size($maxSize)]);
     }
 
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mimeType = finfo_file($finfo, $file['tmp_name']);
-    finfo_close($finfo);
-
     if (!is_mime_allowed($mimeType, $category)) {
-        send_json_response(400, ['success' => false, 'message' => 'Invalid file type']);
+        send_json_response(400, ['success' => false, 'message' => 'Invalid file type: ' . $mimeType]);
     }
 
     $uniqueFilename = generate_unique_filename($file['name']);
@@ -99,30 +121,26 @@ if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
     $query = "INSERT INTO media (user_id, file_name, original_name, file_path, thumbnail_path, file_size, file_type, file_extension, category, receiver_id, group_id, created_at)
               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
-    $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, 'issssssiiis',
-        $user_id,
-        $uniqueFilename,
-        $file['name'],
-        $relativePath,
-        $thumbnailRelativePath,
-        $file['size'],
-        $mimeType,
-        $extension,
-        $category,
-        $receiver_id,
-        $group_id
-    );
+    $insertResult = db_execute($query, [
+        $user_id, $uniqueFilename, $file['name'], $relativePath,
+        $thumbnailRelativePath, (int)$file['size'], $mimeType, $extension,
+        $category, $receiver_id, $group_id
+    ], 'isssssssssi');
 
-    if (mysqli_stmt_execute($stmt)) {
-        $media_id = mysqli_insert_id($conn);
+    if ($insertResult) {
+        $media_id = mysqli_insert_id(db_connect());
     } else {
-        unlink($filePath);
+        if (file_exists($filePath)) unlink($filePath);
         if ($thumbnailPath && file_exists($thumbnailPath)) {
             unlink($thumbnailPath);
         }
         send_json_response(500, ['success' => false, 'message' => 'Failed to save file record']);
     }
+}
+
+if (empty($content) && $media_id <= 0) {
+    error_log("send-media: FAIL - Message or media required");
+    send_json_response(400, ['success' => false, 'message' => 'Message or media required']);
 }
 
 if ($reply_to_id > 0) {

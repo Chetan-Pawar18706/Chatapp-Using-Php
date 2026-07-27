@@ -95,11 +95,11 @@ function render_media_grid_item($media) {
     $html = '<div class="media-grid-item" data-id="' . $id . '" onclick="MediaModule.openLightbox(' . htmlspecialchars(json_encode($media)) . ')">';
     
     if ($media['is_image']) {
-        $html .= '<img src="api/preview-media.php?id=' . $id . '" alt="' . $name . '" loading="lazy">';
+        $html .= '<img src="/chatapp/api/preview-media.php?id=' . $id . '" alt="' . $name . '" loading="lazy">';
     } elseif ($media['is_video']) {
         $html .= '
             <video class="video-thumbnail" preload="metadata">
-                <source src="api/preview-media.php?id=' . $id . '" type="' . htmlspecialchars($media['file_type']) . '">
+                <source src="/chatapp/api/preview-media.php?id=' . $id . '" type="' . htmlspecialchars($media['file_type']) . '">
             </video>
             <div class="play-overlay">
                 <i class="fas fa-play-circle"></i>
@@ -168,7 +168,7 @@ function render_chat_image_attachment($media) {
     $id = intval($media['id']);
     $name = htmlspecialchars($media['original_name']);
     
-    return '<img src="api/preview-media.php?id=' . $id . '" alt="' . $name . '" loading="lazy" onclick="MediaModule.openLightbox(' . htmlspecialchars(json_encode($media)) . ')">';
+    return '<img src="/chatapp/api/preview-media.php?id=' . $id . '" alt="' . $name . '" loading="lazy" onclick="MediaModule.openLightbox(' . htmlspecialchars(json_encode($media)) . ')">';
 }
 
 /**
@@ -183,7 +183,7 @@ function render_chat_video_attachment($media) {
     
     return '
     <video controls preload="metadata">
-        <source src="api/preview-media.php?id=' . $id . '" type="' . $type . '">
+        <source src="/chatapp/api/preview-media.php?id=' . $id . '" type="' . $type . '">
         Your browser does not support video playback.
     </video>';
 }

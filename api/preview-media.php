@@ -12,6 +12,7 @@ define('APP_RUNNING', true);
 require_once dirname(__DIR__) . '/config/database.php';
 require_once dirname(__DIR__) . '/config/session.php';
 require_once dirname(__DIR__) . '/includes/functions.php';
+require_once dirname(__DIR__) . '/includes/compat.php';
 require_once dirname(__DIR__) . '/config/media.php';
 
 init_session();
@@ -31,12 +32,7 @@ if ($media_id <= 0) {
 }
 
 // Get file info from database
-$query = "SELECT * FROM media WHERE id = ?";
-$stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, 'i', $media_id);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-$media = mysqli_fetch_assoc($result);
+$media = db_fetch_single("SELECT * FROM media WHERE id = ?", [$media_id], 'i');
 
 if (!$media) {
     header('HTTP/1.1 404 Not Found');
@@ -53,21 +49,11 @@ if ($media['user_id'] == $user_id) {
 } elseif ($media['receiver_id'] > 0 && $media['receiver_id'] == $user_id) {
     $has_access = true;
 } elseif ($media['group_id'] > 0) {
-    $group_query = "SELECT id FROM group_members WHERE group_id = ? AND user_id = ?";
-    $group_stmt = mysqli_prepare($conn, $group_query);
-    mysqli_stmt_bind_param($group_stmt, 'ii', $media['group_id'], $user_id);
-    mysqli_stmt_execute($group_stmt);
-    $group_result = mysqli_stmt_get_result($group_stmt);
-    $has_access = mysqli_num_rows($group_result) > 0;
+    $group_member = db_fetch_single("SELECT id FROM group_members WHERE group_id = ? AND user_id = ?", [$media['group_id'], $user_id], 'ii');
+    $has_access = !!$group_member;
 } else {
-    $conv_query = "SELECT id FROM messages WHERE 
-                   (sender_id = ? AND receiver_id = ?) OR 
-                   (sender_id = ? AND receiver_id = ?) LIMIT 1";
-    $conv_stmt = mysqli_prepare($conn, $conv_query);
-    mysqli_stmt_bind_param($conv_stmt, 'iiii', $media['user_id'], $user_id, $user_id, $media['user_id']);
-    mysqli_stmt_execute($conv_stmt);
-    $conv_result = mysqli_stmt_get_result($conv_stmt);
-    $has_access = mysqli_num_rows($conv_result) > 0;
+    $conv = db_fetch_single("SELECT id FROM messages WHERE (sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?) LIMIT 1", [$media['user_id'], $user_id, $user_id, $media['user_id']], 'iiii');
+    $has_access = !!$conv;
 }
 
 if (!$has_access) {

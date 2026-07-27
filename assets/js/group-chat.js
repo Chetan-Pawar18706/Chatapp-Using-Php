@@ -299,9 +299,9 @@ function createGroupMessageBubble(msg) {
     if (msg.media_id && msg.media) {
         const media = msg.media;
         if (media.is_image) {
-            mediaHtml = `<div class="message-media"><img src="../api/preview-media.php?id=${media.id}" alt="${escapeHtml(media.original_name)}" loading="lazy"></div>`;
+            mediaHtml = `<div class="message-media"><img src="/chatapp/api/preview-media.php?id=${media.id}" alt="${escapeHtml(media.original_name)}" loading="lazy"></div>`;
         } else if (media.is_video) {
-            mediaHtml = `<div class="message-media"><video controls preload="metadata"><source src="../api/preview-media.php?id=${media.id}" type="${escapeHtml(media.file_type)}"></video></div>`;
+            mediaHtml = `<div class="message-media"><video controls preload="metadata"><source src="/chatapp/api/preview-media.php?id=${media.id}" type="${escapeHtml(media.file_type)}"></video></div>`;
         } else {
             const iconMap = { pdf: 'fa-file-pdf', doc: 'fa-file-word', docx: 'fa-file-word', xls: 'fa-file-excel', xlsx: 'fa-file-excel', ppt: 'fa-file-powerpoint', pptx: 'fa-file-powerpoint', txt: 'fa-file-alt', zip: 'fa-file-archive', rar: 'fa-file-archive', '7z': 'fa-file-archive' };
             const ext = media.file_extension || '';

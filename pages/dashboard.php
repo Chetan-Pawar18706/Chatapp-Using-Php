@@ -300,78 +300,43 @@ $csrf_token = session_generate_csrf();
                 </div>
             </section>
             
-            <!-- Friends Section -->
+            <!-- Friends Section (Link to dedicated page) -->
             <section class="content-section" id="section-friends">
                 <div class="section-header">
                     <h2><i class="fas fa-user-group"></i> Friends</h2>
+                    <a href="friends.php" class="btn btn-primary btn-sm">
+                        <i class="fas fa-arrow-right"></i> View All Friends
+                    </a>
                 </div>
-                
-                <!-- Search & Filter Bar -->
-                <div class="friends-toolbar">
-                    <div class="friends-search">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search friends..." id="friendsSearchInput">
-                    </div>
-                    <div class="friends-filter">
-                        <button class="filter-btn active" data-filter="all">All</button>
-                        <button class="filter-btn" data-filter="online">Online</button>
-                        <button class="filter-btn" data-filter="offline">Offline</button>
-                    </div>
-                    <div class="friends-stats">
-                        <span id="friendsOnlineCount">0 online</span>
-                        <span class="separator">|</span>
-                        <span id="friendsTotalCount">0 total</span>
-                    </div>
-                </div>
-                
-                <!-- Friends List -->
-                <div class="friends-list-container">
-                    <div class="friends-list" id="friendsList">
-                        <div class="empty-state">
-                            <i class="fas fa-user-group"></i>
-                            <p>No friends yet</p>
-                            <span>Search by username or friend code to add friends!</span>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="friends-list" id="friendsList">
+                            <div class="empty-state">
+                                <i class="fas fa-user-group"></i>
+                                <p>No friends yet</p>
+                                <span>Search by username or friend code to add friends!</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
             
-            <!-- Requests Section -->
+            <!-- Requests Section (Link to dedicated page) -->
             <section class="content-section" id="section-requests">
                 <div class="section-header">
                     <h2><i class="fas fa-user-plus"></i> Friend Requests</h2>
+                    <a href="requests.php" class="btn btn-primary btn-sm">
+                        <i class="fas fa-arrow-right"></i> View All Requests
+                    </a>
                 </div>
-                
-                <!-- Request Tabs -->
-                <div class="request-tabs">
-                    <button class="request-tab active" data-tab="received">
-                        <i class="fas fa-inbox"></i> Received
-                        <span class="tab-badge" id="receivedRequestsBadge">0</span>
-                    </button>
-                    <button class="request-tab" data-tab="sent">
-                        <i class="fas fa-paper-plane"></i> Sent
-                        <span class="tab-badge" id="sentRequestsBadge">0</span>
-                    </button>
-                </div>
-                
-                <!-- Received Requests -->
-                <div class="request-tab-content active" id="receivedRequestsTab">
-                    <div class="requests-list" id="receivedRequestsList">
-                        <div class="empty-state">
-                            <i class="fas fa-inbox"></i>
-                            <p>No received requests</p>
-                            <span>When someone sends you a request, it will appear here</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Sent Requests -->
-                <div class="request-tab-content" id="sentRequestsTab">
-                    <div class="requests-list" id="sentRequestsList">
-                        <div class="empty-state">
-                            <i class="fas fa-paper-plane"></i>
-                            <p>No sent requests</p>
-                            <span>Your outgoing requests will appear here</span>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="requests-list" id="friendRequestsList">
+                            <div class="empty-state">
+                                <i class="fas fa-user-check"></i>
+                                <p>No pending requests</p>
+                                <span>You're all caught up!</span>
+                            </div>
                         </div>
                     </div>
                 </div>

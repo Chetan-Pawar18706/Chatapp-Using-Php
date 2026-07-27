@@ -25,8 +25,8 @@ function render_sidebar($active_page, $user_data, $user_id) {
     $nav_items = [
         ['page' => 'dashboard', 'icon' => 'fa-home', 'label' => 'Dashboard', 'url' => 'dashboard.php'],
         ['page' => 'chats', 'icon' => 'fa-message', 'label' => 'Chats', 'url' => 'chat.php'],
-        ['page' => 'friends', 'icon' => 'fa-user-group', 'label' => 'Friends', 'url' => 'dashboard.php', 'section' => 'friends'],
-        ['page' => 'requests', 'icon' => 'fa-user-plus', 'label' => 'Requests', 'url' => 'dashboard.php', 'section' => 'requests'],
+        ['page' => 'friends', 'icon' => 'fa-user-group', 'label' => 'Friends', 'url' => 'friends.php'],
+        ['page' => 'requests', 'icon' => 'fa-user-plus', 'label' => 'Requests', 'url' => 'requests.php'],
         ['page' => 'groups', 'icon' => 'fa-people-group', 'label' => 'Groups', 'url' => 'dashboard.php', 'section' => 'groups'],
         ['page' => 'group-chat', 'icon' => 'fa-people-group', 'label' => 'Group Chat', 'url' => 'group-chat.php'],
         ['page' => 'notifications', 'icon' => 'fa-bell', 'label' => 'Notifications', 'url' => 'notifications.php'],

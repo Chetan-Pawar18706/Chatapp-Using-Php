@@ -2,8 +2,8 @@
 -- ChatApp - Complete Unified Database Schema
 -- MySQL 8+ | Production Ready
 -- =====================================================
--- Single import file containing ALL tables, indexes,
--- foreign keys, and default data.
+-- Combined from: database_import.sql, migration_reactions.sql,
+-- migration_complete.sql, migration_auto_delete.sql
 -- =====================================================
 -- Usage: Import this file into MySQL to set up the
 -- entire database from scratch.
@@ -144,7 +144,27 @@ CREATE TABLE `friendships` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 6. Media (must exist before messages/group_messages)
+-- 6. Groups (must exist before media/group_messages)
+-- =====================================================
+DROP TABLE IF EXISTS `groups`;
+CREATE TABLE `groups` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(100) NOT NULL,
+    `description` TEXT DEFAULT NULL,
+    `avatar` VARCHAR(255) DEFAULT NULL,
+    `created_by` INT UNSIGNED NOT NULL,
+    `status` ENUM('active', 'archived', 'deleted') DEFAULT 'active',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    INDEX `idx_created_by` (`created_by`),
+    INDEX `idx_status` (`status`),
+    FULLTEXT INDEX `idx_group_search` (`name`, `description`),
+    CONSTRAINT `fk_group_creator` FOREIGN KEY (`created_by`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- 7. Media (must exist before messages/group_messages)
 -- =====================================================
 DROP TABLE IF EXISTS `media`;
 CREATE TABLE `media` (
@@ -170,26 +190,6 @@ CREATE TABLE `media` (
     CONSTRAINT `fk_media_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_media_receiver` FOREIGN KEY (`receiver_id`) REFERENCES `users`(`id`) ON DELETE SET NULL,
     CONSTRAINT `fk_media_group` FOREIGN KEY (`group_id`) REFERENCES `groups`(`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- =====================================================
--- 7. Groups
--- =====================================================
-DROP TABLE IF EXISTS `groups`;
-CREATE TABLE `groups` (
-    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    `name` VARCHAR(100) NOT NULL,
-    `description` TEXT DEFAULT NULL,
-    `avatar` VARCHAR(255) DEFAULT NULL,
-    `created_by` INT UNSIGNED NOT NULL,
-    `status` ENUM('active', 'archived', 'deleted') DEFAULT 'active',
-    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    INDEX `idx_created_by` (`created_by`),
-    INDEX `idx_status` (`status`),
-    FULLTEXT INDEX `idx_group_search` (`name`, `description`),
-    CONSTRAINT `fk_group_creator` FOREIGN KEY (`created_by`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
@@ -228,6 +228,7 @@ CREATE TABLE `messages` (
     `is_deleted` TINYINT(1) DEFAULT 0,
     `deleted_for_sender` TINYINT(1) DEFAULT 0,
     `deleted_for_receiver` TINYINT(1) DEFAULT 0,
+    `auto_delete` ENUM('none', '24hours', '1day', '7days', '30days') DEFAULT 'none',
     `delivered_at` DATETIME DEFAULT NULL,
     `seen_at` DATETIME DEFAULT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -272,7 +273,25 @@ CREATE TABLE `group_messages` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 11. Typing Status
+-- 11. Message Reactions
+-- =====================================================
+DROP TABLE IF EXISTS `message_reactions`;
+CREATE TABLE `message_reactions` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `message_id` INT UNSIGNED NOT NULL,
+    `user_id` INT UNSIGNED NOT NULL,
+    `emoji` VARCHAR(10) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY `uk_reaction` (`message_id`, `user_id`),
+    INDEX `idx_message` (`message_id`),
+    INDEX `idx_user` (`user_id`),
+    CONSTRAINT `fk_reaction_message` FOREIGN KEY (`message_id`) REFERENCES `messages`(`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_reaction_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- 12. Typing Status
 -- =====================================================
 DROP TABLE IF EXISTS `typing_status`;
 CREATE TABLE `typing_status` (
@@ -293,7 +312,7 @@ CREATE TABLE `typing_status` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 12. Block List
+-- 13. Block List
 -- =====================================================
 DROP TABLE IF EXISTS `block_list`;
 CREATE TABLE `block_list` (
@@ -310,7 +329,7 @@ CREATE TABLE `block_list` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 13. Group Notifications
+-- 14. Group Notifications
 -- =====================================================
 DROP TABLE IF EXISTS `group_notifications`;
 CREATE TABLE `group_notifications` (
@@ -333,7 +352,7 @@ CREATE TABLE `group_notifications` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 14. Group Messages Read Status
+-- 15. Group Messages Read Status
 -- =====================================================
 DROP TABLE IF EXISTS `group_messages_read`;
 CREATE TABLE `group_messages_read` (
@@ -353,7 +372,7 @@ CREATE TABLE `group_messages_read` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 15. Notifications
+-- 16. Notifications
 -- =====================================================
 DROP TABLE IF EXISTS `notifications`;
 CREATE TABLE `notifications` (
@@ -379,7 +398,7 @@ CREATE TABLE `notifications` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 16. Notification Preferences
+-- 17. Notification Preferences
 -- =====================================================
 DROP TABLE IF EXISTS `notification_preferences`;
 CREATE TABLE `notification_preferences` (
@@ -402,7 +421,7 @@ CREATE TABLE `notification_preferences` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 17. Recent Searches
+-- 18. Recent Searches
 -- =====================================================
 DROP TABLE IF EXISTS `recent_searches`;
 CREATE TABLE `recent_searches` (
@@ -423,7 +442,7 @@ CREATE TABLE `recent_searches` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 18. Login Attempts (Security)
+-- 19. Login Attempts (Security)
 -- =====================================================
 DROP TABLE IF EXISTS `login_attempts`;
 CREATE TABLE `login_attempts` (
@@ -440,7 +459,7 @@ CREATE TABLE `login_attempts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 19. Login Lockouts (Security)
+-- 20. Login Lockouts (Security)
 -- =====================================================
 DROP TABLE IF EXISTS `login_lockouts`;
 CREATE TABLE `login_lockouts` (
@@ -454,7 +473,7 @@ CREATE TABLE `login_lockouts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 20. Password History (Security)
+-- 21. Password History (Security)
 -- =====================================================
 DROP TABLE IF EXISTS `password_history`;
 CREATE TABLE `password_history` (
@@ -469,7 +488,7 @@ CREATE TABLE `password_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 21. Security Log
+-- 22. Security Log
 -- =====================================================
 DROP TABLE IF EXISTS `security_log`;
 CREATE TABLE `security_log` (
@@ -488,7 +507,7 @@ CREATE TABLE `security_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 22. Admin Users
+-- 23. Admin Users
 -- =====================================================
 DROP TABLE IF EXISTS `admin_users`;
 CREATE TABLE `admin_users` (
@@ -514,7 +533,7 @@ CREATE TABLE `admin_users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 23. Admin Activity Log
+-- 24. Admin Activity Log
 -- =====================================================
 DROP TABLE IF EXISTS `admin_activity_log`;
 CREATE TABLE `admin_activity_log` (
@@ -536,7 +555,7 @@ CREATE TABLE `admin_activity_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 24. User Reports
+-- 25. User Reports
 -- =====================================================
 DROP TABLE IF EXISTS `user_reports`;
 CREATE TABLE `user_reports` (
@@ -562,7 +581,7 @@ CREATE TABLE `user_reports` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 25. Message Reports
+-- 26. Message Reports
 -- =====================================================
 DROP TABLE IF EXISTS `message_reports`;
 CREATE TABLE `message_reports` (
@@ -585,7 +604,7 @@ CREATE TABLE `message_reports` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
--- 26. System Settings
+-- 27. System Settings
 -- =====================================================
 DROP TABLE IF EXISTS `system_settings`;
 CREATE TABLE `system_settings` (

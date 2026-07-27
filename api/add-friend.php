@@ -81,10 +81,10 @@ if ($result) {
     $sender_sql = "SELECT username FROM users WHERE id = ? LIMIT 1";
     $sender = db_fetch_single($sender_sql, [$user_id], 'i');
     
-    $notif_sql = "INSERT INTO notifications (user_id, type, title, message, from_user_id, is_read, created_at)
-                  VALUES (?, 'friend_request', 'Friend Request', ?, ?, 0, NOW())";
+    $notif_sql = "INSERT INTO notifications (user_id, sender_id, type, title, message, is_read, created_at)
+                  VALUES (?, ?, 'friend_request', 'Friend Request', ?, 0, NOW())";
     $notif_msg = ($sender['username'] ?? 'Someone') . ' sent you a friend request';
-    db_execute($notif_sql, [$target_user['id'], $notif_msg, $user_id], 'issi');
+    db_execute($notif_sql, [$target_user['id'], $user_id, $notif_msg], 'iis');
     
     log_activity($user_id, 'friend_request_sent', ['friend_id' => $target_user['id']]);
     send_success('Friend request sent to ' . $target_user['username']);
