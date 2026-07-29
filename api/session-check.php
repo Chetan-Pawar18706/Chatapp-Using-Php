@@ -12,4 +12,7 @@ if (!session_is_logged_in()) {
     exit;
 }
 
+$user_id = session_get_user_id();
+db_execute("UPDATE users SET last_seen = NOW() WHERE id = ?", [$user_id], 'i');
+
 echo json_encode(['success' => true, 'message' => 'Session active']);

@@ -81,25 +81,53 @@ $recent_msgs_query = "SELECT m.*, u.username as receiver_name
                       WHERE m.sender_id = ? 
                       ORDER BY m.created_at DESC LIMIT 10";
 $recent_msgs_stmt = mysqli_prepare($conn, $recent_msgs_query);
-mysqli_stmt_bind_param($recent_msgs_stmt, 'i', $user_id);
-mysqli_stmt_execute($recent_msgs_stmt);
 $recent_messages = [];
-while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($recent_msgs_stmt))) {
-    $recent_messages[] = $row;
+if ($recent_msgs_stmt) {
+    mysqli_stmt_bind_param($recent_msgs_stmt, 'i', $user_id);
+    mysqli_stmt_execute($recent_msgs_stmt);
+    $result = mysqli_stmt_get_result($recent_msgs_stmt);
+    if ($result) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $recent_messages[] = $row;
+        }
+    }
 }
 
 // Recent groups
 $recent_groups_query = "SELECT g.*, gm.role 
                         FROM group_members gm 
-                        JOIN groups g ON gm.group_id = g.id 
+                        JOIN `groups` g ON gm.group_id = g.id 
                         WHERE gm.user_id = ? 
                         ORDER BY gm.joined_at DESC LIMIT 5";
 $recent_groups_stmt = mysqli_prepare($conn, $recent_groups_query);
-mysqli_stmt_bind_param($recent_groups_stmt, 'i', $user_id);
-mysqli_stmt_execute($recent_groups_stmt);
 $recent_groups = [];
-while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($recent_groups_stmt))) {
-    $recent_groups[] = $row;
+if ($recent_groups_stmt) {
+    mysqli_stmt_bind_param($recent_groups_stmt, 'i', $user_id);
+    mysqli_stmt_execute($recent_groups_stmt);
+    $result = mysqli_stmt_get_result($recent_groups_stmt);
+    if ($result) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $recent_groups[] = $row;
+        }
+    }
+}
+
+// User activity log (login/logout)
+$activity_query = "SELECT action, ip_address, user_agent, details, created_at 
+                   FROM activity_log 
+                   WHERE user_id = ?
+                   ORDER BY created_at DESC LIMIT 50";
+$activity_stmt = mysqli_prepare($conn, $activity_query);
+$user_activity = [];
+if ($activity_stmt) {
+    mysqli_stmt_bind_param($activity_stmt, 'i', $user_id);
+    mysqli_stmt_execute($activity_stmt);
+    $result = mysqli_stmt_get_result($activity_stmt);
+    if ($result) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $user_activity[] = $row;
+        }
+    }
 }
 
 $page_title = 'User Details';
@@ -196,6 +224,20 @@ include 'includes/header.php';
                     <tr>
                         <td style="color: var(--text-muted);">Last Password Change</td>
                         <td><?php echo $user['last_password_change'] ? admin_format_date($user['last_password_change']) : 'Never'; ?></td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-muted);">Last Seen</td>
+                        <td><?php echo $user['last_seen'] ? admin_format_date($user['last_seen']) : 'Never'; ?></td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--text-muted);">Online</td>
+                        <td>
+                            <?php if ($user['is_online']): ?>
+                                <span class="badge bg-success">Online</span>
+                            <?php else: ?>
+                                <span class="badge bg-secondary">Offline</span>
+                            <?php endif; ?>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -341,6 +383,58 @@ include 'includes/header.php';
                             <?php if (empty($recent_groups)): ?>
                             <tr>
                                 <td colspan="4" class="text-center" style="padding: 20px;">Not in any groups</td>
+                            </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Activity Log -->
+        <div class="admin-card">
+            <div class="card-header">
+                <h2>Activity Log (Login / Logout)</h2>
+            </div>
+            <div class="card-body" style="padding: 0;">
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Action</th>
+                                <th>IP Address</th>
+                                <th>Device / Browser</th>
+                                <th>Date & Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($user_activity as $log): ?>
+                            <tr>
+                                <td>
+                                    <?php if (in_array($log['action'], ['login', 'login_success'])): ?>
+                                        <span class="badge bg-success"><i class="fas fa-sign-in-alt"></i> Login</span>
+                                    <?php elseif ($log['action'] === 'logout'): ?>
+                                        <span class="badge bg-warning"><i class="fas fa-sign-out-alt"></i> Logout</span>
+                                    <?php elseif ($log['action'] === 'login_failed'): ?>
+                                        <span class="badge bg-danger"><i class="fas fa-times-circle"></i> Failed</span>
+                                    <?php elseif ($log['action'] === 'registration'): ?>
+                                        <span class="badge bg-info"><i class="fas fa-user-plus"></i> Registered</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-secondary"><?php echo htmlspecialchars(ucwords(str_replace('_', ' ', $log['action']))); ?></span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><code><?php echo htmlspecialchars($log['ip_address'] ?? ''); ?></code></td>
+                                <td><?php echo admin_truncate(htmlspecialchars($log['user_agent'] ?? ''), 40); ?></td>
+                                <td>
+                                    <div><?php echo date('d M Y', strtotime($log['created_at'])); ?></div>
+                                    <small style="color: var(--text-muted);"><?php echo date('h:i:s A', strtotime($log['created_at'])); ?></small>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                            
+                            <?php if (empty($user_activity)): ?>
+                            <tr>
+                                <td colspan="4" class="text-center" style="padding: 20px;">No activity recorded yet</td>
                             </tr>
                             <?php endif; ?>
                         </tbody>

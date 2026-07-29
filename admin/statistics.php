@@ -79,7 +79,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 // Top groups by activity
 $top_groups = [];
 $result = mysqli_query($conn, "SELECT g.name, COUNT(gm.id) as msg_count
-    FROM group_messages gm JOIN groups g ON gm.group_id = g.id
+    FROM group_messages gm JOIN `groups` g ON gm.group_id = g.id
     GROUP BY gm.group_id ORDER BY msg_count DESC LIMIT 10");
 while ($row = mysqli_fetch_assoc($result)) {
     $top_groups[] = $row;

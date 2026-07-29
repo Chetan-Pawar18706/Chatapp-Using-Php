@@ -39,7 +39,7 @@ if (!empty($search)) {
 
 if ($type === 'group') {
     $table = 'group_messages m';
-    $join = 'LEFT JOIN users u ON m.user_id = u.id LEFT JOIN groups g ON m.group_id = g.id';
+    $join = 'LEFT JOIN users u ON m.user_id = u.id LEFT JOIN `groups` g ON m.group_id = g.id';
     $select = "m.*, u.username, g.name as group_name";
     $where[] = "m.id IS NOT NULL";
 } else {
@@ -53,11 +53,15 @@ $where_clause = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
 
 $count_query = "SELECT COUNT(*) as total FROM {$table} {$join} {$where_clause}";
 $count_stmt = mysqli_prepare($conn, $count_query);
-if (!empty($params)) {
-    mysqli_stmt_bind_param($count_stmt, $types, ...$params);
+if ($count_stmt) {
+    if (!empty($params)) {
+        mysqli_stmt_bind_param($count_stmt, $types, ...$params);
+    }
+    mysqli_stmt_execute($count_stmt);
+    $total = mysqli_fetch_assoc(mysqli_stmt_get_result($count_stmt))['total'];
+} else {
+    $total = 0;
 }
-mysqli_stmt_execute($count_stmt);
-$total = mysqli_fetch_assoc(mysqli_stmt_get_result($count_stmt))['total'];
 $total_pages = ceil($total / $per_page);
 $offset = ($page - 1) * $per_page;
 
@@ -67,11 +71,16 @@ $types .= 'ii';
 
 $query = "SELECT {$select} FROM {$table} {$join} {$where_clause} ORDER BY m.created_at DESC LIMIT ? OFFSET ?";
 $stmt = mysqli_prepare($conn, $query);
-mysqli_stmt_bind_param($stmt, $types, ...$params);
-mysqli_stmt_execute($stmt);
 $messages = [];
-while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt))) {
-    $messages[] = $row;
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, $types, ...$params);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    if ($result) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $messages[] = $row;
+        }
+    }
 }
 
 $page_title = 'Messages';

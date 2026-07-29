@@ -96,12 +96,12 @@ function initializeLockedChatsBtn() {
     if (!btn) return;
     btn.addEventListener('click', function() {
         lockedChatsMode = !lockedChatsMode;
-        const title = document.querySelector('.sidebar-header h2');
+        const title = document.querySelector('.chat-sidebar .sidebar-header h2');
         if (lockedChatsMode) {
             btn.classList.add('active');
             if (title) title.textContent = 'Locked Chats';
-            showLockedChats();
             resetChatWindow();
+            showLockedChats();
         } else {
             btn.classList.remove('active');
             if (title) title.textContent = 'Chats';
@@ -115,8 +115,10 @@ function resetChatWindow() {
     Chat.messages = [];
     const emptyChat = document.getElementById('emptyChat');
     const activeChat = document.getElementById('activeChat');
+    const chatSidebar = document.getElementById('chatSidebar');
     if (emptyChat) emptyChat.style.display = 'flex';
     if (activeChat) activeChat.style.display = 'none';
+    if (chatSidebar) chatSidebar.classList.remove('hidden');
     stopPolling();
 }
 
