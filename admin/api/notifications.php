@@ -21,16 +21,22 @@ if (!admin_verify_session()) {
 
 $conn = db_connect();
 
-// Get pending notifications count
+if (!$conn) {
+    admin_send_error('Database connection failed', 500);
+}
+
 $count = 0;
+$pending_reports = 0;
 
-// Pending reports
 $report_query = "SELECT COUNT(*) as count FROM user_reports WHERE status = 'pending'";
-$count += mysqli_fetch_assoc(mysqli_query($conn, $report_query))['count'];
-
-// Pending messages (could add more notification types)
+$report_result = mysqli_query($conn, $report_query);
+if ($report_result) {
+    $report_row = mysqli_fetch_assoc($report_result);
+    $pending_reports = $report_row['count'] ?? 0;
+    $count += $pending_reports;
+}
 
 admin_send_success('Notifications retrieved', [
     'count' => $count,
-    'pending_reports' => mysqli_fetch_assoc(mysqli_query($conn, $report_query))['count']
+    'pending_reports' => $pending_reports
 ]);

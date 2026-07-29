@@ -8,7 +8,7 @@
 // Global variables
 const ADMIN = {
     csrfToken: document.querySelector('meta[name="csrf-token"]')?.content || '',
-    baseUrl: '/admin/api/'
+    baseUrl: 'api/'
 };
 
 // ==================== Sidebar ====================
@@ -369,6 +369,8 @@ async function checkNotifications() {
         if (data.success && data.data.count > 0) {
             document.getElementById('notifBadge').textContent = data.data.count;
             document.getElementById('notifBadge').style.display = 'block';
+        } else {
+            document.getElementById('notifBadge').style.display = 'none';
         }
     } catch (error) {
         // Silently ignore notification errors
@@ -378,6 +380,74 @@ async function checkNotifications() {
 // Check notifications periodically
 setInterval(checkNotifications, 60000);
 checkNotifications();
+
+// Notification dropdown toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const notifBtn = document.getElementById('notificationsBtn');
+    if (!notifBtn) return;
+
+    // Create dropdown
+    let dropdown = document.querySelector('.notif-dropdown');
+    if (!dropdown) {
+        dropdown = document.createElement('div');
+        dropdown.className = 'notif-dropdown';
+        dropdown.innerHTML = `
+            <div class="notif-header">
+                <h4>Notifications</h4>
+                <a href="reports.php" class="notif-view-all">View All</a>
+            </div>
+            <div class="notif-body" id="notifList">
+                <p class="notif-empty">No new notifications</p>
+            </div>
+        `;
+        notifBtn.style.position = 'relative';
+        notifBtn.appendChild(dropdown);
+    }
+
+    notifBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isOpen = dropdown.classList.contains('active');
+        dropdown.classList.toggle('active');
+        if (!isOpen) {
+            loadNotifications();
+        }
+    });
+
+    document.addEventListener('click', function() {
+        dropdown.classList.remove('active');
+    });
+});
+
+async function loadNotifications() {
+    const list = document.getElementById('notifList');
+    if (!list) return;
+
+    list.innerHTML = '<p class="notif-loading">Loading...</p>';
+
+    try {
+        const response = await fetch(ADMIN.baseUrl + 'notifications.php');
+        if (!response.ok) throw new Error('Failed');
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) throw new Error('Not JSON');
+        const data = await response.json();
+
+        if (data.success && data.data.count > 0) {
+            list.innerHTML = `
+                <a href="reports.php" class="notif-item">
+                    <i class="fas fa-flag notif-icon"></i>
+                    <div class="notif-content">
+                        <p>${data.data.pending_reports} pending report(s) need review</p>
+                        <span class="notif-time">Click to view</span>
+                    </div>
+                </a>
+            `;
+        } else {
+            list.innerHTML = '<p class="notif-empty">No new notifications</p>';
+        }
+    } catch (error) {
+        list.innerHTML = '<p class="notif-empty">No new notifications</p>';
+    }
+}
 
 // ==================== Keyboard Shortcuts ====================
 document.addEventListener('keydown', function(e) {
