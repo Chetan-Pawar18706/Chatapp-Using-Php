@@ -57,7 +57,7 @@ if (!function_exists('verify_csrf_token')) {
  * Note: Original had args swapped (status, data) vs (data, status)
  * This handles both calling conventions
  */
-if (!function_exists('send_json_response_compat')) {
+if (!function_exists('send_json_response')) {
     function send_json_response($first, $second = []) {
         // Detect which convention is used
         if (is_int($first)) {

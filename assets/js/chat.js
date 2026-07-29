@@ -101,12 +101,23 @@ function initializeLockedChatsBtn() {
             btn.classList.add('active');
             if (title) title.textContent = 'Locked Chats';
             showLockedChats();
+            resetChatWindow();
         } else {
             btn.classList.remove('active');
             if (title) title.textContent = 'Chats';
             renderChatList(Chat.chatList || []);
         }
     });
+}
+
+function resetChatWindow() {
+    Chat.selectedUserId = null;
+    Chat.messages = [];
+    const emptyChat = document.getElementById('emptyChat');
+    const activeChat = document.getElementById('activeChat');
+    if (emptyChat) emptyChat.style.display = 'flex';
+    if (activeChat) activeChat.style.display = 'none';
+    stopPolling();
 }
 
 async function showLockedChats() {
@@ -1403,19 +1414,21 @@ function hideTypingIndicator() {
 // Polling
 // =====================================================
 function startPolling() {
-    // Poll for new messages every 2 seconds
+    stopPolling();
     Chat.pollingInterval = setInterval(async () => {
         if (!Chat.selectedUserId) return;
         
-        // Refresh messages
         await refreshNewMessages();
-        
-        // Check typing status
         await checkTypingStatus();
-        
-        // Refresh chat list
         await refreshChatList();
     }, 2000);
+}
+
+function stopPolling() {
+    if (Chat.pollingInterval) {
+        clearInterval(Chat.pollingInterval);
+        Chat.pollingInterval = null;
+    }
 }
 
 async function refreshNewMessages() {

@@ -1168,7 +1168,11 @@ body > .sidebar.collapsed ~ .chat-app {
 /* =====================================================
    Mobile Back Button
    ===================================================== */
-.mobile-back {
+.chat-sidebar .sidebar-toggle {
+    display: none !important;
+}
+
+.chat-sidebar .mobile-back {
     display: none;
 }
 
@@ -1224,14 +1228,15 @@ body > .sidebar.collapsed ~ .chat-app {
         transition: transform 0.3s ease;
     }
     
-    body > .sidebar.active {
+    body > .sidebar.active,
+    body > .sidebar.show {
         transform: translateX(0);
     }
     
     .chat-app {
         position: relative;
-        width: 100%;
-        margin-left: 0;
+        width: 100% !important;
+        margin-left: 0 !important;
     }
     
     .chat-sidebar {
@@ -1250,6 +1255,32 @@ body > .sidebar.collapsed ~ .chat-app {
     }
     
     .chat-window.hidden {
+        display: none;
+    }
+    
+    .chat-sidebar .sidebar-header {
+        padding: 0.75rem;
+    }
+    
+    .chat-sidebar .header-left {
+        gap: 0.5rem;
+    }
+    
+    .chat-sidebar .header-left h2 {
+        font-size: 1rem;
+    }
+    
+    .chat-sidebar .header-actions {
+        gap: 0.25rem;
+    }
+    
+    .chat-sidebar .icon-btn {
+        width: 34px;
+        height: 34px;
+        font-size: 0.9rem;
+    }
+    
+    .chat-sidebar .sidebar-toggle {
         display: none;
     }
     

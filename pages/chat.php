@@ -62,6 +62,9 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
             <!-- Sidebar Header -->
             <div class="sidebar-header">
                 <div class="header-left">
+                    <button class="icon-btn sidebar-toggle" id="sidebarToggle" title="Menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
                     <div id="currentUserAvatar">
                         <?php echo render_avatar_html($user_data['avatar'] ?? null, $user_data['username'] ?? 'User'); ?>
                     </div>
@@ -300,6 +303,9 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
         </div>
     </div>
     
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
     
@@ -336,5 +342,6 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
         };
     </script>
     <script src="../assets/js/chat.js"></script>
+    <?php echo render_sidebar_scripts(); ?>
 </body>
 </html>

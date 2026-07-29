@@ -100,3 +100,9 @@ Stack trace:
 #3 {main}
   thrown in C:\xampp\htdocs\chatapp\config\database.php on line 40
 [29-Jul-2026 09:26:43 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 09:53:16 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 09:58:11 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 10:02:23 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 10:04:29 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 10:04:32 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 10:04:34 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120

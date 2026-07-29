@@ -54,9 +54,14 @@ async function apiRequest(endpoint, method = 'GET', data = null, isFormData = fa
     
     try {
         const response = await fetch(url, options);
+        
+        if (response.status === 401) {
+            window.location.href = APP_CONFIG.baseUrl + '/login.php';
+            return { success: false, message: 'Session expired' };
+        }
+        
         const result = await response.json();
         
-        // Update CSRF token if provided
         if (result.data && result.data.csrf_token) {
             APP_CONFIG.csrfToken = result.data.csrf_token;
         }
@@ -811,3 +816,36 @@ window.ChatApp = {
     loadUserProfile,
     checkAuthStatus
 };
+
+// =====================================================
+// Session Expiry Check - Periodic + Fetch Interceptor
+// =====================================================
+(function() {
+    const SESSION_CHECK_URL = APP_CONFIG.baseUrl + '/api/session-check.php';
+    const REDIRECT_URL = APP_CONFIG.baseUrl + '/login.php';
+    let sessionExpired = false;
+
+    function redirectToLogin() {
+        if (sessionExpired) return;
+        sessionExpired = true;
+        window.location.href = REDIRECT_URL;
+    }
+
+    setInterval(async () => {
+        if (sessionExpired) return;
+        try {
+            const resp = await fetch(SESSION_CHECK_URL, { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            if (resp.status === 401) redirectToLogin();
+        } catch(e) {}
+    }, 60000);
+
+    const origFetch = window.fetch;
+    window.fetch = function() {
+        return origFetch.apply(this, arguments).then(response => {
+            if (response.status === 401 && !arguments[0]?.toString().includes('login.php')) {
+                redirectToLogin();
+            }
+            return response;
+        });
+    };
+})();
