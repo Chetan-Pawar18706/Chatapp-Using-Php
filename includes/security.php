@@ -481,10 +481,12 @@ class Security {
             ini_set('session.use_only_cookies', 1);
             ini_set('session.sid_length', 48);
             ini_set('session.sid_bits_per_character', 6);
+            ini_set('session.gc_maxlifetime', 300); // 5 minutes
+            ini_set('session.cookie_lifetime', 0); // Session cookie - expires on browser close
             
             session_name('CHATAPP_SESSION');
             session_set_cookie_params([
-                'lifetime' => 86400,
+                'lifetime' => 0, // Session cookie - expires on browser close
                 'path' => '/',
                 'domain' => '',
                 'secure' => isset($_SERVER['HTTPS']),
@@ -556,13 +558,6 @@ class Security {
         
         // Check if session exists and is logged in
         if (!isset($_SESSION['user_id']) || !$_SESSION['logged_in']) {
-            return false;
-        }
-        
-        // Check session expiry
-        $lastActivity = $_SESSION['last_activity'] ?? 0;
-        if (time() - $lastActivity > SESSION_LIFETIME) {
-            $this->destroySession();
             return false;
         }
         

@@ -170,8 +170,11 @@ $csrf_token = session_generate_csrf();
                             required
                         >
                         <label class="form-check-label" for="terms">
-                            I agree to the <a href="#" class="text-primary-custom">Terms of Service</a> and <a href="#" class="text-primary-custom">Privacy Policy</a>
+                            I agree to the <a href="terms.php#terms" target="_blank" class="text-primary-custom">Terms of Service</a> and <a href="terms.php#privacy" target="_blank" class="text-primary-custom">Privacy Policy</a>
                         </label>
+                        <div class="invalid-feedback" id="termsError" style="display:none; color:#ff6b6b;">
+                            You must accept the Terms of Service and Privacy Policy to register
+                        </div>
                     </div>
                     
                     <!-- Submit Button -->

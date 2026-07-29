@@ -372,7 +372,10 @@ const ChatLock = {
             if (data.success) {
                 this.closeModal();
                 showToast('Chat locked', 'success');
-                location.reload();
+                if (Chat.selectedUserId == uid) {
+                    resetChatWindow();
+                }
+                loadChatList();
             } else {
                 showToast(data.message || 'Failed to lock chat', 'error');
             }
@@ -396,7 +399,8 @@ const ChatLock = {
             if (data.success) {
                 this.closeModal();
                 showToast('Chat unlocked', 'success');
-                location.reload();
+                loadChatList();
+                openChat(uid);
             } else {
                 showToast(data.message || 'Failed to unlock chat', 'error');
             }

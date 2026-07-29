@@ -410,6 +410,7 @@ async function handleRegistration(formEvent) {
         email: formData.get('email'),
         password: formData.get('password'),
         confirm_password: formData.get('confirm_password'),
+        accept_terms: document.getElementById('terms')?.checked || false,
         csrf_token: APP_CONFIG.csrfToken
     };
     
@@ -440,6 +441,15 @@ async function handleRegistration(formEvent) {
         return;
     }
     
+    // Check terms checkbox
+    const termsCheckbox = document.getElementById('terms');
+    if (!termsCheckbox || !termsCheckbox.checked) {
+        const termsError = document.getElementById('termsError');
+        if (termsError) termsError.style.display = 'block';
+        showAlert('registerAlert', 'You must accept the Terms of Service and Privacy Policy to register', 'error');
+        return;
+    }
+    
     // Disable submit button
     setButtonLoading(submitBtn.id, true);
     hideAlert('registerAlert');
@@ -452,9 +462,7 @@ async function handleRegistration(formEvent) {
     if (result.success) {
         showAlert('registerAlert', result.message, 'success');
         
-        // Show friend code and redirect
         if (result.data && result.data.friend_code) {
-            // Display success with friend code
             form.innerHTML = `
                 <div class="text-center">
                     <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
@@ -821,6 +829,12 @@ window.ChatApp = {
 // Session Expiry Check - Periodic + Fetch Interceptor
 // =====================================================
 (function() {
+    const path = window.location.pathname.toLowerCase();
+    const publicPages = ['/index.php', '/login.php', '/register.php', '/terms.php', '/forgot-password.php', '/reset-password.php'];
+    const isPublicPage = publicPages.some(p => path.endsWith(p)) || path === '/' || path === '/chatapp/';
+
+    if (isPublicPage) return;
+
     const SESSION_CHECK_URL = APP_CONFIG.baseUrl + '/api/session-check.php';
     const REDIRECT_URL = APP_CONFIG.baseUrl + '/login.php';
     let sessionExpired = false;

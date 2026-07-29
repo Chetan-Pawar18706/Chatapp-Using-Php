@@ -41,11 +41,12 @@ function session_initialize() {
         ini_set('session.cookie_httponly', '1');
         ini_set('session.cookie_secure', '0');
         ini_set('session.cookie_samesite', 'Lax');
-        ini_set('session.gc_maxlifetime', 86400);
+        ini_set('session.gc_maxlifetime', 300);
+        ini_set('session.cookie_lifetime', 0);
         
         session_name('CHATAPP_SESSION');
         session_set_cookie_params([
-            'lifetime' => 86400,
+            'lifetime' => 0,
             'path' => '/',
             'domain' => '',
             'secure' => false,
@@ -128,29 +129,8 @@ function session_set_user($user_data, $remember_me = false) {
         $security->setSessionFingerprint();
     }
     
-    // Handle Remember Me
-    if ($remember_me) {
-        $token = bin2hex(random_bytes(32));
-        $expires = time() + REMEMBER_ME_LIFETIME;
-        
-        // Store token in database
-        require_once __DIR__ . '/../config/database.php';
-        $sql = "UPDATE users SET remember_token = ? WHERE id = ?";
-        db_execute($sql, [$token, $user_data['id']], 'si');
-        
-        // Set cookie
-        setcookie(
-            'remember_me',
-            $token,
-            $expires,
-            '/',
-            '',
-            false, // secure
-            true   // httponly
-        );
-        
-        $_SESSION['remember_token'] = $token;
-    }
+    // Remember Me disabled - session expires on browser close for privacy
+    // if ($remember_me) { ... }
     
     // Regenerate session ID for security
     session_regenerate_id(true);

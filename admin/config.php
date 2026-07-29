@@ -13,7 +13,7 @@ if (!defined('APP_RUNNING')) {
 
 // Admin Session Configuration
 define('ADMIN_SESSION_NAME', 'CHATAPP_ADMIN_SESSION');
-define('ADMIN_SESSION_LIFETIME', 28800); // 8 hours
+define('ADMIN_SESSION_LIFETIME', 300); // 5 minutes
 define('ADMIN_REMEMBER_LIFETIME', 604800); // 7 days
 
 // Admin Roles

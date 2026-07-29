@@ -21,6 +21,12 @@ define('DB_PASS', '');
 define('DB_CHARSET', 'utf8mb4');
 
 /**
+ * Encryption Key for Messages (AES-256-CBC)
+ * Change this to a secure random string in production
+ */
+define('ENCRYPTION_KEY', 'ChatApp2024!SecureKey#AES256');
+
+/**
  * Database Connection Instance
  */
 $GLOBALS['db'] = null;

@@ -137,15 +137,18 @@ try {
     $has_auto_delete = false;
 }
 
+// Encrypt message content
+$encrypted_content = encrypt_message($content);
+
 // Insert message
 if ($has_auto_delete) {
     $sql = "INSERT INTO messages (sender_id, receiver_id, content, message_type, reply_to_id, auto_delete, created_at) 
             VALUES (?, ?, ?, ?, ?, ?, NOW())";
-    $result = db_execute($sql, [$user_id, $receiver_id, $content, $message_type, $reply_to_id, $auto_delete], 'iissss');
+    $result = db_execute($sql, [$user_id, $receiver_id, $encrypted_content, $message_type, $reply_to_id, $auto_delete], 'iissss');
 } else {
     $sql = "INSERT INTO messages (sender_id, receiver_id, content, message_type, reply_to_id, created_at) 
             VALUES (?, ?, ?, ?, ?, NOW())";
-    $result = db_execute($sql, [$user_id, $receiver_id, $content, $message_type, $reply_to_id], 'iisss');
+    $result = db_execute($sql, [$user_id, $receiver_id, $encrypted_content, $message_type, $reply_to_id], 'iisss');
 }
 
 if ($result) {
@@ -180,7 +183,7 @@ if ($result) {
         if ($reply_msg) {
             $reply_data = [
                 'id' => $reply_to_id,
-                'content' => $reply_msg['content'],
+                'content' => decrypt_message($reply_msg['content']),
                 'sender_name' => $reply_msg['sender_name']
             ];
         }

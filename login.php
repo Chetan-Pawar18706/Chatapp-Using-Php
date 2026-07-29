@@ -83,11 +83,7 @@ $csrf_token = session_generate_csrf();
                         </div>
                     </div>
                     
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me">
-                            <label class="form-check-label" for="remember_me">Remember me</label>
-                        </div>
+                    <div class="d-flex justify-content-end align-items-center mb-4">
                         <a href="pages/forgot-password.php" class="btn-link-custom">Forgot Password?</a>
                     </div>
                     

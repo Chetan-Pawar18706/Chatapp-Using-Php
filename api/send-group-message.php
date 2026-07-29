@@ -92,15 +92,18 @@ try {
     $has_auto_delete = false;
 }
 
+// Encrypt message content
+$encrypted_content = encrypt_message($content);
+
 // Insert message
 if ($has_auto_delete) {
     $sql = "INSERT INTO messages (sender_id, group_id, content, message_type, reply_to_id, auto_delete, created_at) 
             VALUES (?, ?, ?, 'text', ?, ?, NOW())";
-    $result = db_execute($sql, [$user_id, $group_id, $content, $reply_to_id, $auto_delete], 'iisss');
+    $result = db_execute($sql, [$user_id, $group_id, $encrypted_content, $reply_to_id, $auto_delete], 'iisss');
 } else {
     $sql = "INSERT INTO messages (sender_id, group_id, content, message_type, reply_to_id, created_at) 
             VALUES (?, ?, ?, 'text', ?, NOW())";
-    $result = db_execute($sql, [$user_id, $group_id, $content, $reply_to_id], 'iiss');
+    $result = db_execute($sql, [$user_id, $group_id, $encrypted_content, $reply_to_id], 'iiss');
 }
 
 if (!$result) {
@@ -124,7 +127,7 @@ if ($reply_to_id) {
     if ($reply_msg) {
         $reply_data = [
             'id' => $reply_to_id,
-            'content' => $reply_msg['content'],
+            'content' => decrypt_message($reply_msg['content']),
             'sender_name' => $reply_msg['sender_name']
         ];
     }

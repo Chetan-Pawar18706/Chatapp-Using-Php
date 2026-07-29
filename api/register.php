@@ -59,10 +59,16 @@ $username = trim($input['username'] ?? '');
 $email = trim($input['email'] ?? '');
 $password = $input['password'] ?? '';
 $confirm_password = $input['confirm_password'] ?? '';
+$accept_terms = $input['accept_terms'] ?? false;
 
 // Basic validation
 if (empty($username) || empty($email) || empty($password) || empty($confirm_password)) {
     send_error('All fields are required');
+}
+
+// Validate terms acceptance
+if (!$accept_terms) {
+    send_error('You must accept the Terms of Service and Privacy Policy');
 }
 
 // Validate using Security class

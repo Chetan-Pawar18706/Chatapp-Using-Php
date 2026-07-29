@@ -56,6 +56,57 @@ if (!function_exists('get_avatar_url')) {
 
 /**
  * =====================================================
+ * Message Encryption (AES-256-CBC)
+ * =====================================================
+ */
+if (!function_exists('get_encryption_key')) {
+    function get_encryption_key() {
+        static $key = null;
+        if ($key === null) {
+            $key = defined('ENCRYPTION_KEY') ? ENCRYPTION_KEY : 'ChatApp2024!SecureKey#AES256';
+        }
+        return hash('sha256', $key, true);
+    }
+}
+
+if (!function_exists('encrypt_message')) {
+    function encrypt_message($plaintext) {
+        if (empty($plaintext)) return $plaintext;
+        $key = get_encryption_key();
+        $iv = random_bytes(16);
+        $encrypted = openssl_encrypt($plaintext, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
+        if ($encrypted === false) return $plaintext;
+        return base64_encode($iv . $encrypted);
+    }
+}
+
+if (!function_exists('decrypt_message')) {
+    function decrypt_message($ciphertext) {
+        if (empty($ciphertext)) return $ciphertext;
+        $decoded = base64_decode($ciphertext, true);
+        if ($decoded === false || strlen($decoded) < 17) return $ciphertext;
+        $key = get_encryption_key();
+        $iv = substr($decoded, 0, 16);
+        $encrypted = substr($decoded, 16);
+        $decrypted = openssl_decrypt($encrypted, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
+        if ($decrypted === false) return $ciphertext;
+        return $decrypted;
+    }
+}
+
+if (!function_exists('encrypt_message_field')) {
+    function encrypt_message_field(&$row, $field = 'content') {
+        if (isset($row[$field])) {
+            $row[$field] = decrypt_message($row[$field]);
+        }
+        if (isset($row['reply_content'])) {
+            $row['reply_content'] = decrypt_message($row['reply_content']);
+        }
+    }
+}
+
+/**
+ * =====================================================
  * Activity Logging
  * =====================================================
  */

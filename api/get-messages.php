@@ -142,6 +142,12 @@ db_execute($mark_read_sql, [$other_user_id, $user_id], 'ii');
 // Format messages
 $formatted_messages = [];
 foreach ($messages as $msg) {
+    // Decrypt content
+    $msg['content'] = decrypt_message($msg['content']);
+    if ($msg['reply_content'] !== null) {
+        $msg['reply_content'] = decrypt_message($msg['reply_content']);
+    }
+    
     $is_sender = (int)$msg['sender_id'] === $user_id;
     
     // Determine message status

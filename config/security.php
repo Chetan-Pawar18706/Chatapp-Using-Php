@@ -55,7 +55,7 @@ define('PASSWORD_HISTORY_COUNT', 5); // Remember last 5 passwords
 /**
  * ==================== SESSION SECURITY ====================
  */
-define('SESSION_LIFETIME', 3600); // 1 hour
+define('SESSION_LIFETIME', 300); // 5 minutes inactivity timeout
 define('SESSION_REGENERATE_INTERVAL', 300); // Regenerate ID every 5 minutes
 define('SESSION_MAX_CONCURRENT', 3); // Max concurrent sessions
 define('SESSION_FINGERPRINT_ENABLED', false);
