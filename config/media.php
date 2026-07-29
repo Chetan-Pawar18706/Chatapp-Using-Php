@@ -20,7 +20,7 @@ define('MAX_FILE_SIZE', 20 * 1024 * 1024); // 20 MB
  * Allowed File Extensions by Category
  */
 define('ALLOWED_EXTENSIONS', [
-    'images' => ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'],
+    'images' => ['jpg', 'jpeg', 'png', 'gif', 'webp'],
     'videos' => ['mp4', 'webm', 'ogg', 'mov'],
     'documents' => ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'],
     'archives' => ['zip', 'rar', '7z']

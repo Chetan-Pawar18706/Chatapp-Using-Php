@@ -85,21 +85,73 @@ function initializeLockedChatsBtn() {
     });
 }
 
-function showLockedGroups() {
-    const locked = (GroupChat.groups || []).filter(g => g.is_locked);
+async function showLockedGroups() {
     const container = document.getElementById('groupsList');
     if (!container) return;
-    
-    if (locked.length === 0) {
+
+    container.innerHTML = `
+        <div class="empty-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading locked groups...</p>
+        </div>
+    `;
+
+    try {
+        const response = await fetch('/chatapp/api/chat-lock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            credentials: 'same-origin',
+            body: 'action=get_locked'
+        });
+        const result = await response.json();
+
+        if (!result.success || !result.data || !result.data.locked_chats) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-lock"></i>
+                    <p>No locked groups</p>
+                </div>
+            `;
+            return;
+        }
+
+        const locked = result.data.locked_chats.filter(c => c.chat_type === 'group');
+        if (locked.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-lock"></i>
+                    <p>No locked groups</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = locked.map(group => `
+            <div class="group-item group-item-locked" 
+                 data-group-id="${group.target_id}" data-locked="1"
+                 onclick="handleGroupClick(${group.target_id}, true)">
+                <div class="group-avatar">
+                    ${renderAvatar(group.avatar, group.username)}
+                </div>
+                <div class="group-info">
+                    <div class="group-name">
+                        <span>${escapeHtml(group.username)}</span>
+                        <i class="fas fa-lock chat-lock-icon"></i>
+                    </div>
+                    <div class="group-preview">
+                        <span class="group-message"><i class="fas fa-lock"></i> Password protected</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } catch(e) {
         container.innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-lock"></i>
                 <p>No locked groups</p>
             </div>
         `;
-        return;
     }
-    container.innerHTML = locked.map(group => createLockedGroupItem(group)).join('');
 }
 
 async function checkAndOpenGroupChat(groupId) {
@@ -115,6 +167,7 @@ async function checkAndOpenGroupChat(groupId) {
         const response = await fetch('/chatapp/api/chat-lock.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            credentials: 'same-origin',
             body: formData.toString()
         });
         const result = await response.json();
@@ -169,40 +222,67 @@ function renderGroupsList(groups) {
 const GroupChatLock = {
     csrfToken: null,
     pendingGroupId: null,
+    mode: null,
 
     init: function() {
         this.csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
                          (typeof GROUP_CONFIG !== 'undefined' ? GROUP_CONFIG.csrfToken : '');
     },
 
-    promptPassword: function(groupId) {
+    openModal: function(groupId, mode) {
         this.pendingGroupId = groupId;
+        this.mode = mode;
         const modal = document.getElementById('chatLockModal');
-        if (modal) {
-            modal.classList.add('active');
-            const input = document.getElementById('chatLockPassword');
-            if (input) { input.value = ''; input.focus(); }
+        const title = document.getElementById('chatLockModalTitle');
+        const desc = document.getElementById('chatLockModalDesc');
+        const input = document.getElementById('chatLockPassword');
+        const btn = document.getElementById('chatLockSubmitBtn');
+        if (!modal) return;
+
+        if (mode === 'set') {
+            if (title) title.innerHTML = '<i class="fas fa-lock"></i> Lock Group';
+            if (desc) desc.textContent = 'Set a password to lock this group (min 8 characters)';
+            if (btn) btn.innerHTML = '<i class="fas fa-lock"></i> Lock';
+        } else if (mode === 'remove') {
+            if (title) title.innerHTML = '<i class="fas fa-unlock"></i> Unlock Group';
+            if (desc) desc.textContent = 'Enter the password to unlock this group';
+            if (btn) btn.innerHTML = '<i class="fas fa-unlock"></i> Unlock';
+        } else {
+            if (title) title.innerHTML = '<i class="fas fa-lock"></i> Group Locked';
+            if (desc) desc.textContent = 'Enter password to unlock this group';
+            if (btn) btn.innerHTML = '<i class="fas fa-unlock"></i> Unlock';
         }
+
+        if (input) { input.value = ''; input.focus(); }
+        modal.classList.add('active');
     },
 
     closeModal: function() {
         const modal = document.getElementById('chatLockModal');
         if (modal) modal.classList.remove('active');
         this.pendingGroupId = null;
+        this.mode = null;
     },
 
-    verify: function() {
+    submit: function() {
+        if (this.mode === 'set') return this.doSetLock();
+        if (this.mode === 'remove') return this.doRemoveLock();
+        return this.doVerify();
+    },
+
+    doVerify: async function() {
         const password = document.getElementById('chatLockPassword')?.value;
         if (!password || !this.pendingGroupId) return;
-        fetch('/chatapp/api/chat-lock.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `action=verify&chat_type=group&target_id=${this.pendingGroupId}&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
-        })
-        .then(r => r.json())
-        .then(data => {
+        const gid = this.pendingGroupId;
+        try {
+            const response = await fetch('/chatapp/api/chat-lock.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
+                body: `action=verify&chat_type=group&target_id=${gid}&password=${encodeURIComponent(password)}`
+            });
+            const data = await response.json();
             if (data.verified) {
-                const gid = this.pendingGroupId;
                 this.closeModal();
                 openGroupChat(gid);
             } else {
@@ -210,51 +290,73 @@ const GroupChatLock = {
                 const input = document.getElementById('chatLockPassword');
                 if (input) { input.value = ''; input.focus(); }
             }
-        })
-        .catch(err => {
+        } catch(e) {
             showToast('Verification failed. Try again.', 'error');
-        });
+        }
+    },
+
+    doSetLock: async function() {
+        const password = document.getElementById('chatLockPassword')?.value;
+        if (!password || !this.pendingGroupId) return;
+        if (password.length < 8) {
+            showToast('Password must be at least 8 characters', 'error');
+            return;
+        }
+        const gid = this.pendingGroupId;
+        try {
+            const response = await fetch('/chatapp/api/chat-lock.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
+                body: `action=set&chat_type=group&target_id=${gid}&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
+            });
+            const data = await response.json();
+            if (data.success) {
+                this.closeModal();
+                showToast('Group locked', 'success');
+                location.reload();
+            } else {
+                showToast(data.message || 'Failed to lock group', 'error');
+            }
+        } catch(e) {
+            showToast('Failed to lock group. Try again.', 'error');
+        }
+    },
+
+    doRemoveLock: async function() {
+        const password = document.getElementById('chatLockPassword')?.value;
+        if (!password || !this.pendingGroupId) return;
+        const gid = this.pendingGroupId;
+        try {
+            const response = await fetch('/chatapp/api/chat-lock.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
+                body: `action=remove&chat_type=group&target_id=${gid}&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
+            });
+            const data = await response.json();
+            if (data.success) {
+                this.closeModal();
+                showToast('Group unlocked', 'success');
+                location.reload();
+            } else {
+                showToast(data.message || 'Failed to unlock group', 'error');
+            }
+        } catch(e) {
+            showToast('Failed to unlock group. Try again.', 'error');
+        }
+    },
+
+    promptPassword: function(groupId) {
+        this.openModal(groupId, 'verify');
     },
 
     setLock: function(groupId) {
-        const password = prompt('Set a password to lock this chat (min 4 chars):');
-        if (!password || password.length < 4) {
-            if (password !== null) showToast('Password must be at least 4 characters', 'error');
-            return;
-        }
-        fetch('/chatapp/api/chat-lock.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `action=set&chat_type=group&target_id=${groupId}&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                showToast('Chat locked');
-                location.reload();
-            } else {
-                showToast(data.message, 'error');
-            }
-        });
+        this.openModal(groupId, 'set');
     },
 
     removeLock: function(groupId) {
-        const password = prompt('Enter password to unlock this chat:');
-        if (!password) return;
-        fetch('/chatapp/api/chat-lock.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `action=remove&chat_type=group&target_id=${groupId}&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                showToast('Chat unlocked');
-                location.reload();
-            } else {
-                showToast(data.message, 'error');
-            }
-        });
+        this.openModal(groupId, 'remove');
     }
 };
 
@@ -300,23 +402,6 @@ function createGroupListItem(group) {
     `;
 }
 
-function createLockedGroupItem(group) {
-    return `
-        <div class="group-item group-item-locked" 
-             data-group-id="${group.id}" data-locked="1"
-             onclick="handleGroupClick(${group.id}, true)">
-            <div class="group-avatar"><i class="fas fa-lock"></i></div>
-            <div class="group-info">
-                <div class="group-name">
-                    <span>Locked Group</span>
-                </div>
-                <div class="group-preview">
-                    <span class="group-message"><i class="fas fa-lock"></i> Enter password to view</span>
-                </div>
-            </div>
-        </div>
-    `;
-}
 
 // =====================================================
 // Open Group Chat
@@ -357,6 +442,7 @@ async function checkGroupLockStatus(groupId) {
         const response = await fetch('/chatapp/api/chat-lock.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            credentials: 'same-origin',
             body: `action=check&chat_type=group&target_id=${groupId}&csrf_token=${csrfToken}`
         });
         const result = await response.json();

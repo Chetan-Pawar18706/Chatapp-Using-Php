@@ -29,11 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'DEL
     send_json_response(405, ['success' => false, 'message' => 'Method not allowed']);
 }
 
-// Verify CSRF token for POST requests
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-        send_json_response(403, ['success' => false, 'message' => 'Invalid CSRF token']);
-    }
+// Verify CSRF token
+$csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? '';
+if (!verify_csrf_token($csrf_token)) {
+    send_json_response(403, ['success' => false, 'message' => 'Invalid CSRF token']);
 }
 
 // Get media ID

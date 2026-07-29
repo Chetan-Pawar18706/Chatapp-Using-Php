@@ -53,7 +53,7 @@ $msg_today_result = mysqli_query($conn, $msg_today_query);
 $stats['messages_today'] = mysqli_fetch_assoc($msg_today_result)['total'];
 
 // Total groups
-$group_query = "SELECT COUNT(*) as total FROM groups WHERE status = 'active'";
+$group_query = "SELECT COUNT(*) as total FROM `groups` WHERE status = 'active'";
 $group_result = mysqli_query($conn, $group_query);
 $stats['total_groups'] = mysqli_fetch_assoc($group_result)['total'];
 
@@ -211,8 +211,8 @@ include 'includes/header.php';
             <div class="card-header">
                 <h2>User Registrations (Last 7 Days)</h2>
                 <div class="btn-group">
-                    <button class="btn btn-sm btn-outline active" onclick="updateChart('users')">Users</button>
-                    <button class="btn btn-sm btn-outline" onclick="updateChart('messages')">Messages</button>
+                    <button class="btn btn-sm btn-outline active" onclick="updateChart('users', event)">Users</button>
+                    <button class="btn btn-sm btn-outline" onclick="updateChart('messages', event)">Messages</button>
                 </div>
             </div>
             <div class="card-body">
@@ -386,7 +386,7 @@ let activityChart = createChart("activityChart", "line", {
     }]
 });
 
-function updateChart(type) {
+function updateChart(type, event) {
     const dataset = type === "users" ? {
         label: "User Registrations",
         data: userData,

@@ -483,6 +483,14 @@ class Security {
             ini_set('session.sid_bits_per_character', 6);
             
             session_name('CHATAPP_SESSION');
+            session_set_cookie_params([
+                'lifetime' => 86400,
+                'path' => '/',
+                'domain' => '',
+                'secure' => isset($_SERVER['HTTPS']),
+                'httponly' => true,
+                'samesite' => 'Lax'
+            ]);
             session_start();
         }
     }

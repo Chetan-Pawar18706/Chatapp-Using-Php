@@ -347,13 +347,13 @@ $group_id = (int)($_GET['group_id'] ?? 0);
         <div class="modal-overlay" onclick="GroupChatLock.closeModal()"></div>
         <div class="modal-content">
             <button class="modal-close" onclick="GroupChatLock.closeModal()">&times;</button>
-            <h3><i class="fas fa-lock"></i> Chat Locked</h3>
-            <p>Enter password to unlock this chat</p>
+            <h3 id="chatLockModalTitle"><i class="fas fa-lock"></i> Group Locked</h3>
+            <p id="chatLockModalDesc">Enter password to unlock this group</p>
             <input type="password" id="chatLockPassword" class="form-control" placeholder="Enter password" 
-                   onkeypress="if(event.key==='Enter') GroupChatLock.verify()">
+                   onkeypress="if(event.key==='Enter') GroupChatLock.submit()">
             <div class="secret-actions">
                 <button class="btn btn-secondary" onclick="GroupChatLock.closeModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="GroupChatLock.verify()">
+                <button class="btn btn-primary" id="chatLockSubmitBtn" onclick="GroupChatLock.submit()">
                     <i class="fas fa-unlock"></i> Unlock
                 </button>
             </div>
@@ -370,7 +370,7 @@ $group_id = (int)($_GET['group_id'] ?? 0);
             currentUserId: <?php echo $user_id; ?>,
             currentUserInitial: '<?php echo htmlspecialchars(substr($user_data['username'] ?? 'U', 0, 1)); ?>',
             selectedGroupId: <?php echo $group_id; ?>,
-            csrfToken: '<?php echo $csrf_token; ?>'
+            csrfToken: '<?php echo htmlspecialchars($csrf_token, ENT_QUOTES, 'UTF-8'); ?>'
         };
     </script>
     <script src="../assets/js/group-chat.js"></script>

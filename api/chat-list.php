@@ -76,6 +76,11 @@ foreach ($chat_list as $chat) {
         [$user_id, $chat['id']]
     );
     
+    // Skip locked chats — they should NOT appear in normal list
+    if (!empty($lock)) {
+        continue;
+    }
+    
     $formatted_list[] = [
         'user_id' => (int)$chat['id'],
         'username' => $chat['username'],
@@ -86,7 +91,7 @@ foreach ($chat_list as $chat) {
         'last_message_time' => $last_time ? time_ago($last_time) : null,
         'last_message_from_me' => $last_msg ? ((int)$chat['last_message_sender'] === $user_id) : null,
         'unread_count' => (int)$chat['unread_count'],
-        'is_locked' => !empty($lock)
+        'is_locked' => false
     ];
 }
 

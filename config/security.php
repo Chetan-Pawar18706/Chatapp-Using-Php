@@ -66,8 +66,8 @@ define('SESSION_FINGERPRINT_ENABLED', false);
 define('UPLOAD_MAX_SIZE', 20 * 1024 * 1024); // 20MB
 define('UPLOAD_ALLOWED_TYPES', [
     'images' => [
-        'extensions' => ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'],
-        'mimes' => ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'],
+        'extensions' => ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+        'mimes' => ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
         'max_size' => 10 * 1024 * 1024 // 10MB
     ],
     'videos' => [

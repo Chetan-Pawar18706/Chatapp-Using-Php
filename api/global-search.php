@@ -20,7 +20,7 @@ require_once dirname(__DIR__) . '/includes/search_helpers.php';
 
 session_initialize();
 
-if (!session_is_logged_in()) {
+if (!session_verify_security() || !session_is_logged_in()) {
     send_json_response(401, ['success' => false, 'message' => 'Unauthorized']);
 }
 

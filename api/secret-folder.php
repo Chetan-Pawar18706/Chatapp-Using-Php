@@ -39,8 +39,8 @@ $has_password = !empty($user['secret_folder_password']);
 switch ($action) {
     case 'set_password':
         $password = $_POST['password'] ?? '';
-        if (strlen($password) < 4) {
-            send_json_response(400, ['success' => false, 'message' => 'Password must be at least 4 characters']);
+        if (strlen($password) < 8) {
+            send_json_response(400, ['success' => false, 'message' => 'Password must be at least 8 characters']);
         }
         $hashed = password_hash($password, PASSWORD_DEFAULT);
         db_execute("UPDATE users SET secret_folder_password = ? WHERE id = ?", [$hashed, $user_id]);
@@ -56,8 +56,8 @@ switch ($action) {
         if (!password_verify($old_password, $user['secret_folder_password'])) {
             send_json_response(403, ['success' => false, 'message' => 'Current password is incorrect']);
         }
-        if (strlen($new_password) < 4) {
-            send_json_response(400, ['success' => false, 'message' => 'Password must be at least 4 characters']);
+        if (strlen($new_password) < 8) {
+            send_json_response(400, ['success' => false, 'message' => 'Password must be at least 8 characters']);
         }
         $hashed = password_hash($new_password, PASSWORD_DEFAULT);
         db_execute("UPDATE users SET secret_folder_password = ? WHERE id = ?", [$hashed, $user_id]);

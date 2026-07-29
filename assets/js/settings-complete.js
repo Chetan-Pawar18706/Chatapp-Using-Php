@@ -81,6 +81,7 @@ const SettingsModule = {
             const response = await fetch('../api/update-profile.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
                 body: `csrf_token=${this.csrfToken}&theme=${theme}`
             });
             
@@ -113,6 +114,7 @@ const SettingsModule = {
             const response = await fetch('../api/update-profile.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
                 body: `csrf_token=${this.csrfToken}&language=${language}`
             });
             
@@ -144,6 +146,7 @@ const SettingsModule = {
             const response = await fetch('../api/update-profile.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
                 body: `csrf_token=${this.csrfToken}&chat_style=${chatStyle}`
             });
             
@@ -222,6 +225,7 @@ const SettingsModule = {
         try {
             const response = await fetch('../api/update-profile.php', {
                 method: 'POST',
+                credentials: 'same-origin',
                 body: formData
             });
             
@@ -247,6 +251,7 @@ const SettingsModule = {
         try {
             const response = await fetch('../api/update-profile.php', {
                 method: 'POST',
+                credentials: 'same-origin',
                 body: formData
             });
             
@@ -274,6 +279,7 @@ const SettingsModule = {
         try {
             const response = await fetch('../api/change-password.php', {
                 method: 'POST',
+                credentials: 'same-origin',
                 body: formData
             });
             
@@ -301,6 +307,7 @@ const SettingsModule = {
         try {
             const response = await fetch('../api/update-settings.php', {
                 method: 'POST',
+                credentials: 'same-origin',
                 body: formData
             });
             
@@ -326,6 +333,7 @@ const SettingsModule = {
         try {
             const response = await fetch('../api/update-settings.php', {
                 method: 'POST',
+                credentials: 'same-origin',
                 body: formData
             });
             
@@ -366,6 +374,7 @@ const SettingsModule = {
         try {
             const response = await fetch('../api/upload-photo.php', {
                 method: 'POST',
+                credentials: 'same-origin',
                 body: formData
             });
             
@@ -403,6 +412,7 @@ const SettingsModule = {
             const response = await fetch('../api/upload-photo.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
                 body: `csrf_token=${this.csrfToken}&type=avatar&remove=1`
             });
             
@@ -482,6 +492,7 @@ const SettingsModule = {
             const response = await fetch('../api/unblock-user.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
                 body: `csrf_token=${this.csrfToken}&user_id=${userId}`
             });
             
@@ -542,7 +553,8 @@ const SettingsModule = {
         
         try {
             const response = await fetch(`../api/export-data.php?type=${type}`, {
-                method: 'GET'
+                method: 'GET',
+                credentials: 'same-origin'
             });
             
             if (response.ok) {
@@ -622,6 +634,7 @@ function deactivateAccount() {
     fetch('../api/deactivate-account.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        credentials: 'same-origin',
         body: `csrf_token=${SettingsModule.csrfToken}&username=${encodeURIComponent(username)}`
     })
     .then(response => response.json())
@@ -641,6 +654,7 @@ function deleteAccount() {
     fetch('../api/delete-account.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        credentials: 'same-origin',
         body: `csrf_token=${SettingsModule.csrfToken}&confirm_text=${encodeURIComponent(confirmText)}`
     })
     .then(response => response.json())

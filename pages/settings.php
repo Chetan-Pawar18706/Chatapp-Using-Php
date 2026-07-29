@@ -60,7 +60,7 @@ $csrf_token = session_generate_csrf();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="<?php echo $csrf_token; ?>">
+    <meta name="csrf-token" content="<?php echo htmlspecialchars($csrf_token); ?>">
     <title>Settings - ChatApp</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -163,7 +163,7 @@ $csrf_token = session_generate_csrf();
                         <div class="settings-section">
                             <h4>Personal Information</h4>
                             <form id="profileForm">
-                                <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token, ENT_QUOTES, 'UTF-8'); ?>">
                                 
                                 <div class="form-group">
                                     <label for="profileUsername">Username</label>
@@ -347,7 +347,7 @@ $csrf_token = session_generate_csrf();
                         <div class="settings-section">
                             <h4>Email Address</h4>
                             <form id="accountForm">
-                                <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token, ENT_QUOTES, 'UTF-8'); ?>">
                                 <div class="form-group">
                                     <label for="email">Email</label>
                                     <div class="input-with-icon">
@@ -365,7 +365,7 @@ $csrf_token = session_generate_csrf();
                         <div class="settings-section">
                             <h4>Change Password</h4>
                             <form id="passwordForm">
-                                <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token, ENT_QUOTES, 'UTF-8'); ?>">
                                 
                                 <div class="form-group">
                                     <label for="currentPassword">Current Password</label>
@@ -417,7 +417,7 @@ $csrf_token = session_generate_csrf();
                         </div>
 
                         <form id="privacyForm">
-                            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token, ENT_QUOTES, 'UTF-8'); ?>">
                             
                             <!-- Who Can Message -->
                             <div class="settings-section">
@@ -605,7 +605,7 @@ $csrf_token = session_generate_csrf();
                         </div>
 
                         <form id="notificationsForm">
-                            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token, ENT_QUOTES, 'UTF-8'); ?>">
                             
                             <div class="settings-section">
                                 <h4>Push Notifications</h4>

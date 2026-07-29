@@ -65,16 +65,22 @@ if (!empty($theme) && in_array('theme', $existing_cols)) {
 
 // Language
 if (!empty($language) && in_array('language', $existing_cols)) {
-    $updates[] = 'language = ?';
-    $types .= 's';
-    $params[] = $language;
+    $valid_languages = ['en', 'es', 'fr', 'de', 'it', 'pt', 'ru', 'zh', 'ja', 'ko', 'ar', 'hi', 'bn', 'tr', 'nl', 'pl', 'vi', 'th', 'id', 'uk'];
+    if (in_array($language, $valid_languages)) {
+        $updates[] = 'language = ?';
+        $types .= 's';
+        $params[] = $language;
+    }
 }
 
 // Chat style
 if (!empty($chat_style) && in_array('chat_style', $existing_cols)) {
-    $updates[] = 'chat_style = ?';
-    $types .= 's';
-    $params[] = $chat_style;
+    $valid_styles = ['bubbles', 'flat', 'modern'];
+    if (in_array($chat_style, $valid_styles)) {
+        $updates[] = 'chat_style = ?';
+        $types .= 's';
+        $params[] = $chat_style;
+    }
 }
 
 // Username

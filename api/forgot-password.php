@@ -42,7 +42,7 @@ $email = trim($input['email'] ?? '');
 $csrf_token = $input['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
 
 // Validate CSRF token
-if (!session_validate_csrf($csrf_token) && !is_ajax_request()) {
+if (!session_validate_csrf($csrf_token)) {
     send_error('Invalid security token', 403);
 }
 
@@ -59,19 +59,7 @@ if (!validate_email($email)) {
 $result = request_password_reset($email);
 
 if ($result['success']) {
-    // In production, don't send the token in response
-    // It would be sent via email
-    $data = [
-        'message' => $result['message']
-    ];
-    
-    // Dev mode only - include token for testing
-    if (isset($result['reset_token'])) {
-        $data['reset_token'] = $result['reset_token'];
-        $data['reset_url'] = get_base_url() . '/pages/reset-password.php?token=' . $result['reset_token'];
-    }
-    
-    send_success($result['message'], $data);
+    send_success($result['message']);
 } else {
     send_error($result['message']);
 }

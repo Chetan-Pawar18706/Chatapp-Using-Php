@@ -109,12 +109,58 @@ function initializeLockedChatsBtn() {
     });
 }
 
-function showLockedChats() {
-    const locked = (Chat.chatList || []).filter(c => c.is_locked);
+async function showLockedChats() {
     const container = document.getElementById('chatList');
     if (!container) return;
-    
-    if (locked.length === 0) {
+
+    container.innerHTML = `
+        <div class="empty-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading locked chats...</p>
+        </div>
+    `;
+
+    try {
+        const response = await fetch('/chatapp/api/chat-lock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            credentials: 'same-origin',
+            body: 'action=get_locked'
+        });
+        const result = await response.json();
+
+        if (!result.success || !result.data || !result.data.locked_chats || result.data.locked_chats.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-lock"></i>
+                    <p>No locked chats</p>
+                    <span>Lock a chat from the chat menu to see it here</span>
+                </div>
+            `;
+            return;
+        }
+
+        const locked = result.data.locked_chats;
+        container.innerHTML = locked.map(chat => `
+            <div class="chat-item chat-item-locked" 
+                 data-user-id="${chat.target_id}" data-locked="1" 
+                 onclick="handleChatClick(${chat.target_id}, true)">
+                <div class="chat-avatar">
+                    ${renderAvatar(chat.avatar, chat.username)}
+                    <span class="status-dot offline"></span>
+                </div>
+                <div class="chat-info">
+                    <div class="chat-name">
+                        <span>${escapeHtml(chat.username)}</span>
+                        <i class="fas fa-lock chat-lock-icon"></i>
+                    </div>
+                    <div class="chat-preview">
+                        <span class="chat-message"><i class="fas fa-lock"></i> Password protected</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } catch(e) {
         container.innerHTML = `
             <div class="empty-state">
                 <i class="fas fa-lock"></i>
@@ -122,32 +168,9 @@ function showLockedChats() {
                 <span>Lock a chat from the chat menu to see it here</span>
             </div>
         `;
-        return;
     }
-    container.innerHTML = locked.map(chat => createLockedChatItem(chat)).join('');
 }
 
-function createLockedChatItem(chat) {
-    return `
-        <div class="chat-item chat-item-locked" 
-             data-user-id="${chat.user_id}" data-locked="1" 
-             onclick="handleChatClick(${chat.user_id}, true)">
-            <div class="chat-avatar">
-                <div class="avatar-initials" style="background: var(--bg-tertiary); color: var(--text-secondary);">
-                    <i class="fas fa-lock"></i>
-                </div>
-            </div>
-            <div class="chat-info">
-                <div class="chat-name">
-                    <span>Locked Chat</span>
-                </div>
-                <div class="chat-preview">
-                    <span class="chat-message"><i class="fas fa-lock"></i> Enter password to view</span>
-                </div>
-            </div>
-        </div>
-    `;
-}
 
 async function loadChatList() {
     const result = await ChatApp.apiRequest('/chat-list.php', 'GET');
@@ -244,103 +267,142 @@ function createChatListItem(chat) {
 const ChatLock = {
     csrfToken: null,
     pendingUserId: null,
+    mode: null,
 
     init: function() {
         this.csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
                          (typeof CHAT_CONFIG !== 'undefined' ? CHAT_CONFIG.csrfToken : '');
     },
 
-    promptPassword: function(userId) {
+    openModal: function(userId, mode) {
         this.pendingUserId = userId;
+        this.mode = mode;
         const modal = document.getElementById('chatLockModal');
-        if (modal) {
-            modal.classList.add('active');
-            const input = document.getElementById('chatLockPassword');
-            if (input) { input.value = ''; input.focus(); }
+        const title = document.getElementById('chatLockModalTitle');
+        const desc = document.getElementById('chatLockModalDesc');
+        const input = document.getElementById('chatLockPassword');
+        const btn = document.getElementById('chatLockSubmitBtn');
+        if (!modal) return;
+
+        if (mode === 'set') {
+            if (title) title.innerHTML = '<i class="fas fa-lock"></i> Lock Chat';
+            if (desc) desc.textContent = 'Set a password to lock this chat (min 8 characters)';
+            if (btn) btn.innerHTML = '<i class="fas fa-lock"></i> Lock';
+        } else if (mode === 'remove') {
+            if (title) title.innerHTML = '<i class="fas fa-unlock"></i> Unlock Chat';
+            if (desc) desc.textContent = 'Enter the password to unlock this chat';
+            if (btn) btn.innerHTML = '<i class="fas fa-unlock"></i> Unlock';
+        } else {
+            if (title) title.innerHTML = '<i class="fas fa-lock"></i> Chat Locked';
+            if (desc) desc.textContent = 'Enter password to unlock this chat';
+            if (btn) btn.innerHTML = '<i class="fas fa-unlock"></i> Unlock';
         }
+
+        if (input) { input.value = ''; input.focus(); }
+        modal.classList.add('active');
     },
 
     closeModal: function() {
         const modal = document.getElementById('chatLockModal');
         if (modal) modal.classList.remove('active');
         this.pendingUserId = null;
+        this.mode = null;
     },
 
-    verify: function() {
+    submit: function() {
+        if (this.mode === 'set') return this.doSetLock();
+        if (this.mode === 'remove') return this.doRemoveLock();
+        return this.doVerify();
+    },
+
+    doVerify: async function() {
         const password = document.getElementById('chatLockPassword')?.value;
         if (!password || !this.pendingUserId) return;
-        
         const uid = this.pendingUserId;
-        const token = this.csrfToken;
-        
-        fetch('/chatapp/api/chat-lock.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'action=verify&chat_type=chat&target_id=' + uid + '&password=' + encodeURIComponent(password) + '&csrf_token=' + encodeURIComponent(token)
-        })
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
+        try {
+            const response = await fetch('/chatapp/api/chat-lock.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
+                body: 'action=verify&chat_type=chat&target_id=' + uid + '&password=' + encodeURIComponent(password)
+            });
+            const data = await response.json();
             if (data.verified) {
-                ChatLock.closeModal();
+                this.closeModal();
                 openChat(uid);
             } else {
-                if (typeof ChatApp !== 'undefined' && ChatApp.showToast) {
-                    ChatApp.showToast(data.message || 'Incorrect password', 'error');
-                } else if (typeof showToast === 'function') {
-                    showToast(data.message || 'Incorrect password', 'error');
-                }
+                showToast(data.message || 'Incorrect password', 'error');
                 var inp = document.getElementById('chatLockPassword');
                 if (inp) { inp.value = ''; inp.focus(); }
             }
-        })
-        .catch(function(err) {
-            if (typeof ChatApp !== 'undefined' && ChatApp.showToast) {
-                ChatApp.showToast('Verification failed. Try again.', 'error');
-            } else if (typeof showToast === 'function') {
-                showToast('Verification failed. Try again.', 'error');
+        } catch(e) {
+            showToast('Verification failed. Try again.', 'error');
+        }
+    },
+
+    doSetLock: async function() {
+        const password = document.getElementById('chatLockPassword')?.value;
+        if (!password || !this.pendingUserId) return;
+        if (password.length < 8) {
+            showToast('Password must be at least 8 characters', 'error');
+            return;
+        }
+        const uid = this.pendingUserId;
+        try {
+            const response = await fetch('/chatapp/api/chat-lock.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
+                body: `action=set&chat_type=chat&target_id=${uid}&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
+            });
+            const data = await response.json();
+            if (data.success) {
+                this.closeModal();
+                showToast('Chat locked', 'success');
+                location.reload();
+            } else {
+                showToast(data.message || 'Failed to lock chat', 'error');
             }
-        });
+        } catch(e) {
+            showToast('Failed to lock chat. Try again.', 'error');
+        }
+    },
+
+    doRemoveLock: async function() {
+        const password = document.getElementById('chatLockPassword')?.value;
+        if (!password || !this.pendingUserId) return;
+        const uid = this.pendingUserId;
+        try {
+            const response = await fetch('/chatapp/api/chat-lock.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
+                body: `action=remove&chat_type=chat&target_id=${uid}&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
+            });
+            const data = await response.json();
+            if (data.success) {
+                this.closeModal();
+                showToast('Chat unlocked', 'success');
+                location.reload();
+            } else {
+                showToast(data.message || 'Failed to unlock chat', 'error');
+            }
+        } catch(e) {
+            showToast('Failed to unlock chat. Try again.', 'error');
+        }
+    },
+
+    // Legacy aliases
+    promptPassword: function(userId) {
+        this.openModal(userId, 'verify');
     },
 
     setLock: function(userId) {
-        const password = prompt('Set a password to lock this chat (min 4 chars):');
-        if (!password || password.length < 4) {
-            if (password !== null) showToast('Password must be at least 4 characters', 'error');
-            return;
-        }
-        fetch('/chatapp/api/chat-lock.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `action=set&chat_type=chat&target_id=${userId}&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                showToast('Chat locked');
-                location.reload();
-            } else {
-                showToast(data.message, 'error');
-            }
-        });
+        this.openModal(userId, 'set');
     },
 
     removeLock: function(userId) {
-        const password = prompt('Enter password to unlock this chat:');
-        if (!password) return;
-        fetch('/chatapp/api/chat-lock.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `action=remove&chat_type=chat&target_id=${userId}&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                showToast('Chat unlocked');
-                location.reload();
-            } else {
-                showToast(data.message, 'error');
-            }
-        });
+        this.openModal(userId, 'remove');
     }
 };
 
@@ -368,6 +430,7 @@ async function checkAndOpenChat(userId) {
         const response = await fetch('/chatapp/api/chat-lock.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            credentials: 'same-origin',
             body: formData.toString()
         });
         const result = await response.json();
@@ -435,6 +498,7 @@ async function checkChatLockStatus(userId) {
         const response = await fetch('/chatapp/api/chat-lock.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            credentials: 'same-origin',
             body: `action=check&chat_type=chat&target_id=${userId}&csrf_token=${csrfToken}`
         });
         const result = await response.json();
@@ -1322,8 +1386,10 @@ async function updateTypingStatus(isTyping) {
 function showTypingIndicator(username) {
     const indicator = document.getElementById('typingIndicator');
     if (!indicator) return;
-    const avatar = indicator.querySelector('.typing-avatar');
-    if (avatar) avatar.textContent = username.charAt(0).toUpperCase();
+    const avatar = document.getElementById('typingAvatar');
+    const text = document.getElementById('typingText');
+    if (avatar) avatar.textContent = (username || 'U').charAt(0).toUpperCase();
+    if (text) text.textContent = (username || 'Friend') + ' is typing...';
     indicator.style.display = 'flex';
     scrollToBottom();
 }

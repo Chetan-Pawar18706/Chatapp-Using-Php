@@ -14,8 +14,9 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../includes/functions.php';
 
-// Only allow CLI or admin access
-if (php_sapi_name() !== 'cli' && !isset($_GET['secret'])) {
+// Only allow CLI access - no web access
+if (php_sapi_name() !== 'cli') {
+    http_response_code(403);
     die('Direct access not permitted');
 }
 

@@ -62,3 +62,41 @@ Stack trace:
 [27-Jul-2026 08:14:45 Europe/Berlin] Upload Debug: extension=pdf, category=documents, category_type=string
 [27-Jul-2026 08:14:45 Europe/Berlin] Upload Debug: category_hex=646f63756d656e7473, receiver_id=NULL, group_id=NULL, file_size=923119
 [27-Jul-2026 08:14:45 Europe/Berlin] upload-media: ext=pdf, mime=application/pdf, allowed=yes
+[29-Jul-2026 07:36:20 Europe/Berlin] PHP Warning:  Constant APP_RUNNING already defined in C:\xampp\htdocs\chatapp\api\get-notifications.php on line 10
+[29-Jul-2026 07:36:32 Europe/Berlin] PHP Warning:  Constant APP_RUNNING already defined in C:\xampp\htdocs\chatapp\api\get-notifications.php on line 10
+[29-Jul-2026 07:36:50 Europe/Berlin] PHP Warning:  Constant APP_RUNNING already defined in C:\xampp\htdocs\chatapp\api\get-notifications.php on line 10
+[29-Jul-2026 07:37:02 Europe/Berlin] PHP Warning:  Constant APP_RUNNING already defined in C:\xampp\htdocs\chatapp\api\get-notifications.php on line 10
+[29-Jul-2026 07:42:32 Europe/Berlin] PHP Fatal error:  Uncaught Error: Undefined constant "CSRF_TOKEN_NAME" in C:\xampp\htdocs\chatapp\includes\security.php:134
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\session.php(249): Security->validateCSRFToken('0d6a93c77af80d8...')
+#1 C:\xampp\htdocs\chatapp\api\accept-friend.php(34): session_validate_csrf('0d6a93c77af80d8...')
+#2 {main}
+  thrown in C:\xampp\htdocs\chatapp\includes\security.php on line 134
+[29-Jul-2026 07:44:59 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 07:45:02 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 07:45:21 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 07:45:24 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 07:46:06 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 07:48:29 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 07:54:09 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 07:55:32 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 07:55:37 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 07:55:41 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 07:55:44 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 08:16:05 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 08:33:03 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 08:44:51 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 08:44:57 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 08:52:04 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 08:52:10 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 09:21:09 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 09:21:20 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 09:22:43 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120
+[29-Jul-2026 09:23:14 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown database 'chatapp_db' in C:\xampp\htdocs\chatapp\config\database.php:40
+Stack trace:
+#0 C:\xampp\htdocs\chatapp\config\database.php(40): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue), 'chatapp_db')
+#1 C:\xampp\htdocs\chatapp\config\database.php(257): db_connect()
+#2 C:\xampp\htdocs\chatapp\api\get-notifications.php(14): require_once('C:\\xampp\\htdocs...')
+#3 {main}
+  thrown in C:\xampp\htdocs\chatapp\config\database.php on line 40
+[29-Jul-2026 09:26:43 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\xampp\htdocs\chatapp\api\get-friends.php on line 120

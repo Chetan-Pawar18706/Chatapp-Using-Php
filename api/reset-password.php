@@ -44,7 +44,7 @@ $confirm_password = $input['confirm_password'] ?? '';
 $csrf_token = $input['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
 
 // Validate CSRF token
-if (!session_validate_csrf($csrf_token) && !is_ajax_request()) {
+if (!session_validate_csrf($csrf_token)) {
     send_error('Invalid security token', 403);
 }
 

@@ -148,7 +148,7 @@ include 'includes/header.php';
     <div class="card-footer">
         <?php
         $base_url = 'messages.php?' . http_build_query(['search' => $search, 'type' => $type]);
-        echo admin_pagination($total, $per_page, $page, $base_url . '&page=');
+        echo admin_pagination($total, $per_page, $page, $base_url);
         ?>
     </div>
     <?php endif; ?>

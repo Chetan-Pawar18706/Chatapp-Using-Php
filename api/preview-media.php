@@ -84,7 +84,8 @@ $mimeType = $media['file_type'] ?: 'application/octet-stream';
 header('Content-Type: ' . $mimeType);
 header('Content-Length: ' . $fileSize);
 header('Cache-Control: public, max-age=31536000');
-header('Content-Disposition: inline; filename="' . $media['original_name'] . '"');
+$safeName = preg_replace('/[^\w\.\-]/', '_', $media['original_name']);
+header('Content-Disposition: inline; filename="' . $safeName . '"');
 
 // Output file
 readfile($filePath);

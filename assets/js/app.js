@@ -34,7 +34,8 @@ async function apiRequest(endpoint, method = 'GET', data = null, isFormData = fa
         method: method.toUpperCase(),
         headers: {
             'X-Requested-With': 'XMLHttpRequest'
-        }
+        },
+        credentials: 'same-origin'
     };
 
     if (!isFormData) {
@@ -283,7 +284,7 @@ function escapeHtml(text) {
 function renderAvatar(avatar, username, size) {
     var sizeClass = size ? ' ' + size : '';
     if (avatar) {
-        return '<img src="' + avatar + '" alt="' + escapeHtml(username || '') + '" class="user-avatar-img' + sizeClass + '">';
+        return '<img src="' + escapeHtml(avatar) + '" alt="' + escapeHtml(username || '') + '" class="user-avatar-img' + sizeClass + '">';
     }
     var initial = (username || 'U').charAt(0).toUpperCase();
     return '<div class="user-avatar' + sizeClass + '">' + initial + '</div>';

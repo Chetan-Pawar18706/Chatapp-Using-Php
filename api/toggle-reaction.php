@@ -29,6 +29,11 @@ if (!$input) {
     $input = $_POST;
 }
 
+$csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $input['csrf_token'] ?? '';
+if (!session_validate_csrf($csrf_token)) {
+    send_error('Invalid CSRF token', 403);
+}
+
 $user_id = session_get_user_id();
 $message_id = intval($input['message_id'] ?? 0);
 $emoji = trim($input['emoji'] ?? '');

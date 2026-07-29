@@ -33,7 +33,7 @@ $message_id = (int)($input['message_id'] ?? 0);
 $delete_type = $input['delete_type'] ?? 'for_me'; // for_me or for_everyone
 $csrf_token = $input['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
 
-if (!session_validate_csrf($csrf_token) && !is_ajax_request()) {
+if (!session_validate_csrf($csrf_token)) {
     send_error('Invalid security token', 403);
 }
 

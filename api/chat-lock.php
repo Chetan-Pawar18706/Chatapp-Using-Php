@@ -31,15 +31,20 @@ $action = $_POST['action'] ?? '';
 $chat_type = $_POST['chat_type'] ?? 'chat';
 $target_id = intval($_POST['target_id'] ?? 0);
 
-if ($target_id <= 0) {
+$csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['csrf_token'] ?? '';
+if (!in_array($action, ['verify', 'check', 'get_locked']) && !session_validate_csrf($csrf_token)) {
+    send_json_response(403, ['success' => false, 'message' => 'Invalid CSRF token']);
+}
+
+if ($target_id <= 0 && !in_array($action, ['get_all', 'get_locked'])) {
     send_json_response(400, ['success' => false, 'message' => 'Invalid target ID']);
 }
 
 switch ($action) {
     case 'set':
         $password = $_POST['password'] ?? '';
-        if (strlen($password) < 4) {
-            send_json_response(400, ['success' => false, 'message' => 'Password must be at least 4 characters']);
+        if (strlen($password) < 8) {
+            send_json_response(400, ['success' => false, 'message' => 'Password must be at least 8 characters']);
         }
         $hashed = password_hash($password, PASSWORD_DEFAULT);
         db_execute(
@@ -102,6 +107,45 @@ switch ($action) {
             }
         }
         send_json_response(200, ['success' => true, 'locked' => $locked]);
+        break;
+
+    case 'get_locked':
+        $chat_locks = db_fetch_all(
+            "SELECT cl.target_id, cl.chat_type, u.username, u.avatar
+             FROM chat_locks cl
+             LEFT JOIN users u ON u.id = cl.target_id
+             WHERE cl.user_id = ? AND cl.chat_type = 'chat'",
+            [$user_id]
+        );
+        $group_locks = db_fetch_all(
+            "SELECT cl.target_id, cl.chat_type, g.name, g.avatar
+             FROM chat_locks cl
+             LEFT JOIN groups g ON g.id = cl.target_id
+             WHERE cl.user_id = ? AND cl.chat_type = 'group'",
+            [$user_id]
+        );
+        $locked_chats = [];
+        if ($chat_locks) {
+            foreach ($chat_locks as $l) {
+                $locked_chats[] = [
+                    'target_id' => (int)$l['target_id'],
+                    'chat_type' => $l['chat_type'],
+                    'username' => $l['username'] ?? 'Unknown',
+                    'avatar' => $l['avatar'] ?? null
+                ];
+            }
+        }
+        if ($group_locks) {
+            foreach ($group_locks as $l) {
+                $locked_chats[] = [
+                    'target_id' => (int)$l['target_id'],
+                    'chat_type' => $l['chat_type'],
+                    'username' => $l['name'] ?? 'Unknown Group',
+                    'avatar' => $l['avatar'] ?? null
+                ];
+            }
+        }
+        send_json_response(200, ['success' => true, 'data' => ['locked_chats' => $locked_chats]]);
         break;
 
     default:

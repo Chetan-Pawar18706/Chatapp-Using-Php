@@ -42,7 +42,7 @@ if (!empty($search)) {
 $where_clause = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
 
 // Get total count
-$count_query = "SELECT COUNT(*) as total FROM groups g {$where_clause}";
+$count_query = "SELECT COUNT(*) as total FROM `groups` g {$where_clause}";
 $count_stmt = mysqli_prepare($conn, $count_query);
 if (!empty($params)) {
     mysqli_stmt_bind_param($count_stmt, $types, ...$params);
@@ -55,7 +55,7 @@ $offset = ($page - 1) * $per_page;
 // Get groups with member count
 $query = "SELECT g.*, u.username as creator_name,
           (SELECT COUNT(*) FROM group_members WHERE group_id = g.id) as member_count
-          FROM groups g
+          FROM `groups` g
           LEFT JOIN users u ON g.created_by = u.id
           {$where_clause}
           ORDER BY g.created_at DESC
@@ -158,7 +158,7 @@ include 'includes/header.php';
     <div class="card-footer">
         <?php
         $base_url = 'groups.php?' . http_build_query(['search' => $search]);
-        echo admin_pagination($total, $per_page, $page, $base_url . '&page=');
+        echo admin_pagination($total, $per_page, $page, $base_url);
         ?>
     </div>
     <?php endif; ?>

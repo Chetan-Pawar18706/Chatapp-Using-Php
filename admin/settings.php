@@ -54,10 +54,10 @@ include 'includes/header.php';
 <div class="row">
     <div class="col-lg-8">
         <?php if (!empty($success)): ?>
-            <div class="alert alert-success"><i class="fas fa-check-circle"></i> <?php echo $success; ?></div>
+            <div class="alert alert-success"><i class="fas fa-check-circle"></i> <?php echo htmlspecialchars($success); ?></div>
         <?php endif; ?>
         <?php if (!empty($error)): ?>
-            <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> <?php echo $error; ?></div>
+            <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> <?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
         
         <form method="POST">

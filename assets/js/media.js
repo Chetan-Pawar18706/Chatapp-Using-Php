@@ -9,7 +9,7 @@ const MediaModule = {
     csrfToken: null,
     maxFileSize: 20 * 1024 * 1024, // 20 MB
     allowedExtensions: {
-        images: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'],
+        images: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
         videos: ['mp4', 'webm', 'ogg', 'mov'],
         documents: ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt'],
         archives: ['zip', 'rar', '7z']
@@ -19,7 +19,9 @@ const MediaModule = {
      * Initialize Media Module
      */
     init: function() {
-        this.csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+        this.csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || 
+                         (typeof CHAT_CONFIG !== 'undefined' ? CHAT_CONFIG.csrfToken : '') ||
+                         (typeof GROUP_CONFIG !== 'undefined' ? GROUP_CONFIG.csrfToken : '');
         this.initDropZone();
         this.initFileInput();
         this.initLightbox();
@@ -255,6 +257,7 @@ const MediaModule = {
         
         // Create XMLHttpRequest for progress tracking
         const xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
         
         // Track upload progress
         xhr.upload.addEventListener('progress', (e) => {
@@ -590,6 +593,7 @@ const MediaModule = {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
+            credentials: 'same-origin',
             body: `csrf_token=${this.csrfToken}`
         })
         .then(response => response.json())
@@ -621,6 +625,7 @@ const MediaModule = {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
+            credentials: 'same-origin',
             body: `id=${id}&csrf_token=${this.csrfToken}`
         })
         .then(response => response.json())
@@ -652,6 +657,7 @@ const MediaModule = {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
+            credentials: 'same-origin',
             body: `id=${id}&action=restore&csrf_token=${this.csrfToken}`
         })
         .then(response => response.json())
@@ -743,6 +749,7 @@ const SecretFolder = {
         fetch('/chatapp/api/secret-folder.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            credentials: 'same-origin',
             body: `action=set_password&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
         })
         .then(r => r.json())
@@ -767,6 +774,7 @@ const SecretFolder = {
         fetch('/chatapp/api/secret-folder.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            credentials: 'same-origin',
             body: `action=verify&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
         })
         .then(r => r.json())
@@ -786,6 +794,7 @@ const SecretFolder = {
         fetch('/chatapp/api/secret-folder.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            credentials: 'same-origin',
             body: `action=get_files&password=${encodeURIComponent(this.password)}&csrf_token=${this.csrfToken}`
         })
         .then(r => r.json())
@@ -829,6 +838,7 @@ const SecretFolder = {
         fetch('/chatapp/api/toggle-secret.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            credentials: 'same-origin',
             body: `id=${id}&password=${encodeURIComponent(this.password)}&csrf_token=${this.csrfToken}`
         })
         .then(r => r.json())

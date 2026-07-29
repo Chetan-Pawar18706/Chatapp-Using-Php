@@ -201,7 +201,7 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
                         
                         <!-- Typing Indicator -->
                         <div class="typing-indicator" id="typingIndicator" style="display: none;">
-                            <div class="typing-avatar">U</div>
+                            <div class="typing-avatar" id="typingAvatar">U</div>
                             <div class="typing-bubble">
                                 <div class="typing-dots">
                                     <span></span>
@@ -209,6 +209,7 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
                                     <span></span>
                                 </div>
                             </div>
+                            <span class="typing-text" id="typingText">is typing...</span>
                         </div>
                     </div>
                 </div>
@@ -302,18 +303,18 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
     
-    <!-- Chat Lock Modal -->
+    <!-- Chat Lock Modal (used for verify, set, and remove) -->
     <div class="modal" id="chatLockModal">
         <div class="modal-overlay" onclick="ChatLock.closeModal()"></div>
         <div class="modal-content">
             <button class="modal-close" onclick="ChatLock.closeModal()">&times;</button>
-            <h3><i class="fas fa-lock"></i> Chat Locked</h3>
-            <p>Enter password to unlock this chat</p>
+            <h3 id="chatLockModalTitle"><i class="fas fa-lock"></i> Chat Locked</h3>
+            <p id="chatLockModalDesc">Enter password to unlock this chat</p>
             <input type="password" id="chatLockPassword" class="form-control" placeholder="Enter password" 
-                   onkeypress="if(event.key==='Enter') ChatLock.verify()">
+                   onkeypress="if(event.key==='Enter') ChatLock.submit()">
             <div class="secret-actions">
                 <button class="btn btn-secondary" onclick="ChatLock.closeModal()">Cancel</button>
-                <button class="btn btn-primary" onclick="ChatLock.verify()">
+                <button class="btn btn-primary" id="chatLockSubmitBtn" onclick="ChatLock.submit()">
                     <i class="fas fa-unlock"></i> Unlock
                 </button>
             </div>
@@ -331,7 +332,7 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
             currentUserId: <?php echo $user_id; ?>,
             currentUserInitial: '<?php echo htmlspecialchars(substr($user_data['username'] ?? 'U', 0, 1)); ?>',
             selectedUserId: <?php echo $selected_user_id; ?>,
-            csrfToken: '<?php echo $csrf_token; ?>'
+            csrfToken: '<?php echo htmlspecialchars($csrf_token, ENT_QUOTES, 'UTF-8'); ?>'
         };
     </script>
     <script src="../assets/js/chat.js"></script>

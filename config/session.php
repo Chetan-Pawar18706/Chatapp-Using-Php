@@ -201,6 +201,17 @@ function session_validate_remember_me() {
  * @return string CSRF token
  */
 function session_generate_csrf() {
+    if (!class_exists('Security')) {
+        $cfgFile = dirname(__DIR__) . '/config/security.php';
+        $secFile = dirname(__DIR__) . '/includes/security.php';
+        if (file_exists($cfgFile)) {
+            require_once $cfgFile;
+        }
+        if (file_exists($secFile)) {
+            require_once $secFile;
+        }
+    }
+    
     if (class_exists('Security')) {
         $security = Security::getInstance();
         return $security->getCSRFToken();
@@ -230,6 +241,17 @@ function session_generate_csrf() {
  * @return bool True if valid
  */
 function session_validate_csrf($token) {
+    if (!class_exists('Security')) {
+        $cfgFile = dirname(__DIR__) . '/config/security.php';
+        $secFile = dirname(__DIR__) . '/includes/security.php';
+        if (file_exists($cfgFile)) {
+            require_once $cfgFile;
+        }
+        if (file_exists($secFile)) {
+            require_once $secFile;
+        }
+    }
+    
     if (class_exists('Security')) {
         $security = Security::getInstance();
         return $security->validateCSRFToken($token);

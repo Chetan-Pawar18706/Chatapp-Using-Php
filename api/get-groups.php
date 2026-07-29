@@ -71,6 +71,11 @@ foreach ($groups as $group) {
         [$user_id, $group['id']]
     );
     
+    // Skip locked groups — they should NOT appear in normal list
+    if (!empty($lock)) {
+        continue;
+    }
+    
     $formatted_groups[] = [
         'id' => (int)$group['id'],
         'name' => $group['name'],
@@ -83,7 +88,7 @@ foreach ($groups as $group) {
         'last_message' => $last_msg ? truncate_text($last_msg, 40) : null,
         'last_message_time' => $group['last_message_time'] ? time_ago($group['last_message_time']) : null,
         'last_message_from_me' => $from_me,
-        'is_locked' => !empty($lock)
+        'is_locked' => false
     ];
 }
 

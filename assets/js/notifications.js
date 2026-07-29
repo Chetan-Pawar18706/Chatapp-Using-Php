@@ -101,7 +101,9 @@ const NotificationModule = {
         
         try {
             const unreadOnly = this.currentFilter === 'unread' ? '1' : '0';
-            const response = await fetch(`../api/get-notifications.php?unread=${unreadOnly}&limit=20`);
+            const response = await fetch(`../api/get-notifications.php?unread=${unreadOnly}&limit=20`, {
+                credentials: 'same-origin'
+            });
             const data = await response.json();
             
             if (data.success) {
@@ -306,6 +308,7 @@ const NotificationModule = {
             const response = await fetch('../api/notification-actions.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
                 body: `csrf_token=${this.csrfToken}&action=mark_read&notification_id=${id}`
             });
             
@@ -333,6 +336,7 @@ const NotificationModule = {
             const response = await fetch('../api/notification-actions.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
                 body: `csrf_token=${this.csrfToken}&action=mark_all_read`
             });
             
@@ -357,6 +361,7 @@ const NotificationModule = {
             const response = await fetch('../api/notification-actions.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
                 body: `csrf_token=${this.csrfToken}&action=delete&notification_id=${id}`
             });
             
@@ -388,6 +393,7 @@ const NotificationModule = {
             const response = await fetch('../api/notification-actions.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                credentials: 'same-origin',
                 body: `csrf_token=${this.csrfToken}&action=clear_all`
             });
             
@@ -436,7 +442,9 @@ const NotificationModule = {
     startPolling: function() {
         this.pollingInterval = setInterval(async () => {
             try {
-                const response = await fetch('../api/get-notifications.php?unread=1&limit=1');
+                const response = await fetch('../api/get-notifications.php?unread=1&limit=1', {
+                    credentials: 'same-origin'
+                });
                 const data = await response.json();
                 
                 if (data.success) {

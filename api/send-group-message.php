@@ -40,7 +40,7 @@ if (!in_array($auto_delete, $valid_auto_delete)) {
     $auto_delete = 'none';
 }
 
-if (!session_validate_csrf($csrf_token) && !is_ajax_request()) {
+if (!session_validate_csrf($csrf_token)) {
     send_error('Invalid security token', 403);
 }
 

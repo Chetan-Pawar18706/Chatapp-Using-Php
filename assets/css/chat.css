@@ -816,6 +816,12 @@ body > .sidebar.collapsed ~ .chat-app {
     align-self: flex-start;
 }
 
+.typing-indicator .typing-text {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
 .typing-indicator .typing-avatar {
     width: 28px;
     height: 28px;
@@ -1225,6 +1231,7 @@ body > .sidebar.collapsed ~ .chat-app {
     .chat-app {
         position: relative;
         width: 100%;
+        margin-left: 0;
     }
     
     .chat-sidebar {

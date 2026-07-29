@@ -96,7 +96,7 @@ include 'includes/header.php';
     </div>
     <?php if ($total_pages > 1): ?>
     <div class="card-footer">
-        <?php echo admin_pagination($total, $per_page, $page, 'blocked.php?page='); ?>
+        <?php echo admin_pagination($total, $per_page, $page, 'blocked.php'); ?>
     </div>
     <?php endif; ?>
 </div>

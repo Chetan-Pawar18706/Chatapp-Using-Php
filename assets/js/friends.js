@@ -8,6 +8,11 @@
 // =====================================================
 // Friend System State
 // =====================================================
+
+function openChat(userId) {
+    window.location.href = 'chat.php?user_id=' + userId;
+}
+
 const FriendSystem = {
     friends: [],
     receivedRequests: [],

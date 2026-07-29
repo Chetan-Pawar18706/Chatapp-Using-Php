@@ -65,7 +65,7 @@ if (class_exists('Security') && !empty($identifier)) {
 }
 
 // Validate CSRF token
-if (!session_validate_csrf($csrf_token) && !is_ajax_request()) {
+if (!session_validate_csrf($csrf_token)) {
     send_error('Invalid security token', 403);
 }
 

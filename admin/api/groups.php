@@ -26,6 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $input = json_decode(file_get_contents('php://input'), true);
+
+$csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $input['csrf_token'] ?? '';
+if (!admin_verify_csrf($csrf_token)) {
+    admin_send_error('Invalid CSRF token', 403);
+}
+
 $action = $input['action'] ?? '';
 $admin_id = admin_get_id();
 
@@ -34,7 +40,7 @@ switch ($action) {
         $group_id = (int)($input['group_id'] ?? 0);
         if (!$group_id) admin_send_error('Group ID required');
         
-        $stmt = mysqli_prepare($conn, "DELETE FROM groups WHERE id = ?");
+        $stmt = mysqli_prepare($conn, "DELETE FROM `groups` WHERE id = ?");
         mysqli_stmt_bind_param($stmt, 'i', $group_id);
         mysqli_stmt_execute($stmt);
         
@@ -50,7 +56,7 @@ switch ($action) {
             admin_send_error('Invalid parameters');
         }
         
-        $stmt = mysqli_prepare($conn, "UPDATE groups SET status = ? WHERE id = ?");
+        $stmt = mysqli_prepare($conn, "UPDATE `groups` SET status = ? WHERE id = ?");
         mysqli_stmt_bind_param($stmt, 'si', $status, $group_id);
         mysqli_stmt_execute($stmt);
         

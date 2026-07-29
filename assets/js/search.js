@@ -147,7 +147,9 @@ const SearchModule = {
         this.showLoading();
         
         try {
-            const response = await fetch(`../api/global-search.php?q=${encodeURIComponent(query)}&type=${this.currentFilter}`);
+            const response = await fetch(`../api/global-search.php?q=${encodeURIComponent(query)}&type=${this.currentFilter}`, {
+                credentials: 'same-origin'
+            });
             const data = await response.json();
             
             if (data.success) {
@@ -428,6 +430,7 @@ const SearchModule = {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
+                credentials: 'same-origin',
                 body: `csrf_token=${this.csrfToken}&search_type=user&search_query=${encodeURIComponent(query)}`
             });
         } catch (error) {
@@ -444,7 +447,8 @@ const SearchModule = {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-Token': this.csrfToken
-                }
+                },
+                credentials: 'same-origin'
             });
             
             const data = await response.json();
@@ -479,7 +483,8 @@ const SearchModule = {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-Token': this.csrfToken
-                }
+                },
+                credentials: 'same-origin'
             });
             
             const data = await response.json();

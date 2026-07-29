@@ -26,6 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $input = json_decode(file_get_contents('php://input'), true);
+
+$csrf_token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $input['csrf_token'] ?? '';
+if (!admin_verify_csrf($csrf_token)) {
+    admin_send_error('Invalid CSRF token', 403);
+}
+
 $action = $input['action'] ?? '';
 $admin_id = admin_get_id();
 
@@ -40,7 +46,7 @@ switch ($action) {
         }
         
         $stmt = mysqli_prepare($conn, "UPDATE user_reports SET status = ?, reviewed_by = ?, reviewed_at = NOW(), resolution_notes = ? WHERE id = ?");
-        mysqli_stmt_bind_param($stmt, 'iisi', $status, $admin_id, $notes, $report_id);
+        mysqli_stmt_bind_param($stmt, 'siis', $status, $admin_id, $notes, $report_id);
         mysqli_stmt_execute($stmt);
         
         admin_log_activity($admin_id, 'update_report', 'report', $report_id, ['status' => $status]);

@@ -92,7 +92,7 @@ if (!file_exists($filePath)) {
 // Get file info
 $fileSize = filesize($filePath);
 $mimeType = $media['file_type'] ?: 'application/octet-stream';
-$fileName = $media['original_name'];
+$fileName = preg_replace('/[^\w\.\-]/', '_', $media['original_name']);
 
 // Set headers for download
 header('Content-Type: ' . $mimeType);

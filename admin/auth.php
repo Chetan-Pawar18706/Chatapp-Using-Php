@@ -82,7 +82,7 @@ function admin_login($username, $password, $remember = false) {
     }
     
     // Find admin user
-    $query = "SELECT id, username, email, password, full_name, role, avatar, is_active 
+    $query = "SELECT id, username, email, password, full_name, role, avatar, is_active, settings 
               FROM admin_users WHERE username = ? OR email = ? LIMIT 1";
     $stmt = mysqli_prepare($conn, $query);
     mysqli_stmt_bind_param($stmt, 'ss', $username, $username);
@@ -264,14 +264,15 @@ function admin_verify_session() {
 function admin_log_activity($admin_id, $action, $target_type = null, $target_id = null, $details = []) {
     $conn = db_connect();
     
-    $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+    $ip = admin_get_ip();
     $ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
     $details_json = !empty($details) ? json_encode($details) : null;
+    $target_id = $target_id !== null ? (int)$target_id : null;
     
     $query = "INSERT INTO admin_activity_log (admin_id, action, target_type, target_id, details, ip_address, user_agent) 
               VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, 'ississs', $admin_id, $action, $target_type, $target_id, $details_json, $ip, $ua);
+    mysqli_stmt_bind_param($stmt, 'issssss', $admin_id, $action, $target_type, $target_id, $details_json, $ip, $ua);
     mysqli_stmt_execute($stmt);
 }
 

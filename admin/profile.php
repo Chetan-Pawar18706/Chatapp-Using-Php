@@ -403,12 +403,12 @@ include 'includes/header.php';
         <div class="settings-content">
             <?php if (!empty($success)): ?>
                 <div class="alert alert-success" style="margin-bottom: 20px; padding: 14px 18px; background: var(--success-light); border: 1px solid rgba(34,197,94,0.3); border-radius: 10px; color: #86efac;">
-                    <i class="fas fa-check-circle"></i> <?php echo $success; ?>
+                    <i class="fas fa-check-circle"></i> <?php echo htmlspecialchars($success); ?>
                 </div>
             <?php endif; ?>
             <?php if (!empty($error)): ?>
                 <div class="alert alert-danger" style="margin-bottom: 20px; padding: 14px 18px; background: var(--danger-light); border: 1px solid rgba(239,68,68,0.3); border-radius: 10px; color: #fca5a5;">
-                    <i class="fas fa-exclamation-circle"></i> <?php echo $error; ?>
+                    <i class="fas fa-exclamation-circle"></i> <?php echo htmlspecialchars($error); ?>
                 </div>
             <?php endif; ?>
 

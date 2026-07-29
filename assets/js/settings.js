@@ -186,6 +186,7 @@ const SettingsModule = {
         try {
             const response = await fetch('../api/update-profile.php', {
                 method: 'POST',
+                credentials: 'same-origin',
                 body: formData
             });
             
@@ -216,6 +217,7 @@ const SettingsModule = {
         try {
             const response = await fetch('../api/update-settings.php', {
                 method: 'POST',
+                credentials: 'same-origin',
                 body: formData
             });
             
@@ -245,6 +247,7 @@ const SettingsModule = {
         try {
             const response = await fetch('../api/change-password.php', {
                 method: 'POST',
+                credentials: 'same-origin',
                 body: formData
             });
             
@@ -272,6 +275,7 @@ const SettingsModule = {
         try {
             const response = await fetch('../api/update-settings.php', {
                 method: 'POST',
+                credentials: 'same-origin',
                 body: formData
             });
             
@@ -297,6 +301,7 @@ const SettingsModule = {
         try {
             const response = await fetch('../api/update-settings.php', {
                 method: 'POST',
+                credentials: 'same-origin',
                 body: formData
             });
             
@@ -338,6 +343,7 @@ const SettingsModule = {
         try {
             const response = await fetch('../api/upload-photo.php', {
                 method: 'POST',
+                credentials: 'same-origin',
                 body: formData
             });
             
@@ -441,6 +447,7 @@ function deactivateAccount() {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
+        credentials: 'same-origin',
         body: `csrf_token=${SettingsModule.csrfToken}&username=${encodeURIComponent(username)}`
     })
     .then(response => response.json())
@@ -464,6 +471,7 @@ function deleteAccount() {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
+        credentials: 'same-origin',
         body: `csrf_token=${SettingsModule.csrfToken}&confirm_text=${encodeURIComponent(confirmText)}`
     })
     .then(response => response.json())

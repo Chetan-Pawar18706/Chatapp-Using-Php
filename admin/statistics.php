@@ -47,7 +47,7 @@ FROM messages"));
 $group_stats = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
     COUNT(*) as total,
     SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active
-FROM groups"));
+FROM `groups`"));
 
 // Daily registration data (30 days)
 $daily_users = [];

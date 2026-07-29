@@ -58,6 +58,12 @@ foreach ($recent_chats as $chat) {
         "SELECT id FROM chat_locks WHERE user_id = ? AND chat_type = 'chat' AND target_id = ?",
         [$user_id, $chat['user_id']]
     );
+    
+    // Skip locked chats
+    if (!empty($lock)) {
+        continue;
+    }
+    
     $chats[] = [
         'user_id' => (int)$chat['user_id'],
         'username' => $chat['username'],
@@ -67,7 +73,7 @@ foreach ($recent_chats as $chat) {
         'last_message_time' => time_ago($chat['last_message_time']),
         'is_sender' => (int)$chat['sender_id'] === $user_id,
         'unread_count' => (int)$chat['unread_count'],
-        'is_locked' => !empty($lock)
+        'is_locked' => false
     ];
 }
 

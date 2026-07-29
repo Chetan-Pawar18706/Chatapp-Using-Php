@@ -32,7 +32,7 @@ $group_id = (int)($input['group_id'] ?? 0);
 $member_ids = $input['member_ids'] ?? [];
 $csrf_token = $input['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
 
-if (!session_validate_csrf($csrf_token) && !is_ajax_request()) {
+if (!session_validate_csrf($csrf_token)) {
     send_error('Invalid security token', 403);
 }
 

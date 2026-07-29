@@ -63,6 +63,7 @@ switch ($type) {
 
 // Create JSON file
 $jsonContent = json_encode($exportData, JSON_PRETTY_PRINT);
+$type = preg_replace('/[^a-z]/', '', strtolower($type));
 $filename = 'chatapp-export-' . $type . '-' . date('Y-m-d') . '.json';
 $tempFile = sys_get_temp_dir() . '/' . $filename;
 file_put_contents($tempFile, $jsonContent);

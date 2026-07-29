@@ -30,7 +30,7 @@ if (!$group_id) {
 }
 
 // Get group data
-$group_query = "SELECT g.*, u.username as creator_name FROM groups g LEFT JOIN users u ON g.created_by = u.id WHERE g.id = ?";
+$group_query = "SELECT g.*, u.username as creator_name FROM `groups` g LEFT JOIN users u ON g.created_by = u.id WHERE g.id = ?";
 $group_stmt = mysqli_prepare($conn, $group_query);
 mysqli_stmt_bind_param($group_stmt, 'i', $group_id);
 mysqli_stmt_execute($group_stmt);

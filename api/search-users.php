@@ -40,7 +40,7 @@ $blocked_ids[] = $user_id;
 $placeholders = str_repeat('?,', count($blocked_ids) - 1) . '?';
 
 // Search users by username, email, or friend code
-$sql = "SELECT id, username, email, friend_code, avatar, is_online
+$sql = "SELECT id, username, friend_code, avatar, is_online
         FROM users
         WHERE (username LIKE ? OR email LIKE ? OR friend_code LIKE ?)
         AND id NOT IN ($placeholders)

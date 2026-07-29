@@ -31,7 +31,6 @@ $filter = $_GET['filter'] ?? 'all'; // all, online, offline
 $sql = "SELECT 
             u.id,
             u.username,
-            u.email,
             u.friend_code,
             u.avatar,
             u.bio,

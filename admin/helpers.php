@@ -124,22 +124,24 @@ function admin_pagination($total, $per_page, $current_page, $base_url = '?') {
     $start = max(1, $current_page - 2);
     $end = min($total_pages, $current_page + 2);
     
+    $sep = (strpos($base_url, '?') !== false) ? '&' : '?';
+    
     $html = '<nav><ul class="pagination justify-content-center">';
     
     // Previous
     if ($current_page > 1) {
-        $html .= '<li class="page-item"><a class="page-link" href="' . $base_url . 'page=' . ($current_page - 1) . '">&laquo;</a></li>';
+        $html .= '<li class="page-item"><a class="page-link" href="' . $base_url . $sep . 'page=' . ($current_page - 1) . '">&laquo;</a></li>';
     }
     
     // Pages
     for ($i = $start; $i <= $end; $i++) {
         $active = $i == $current_page ? ' active' : '';
-        $html .= '<li class="page-item' . $active . '"><a class="page-link" href="' . $base_url . 'page=' . $i . '">' . $i . '</a></li>';
+        $html .= '<li class="page-item' . $active . '"><a class="page-link" href="' . $base_url . $sep . 'page=' . $i . '">' . $i . '</a></li>';
     }
     
     // Next
     if ($current_page < $total_pages) {
-        $html .= '<li class="page-item"><a class="page-link" href="' . $base_url . 'page=' . ($current_page + 1) . '">&raquo;</a></li>';
+        $html .= '<li class="page-item"><a class="page-link" href="' . $base_url . $sep . 'page=' . ($current_page + 1) . '">&raquo;</a></li>';
     }
     
     $html .= '</ul></nav>';
@@ -211,8 +213,8 @@ function admin_report_reason($reason) {
  * Truncate Text
  */
 function admin_truncate($text, $length = 50, $suffix = '...') {
-    if (strlen($text) <= $length) return $text;
-    return substr($text, 0, $length) . $suffix;
+    if (mb_strlen($text) <= $length) return $text;
+    return mb_substr($text, 0, $length) . $suffix;
 }
 
 /**
