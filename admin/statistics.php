@@ -20,6 +20,8 @@ if (!admin_verify_session()) {
     exit;
 }
 
+$conn = db_connect();
+
 // Gather statistics
 $stats = [];
 
@@ -124,15 +126,15 @@ include 'includes/header.php';
     <div class="col-md-4">
         <div class="admin-card">
             <div class="card-body text-center">
-                <h4 class="text-muted mb-2">Today</h4>
+                <h4 style="color: var(--text-secondary); margin-bottom: 12px;">Today</h4>
                 <div class="d-flex justify-content-around">
                     <div>
                         <h3 class="mb-0"><?php echo number_format($user_stats['today']); ?></h3>
-                        <small class="text-muted">New Users</small>
+                        <small style="color: var(--text-muted);">New Users</small>
                     </div>
                     <div>
                         <h3 class="mb-0"><?php echo number_format($msg_stats['today']); ?></h3>
-                        <small class="text-muted">Messages</small>
+                        <small style="color: var(--text-muted);">Messages</small>
                     </div>
                 </div>
             </div>
@@ -141,15 +143,15 @@ include 'includes/header.php';
     <div class="col-md-4">
         <div class="admin-card">
             <div class="card-body text-center">
-                <h4 class="text-muted mb-2">This Week</h4>
+                <h4 style="color: var(--text-secondary); margin-bottom: 12px;">This Week</h4>
                 <div class="d-flex justify-content-around">
                     <div>
                         <h3 class="mb-0"><?php echo number_format($user_stats['week']); ?></h3>
-                        <small class="text-muted">New Users</small>
+                        <small style="color: var(--text-muted);">New Users</small>
                     </div>
                     <div>
                         <h3 class="mb-0"><?php echo number_format($msg_stats['week']); ?></h3>
-                        <small class="text-muted">Messages</small>
+                        <small style="color: var(--text-muted);">Messages</small>
                     </div>
                 </div>
             </div>
@@ -158,15 +160,15 @@ include 'includes/header.php';
     <div class="col-md-4">
         <div class="admin-card">
             <div class="card-body text-center">
-                <h4 class="text-muted mb-2">This Month</h4>
+                <h4 style="color: var(--text-secondary); margin-bottom: 12px;">This Month</h4>
                 <div class="d-flex justify-content-around">
                     <div>
                         <h3 class="mb-0"><?php echo number_format($user_stats['month']); ?></h3>
-                        <small class="text-muted">New Users</small>
+                        <small style="color: var(--text-muted);">New Users</small>
                     </div>
                     <div>
                         <h3 class="mb-0"><?php echo number_format($msg_stats['month']); ?></h3>
-                        <small class="text-muted">Messages</small>
+                        <small style="color: var(--text-muted);">Messages</small>
                     </div>
                 </div>
             </div>

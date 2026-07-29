@@ -329,7 +329,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php echo admin_csrf_field(); ?>
                 
                 <div class="form-group">
-                    <label class="form-label">Username or Email</label>
+                    <label class="form-label" for="username">Username or Email</label>
                     <div class="input-group">
                         <i class="fas fa-user input-icon"></i>
                         <input 
@@ -340,13 +340,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             placeholder="Enter username or email"
                             required
                             autofocus
+                            autocomplete="username"
                             value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>"
                         >
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Password</label>
+                    <label class="form-label" for="password">Password</label>
                     <div class="input-group">
                         <i class="fas fa-lock input-icon"></i>
                         <input 
@@ -356,6 +357,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             id="password"
                             placeholder="Enter your password"
                             required
+                            autocomplete="current-password"
                         >
                         <button type="button" class="password-toggle" onclick="togglePassword()">
                             <i class="fas fa-eye" id="toggleIcon"></i>

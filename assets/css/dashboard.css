@@ -439,6 +439,20 @@ a:hover {
     border-bottom: 1px solid var(--border-color);
 }
 
+.sidebar-user-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+    transition: opacity 0.2s;
+}
+
+.sidebar-user-link:hover {
+    opacity: 0.8;
+}
+
 .sidebar-user .user-avatar {
     width: 44px;
     height: 44px;
@@ -915,6 +929,27 @@ a:hover {
 .section-header .btn {
     font-size: 0.85rem;
     padding: 0.5rem 1rem;
+}
+
+.section-header .icon-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.section-header .icon-btn:hover {
+    background: var(--bg-secondary);
+    color: var(--text-white);
+}
+
+.section-header .icon-btn.active {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
 }
 
 /* =====================================================
@@ -1716,7 +1751,7 @@ a:hover {
     
     /* Main Wrapper */
     .main-wrapper {
-        margin-left: 0;
+        margin-left: 0 !important;
     }
     
     /* Sidebar Toggle */

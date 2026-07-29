@@ -57,13 +57,15 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeFileUpload();
     initializeChatMenu();
     initializeAutoDelete();
+    ChatLock.init();
+    initializeLockedChatsBtn();
     
     // Load chat list
     loadChatList();
     
-    // If a user is selected, open chat with them
+    // If a user is selected, check lock before opening
     if (Chat.selectedUserId) {
-        openChat(Chat.selectedUserId);
+        checkAndOpenChat(Chat.selectedUserId);
     }
     
     // Start polling
@@ -85,6 +87,66 @@ function initializeChatList() {
             });
         });
     }
+}
+
+let lockedChatsMode = false;
+
+function initializeLockedChatsBtn() {
+    const btn = document.getElementById('lockedChatsBtn');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+        lockedChatsMode = !lockedChatsMode;
+        const title = document.querySelector('.sidebar-header h2');
+        if (lockedChatsMode) {
+            btn.classList.add('active');
+            if (title) title.textContent = 'Locked Chats';
+            showLockedChats();
+        } else {
+            btn.classList.remove('active');
+            if (title) title.textContent = 'Chats';
+            renderChatList(Chat.chatList || []);
+        }
+    });
+}
+
+function showLockedChats() {
+    const locked = (Chat.chatList || []).filter(c => c.is_locked);
+    const container = document.getElementById('chatList');
+    if (!container) return;
+    
+    if (locked.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-lock"></i>
+                <p>No locked chats</p>
+                <span>Lock a chat from the chat menu to see it here</span>
+            </div>
+        `;
+        return;
+    }
+    container.innerHTML = locked.map(chat => createLockedChatItem(chat)).join('');
+}
+
+function createLockedChatItem(chat) {
+    return `
+        <div class="chat-item chat-item-locked" 
+             data-user-id="${chat.user_id}" data-locked="1" 
+             onclick="handleChatClick(${chat.user_id}, true)">
+            <div class="chat-avatar">
+                <div class="avatar-initials" style="background: var(--bg-tertiary); color: var(--text-secondary);">
+                    <i class="fas fa-lock"></i>
+                </div>
+            </div>
+            <div class="chat-info">
+                <div class="chat-name">
+                    <span>Locked Chat</span>
+                </div>
+                <div class="chat-preview">
+                    <span class="chat-message"><i class="fas fa-lock"></i> Enter password to view</span>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 async function loadChatList() {
@@ -123,6 +185,29 @@ function renderChatList(chats) {
 }
 
 function createChatListItem(chat) {
+    const isLocked = chat.is_locked === true || chat.is_locked === 1;
+    
+    if (isLocked) {
+        return `
+            <div class="chat-item chat-item-locked" 
+                 data-user-id="${chat.user_id}" data-locked="1" 
+                 onclick="handleChatClick(${chat.user_id}, true)">
+                <div class="chat-avatar">
+                    ${renderAvatar(chat.avatar, chat.username)}
+                </div>
+                <div class="chat-info">
+                    <div class="chat-name">
+                        <span>${escapeHtml(chat.username)}</span>
+                        <i class="fas fa-lock chat-lock-icon"></i>
+                    </div>
+                    <div class="chat-preview">
+                        <span class="chat-message"><i class="fas fa-lock"></i> Password protected</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
     const lastMessage = chat.last_message || 'No messages yet';
     const fromMe = chat.last_message_from_me;
     const unreadBadge = chat.unread_count > 0 ? 
@@ -133,7 +218,8 @@ function createChatListItem(chat) {
     
     return `
         <div class="chat-item ${Chat.selectedUserId == chat.user_id ? 'active' : ''}" 
-             data-user-id="${chat.user_id}" onclick="openChat(${chat.user_id})">
+             data-user-id="${chat.user_id}" data-locked="0" 
+             onclick="handleChatClick(${chat.user_id}, false)">
             <div class="chat-avatar">
                 ${renderAvatar(chat.avatar, chat.username)}
                 <span class="status-dot ${chat.is_online ? 'online' : 'offline'}"></span>
@@ -150,6 +236,149 @@ function createChatListItem(chat) {
             </div>
         </div>
     `;
+}
+
+// =====================================================
+// Chat Lock Module
+// =====================================================
+const ChatLock = {
+    csrfToken: null,
+    pendingUserId: null,
+
+    init: function() {
+        this.csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
+                         (typeof CHAT_CONFIG !== 'undefined' ? CHAT_CONFIG.csrfToken : '');
+    },
+
+    promptPassword: function(userId) {
+        this.pendingUserId = userId;
+        const modal = document.getElementById('chatLockModal');
+        if (modal) {
+            modal.classList.add('active');
+            const input = document.getElementById('chatLockPassword');
+            if (input) { input.value = ''; input.focus(); }
+        }
+    },
+
+    closeModal: function() {
+        const modal = document.getElementById('chatLockModal');
+        if (modal) modal.classList.remove('active');
+        this.pendingUserId = null;
+    },
+
+    verify: function() {
+        const password = document.getElementById('chatLockPassword')?.value;
+        if (!password || !this.pendingUserId) return;
+        
+        const uid = this.pendingUserId;
+        const token = this.csrfToken;
+        
+        fetch('/chatapp/api/chat-lock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'action=verify&chat_type=chat&target_id=' + uid + '&password=' + encodeURIComponent(password) + '&csrf_token=' + encodeURIComponent(token)
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.verified) {
+                ChatLock.closeModal();
+                openChat(uid);
+            } else {
+                if (typeof ChatApp !== 'undefined' && ChatApp.showToast) {
+                    ChatApp.showToast(data.message || 'Incorrect password', 'error');
+                } else if (typeof showToast === 'function') {
+                    showToast(data.message || 'Incorrect password', 'error');
+                }
+                var inp = document.getElementById('chatLockPassword');
+                if (inp) { inp.value = ''; inp.focus(); }
+            }
+        })
+        .catch(function(err) {
+            if (typeof ChatApp !== 'undefined' && ChatApp.showToast) {
+                ChatApp.showToast('Verification failed. Try again.', 'error');
+            } else if (typeof showToast === 'function') {
+                showToast('Verification failed. Try again.', 'error');
+            }
+        });
+    },
+
+    setLock: function(userId) {
+        const password = prompt('Set a password to lock this chat (min 4 chars):');
+        if (!password || password.length < 4) {
+            if (password !== null) showToast('Password must be at least 4 characters', 'error');
+            return;
+        }
+        fetch('/chatapp/api/chat-lock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `action=set&chat_type=chat&target_id=${userId}&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Chat locked');
+                location.reload();
+            } else {
+                showToast(data.message, 'error');
+            }
+        });
+    },
+
+    removeLock: function(userId) {
+        const password = prompt('Enter password to unlock this chat:');
+        if (!password) return;
+        fetch('/chatapp/api/chat-lock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `action=remove&chat_type=chat&target_id=${userId}&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Chat unlocked');
+                location.reload();
+            } else {
+                showToast(data.message, 'error');
+            }
+        });
+    }
+};
+
+function handleChatClick(userId, isLocked) {
+    if (isLocked === true || isLocked === 'true' || isLocked === 1 || isLocked === '1') {
+        ChatLock.promptPassword(userId);
+    } else {
+        openChat(userId);
+    }
+}
+
+// =====================================================
+// Check Lock & Open Chat
+// =====================================================
+async function checkAndOpenChat(userId) {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
+                      (typeof CHAT_CONFIG !== 'undefined' ? CHAT_CONFIG.csrfToken : '');
+    const formData = new URLSearchParams();
+    formData.append('action', 'check');
+    formData.append('chat_type', 'chat');
+    formData.append('target_id', userId);
+    formData.append('csrf_token', csrfToken);
+    
+    try {
+        const response = await fetch('/chatapp/api/chat-lock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
+        });
+        const result = await response.json();
+        if (result.success && result.locked) {
+            ChatLock.promptPassword(userId);
+        } else {
+            openChat(userId);
+        }
+    } catch(e) {
+        openChat(userId);
+    }
 }
 
 // =====================================================
@@ -194,6 +423,31 @@ async function openChat(userId) {
     
     // Clear unread badge in chat list
     clearUnreadBadge(userId);
+    
+    // Check lock status
+    checkChatLockStatus(userId);
+}
+
+async function checkChatLockStatus(userId) {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
+                      (typeof CHAT_CONFIG !== 'undefined' ? CHAT_CONFIG.csrfToken : '');
+    try {
+        const response = await fetch('/chatapp/api/chat-lock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `action=check&chat_type=chat&target_id=${userId}&csrf_token=${csrfToken}`
+        });
+        const result = await response.json();
+        const lockChat = document.getElementById('menuLockChat');
+        const unlockChat = document.getElementById('menuUnlockChat');
+        if (result.success && result.locked) {
+            if (lockChat) lockChat.style.display = 'none';
+            if (unlockChat) unlockChat.style.display = 'block';
+        } else {
+            if (lockChat) lockChat.style.display = 'block';
+            if (unlockChat) unlockChat.style.display = 'none';
+        }
+    } catch(e) {}
 }
 
 async function loadChatUserInfo(userId) {
@@ -1288,6 +1542,22 @@ function initializeChatMenu() {
             ChatApp.showToast('User blocked', 'success');
         } else {
             ChatApp.showToast(result.message || 'Failed to block user', 'error');
+        }
+        dropdown.style.display = 'none';
+    });
+
+    // Lock Chat
+    document.getElementById('menuLockChat')?.addEventListener('click', function() {
+        if (Chat.selectedUserId) {
+            ChatLock.setLock(Chat.selectedUserId);
+        }
+        dropdown.style.display = 'none';
+    });
+
+    // Unlock Chat
+    document.getElementById('menuUnlockChat')?.addEventListener('click', function() {
+        if (Chat.selectedUserId) {
+            ChatLock.removeLock(Chat.selectedUserId);
         }
         dropdown.style.display = 'none';
     });

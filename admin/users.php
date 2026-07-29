@@ -21,6 +21,8 @@ if (!admin_verify_session()) {
     exit;
 }
 
+$conn = db_connect();
+
 // Get filter parameters
 $search = $_GET['search'] ?? '';
 $status = $_GET['status'] ?? '';
@@ -89,11 +91,13 @@ include 'includes/header.php';
     <div class="card-body">
         <form method="GET" class="filters-bar">
             <div class="filter-group" style="flex: 1;">
+                <label for="user-search" class="sr-only">Search users</label>
                 <i class="fas fa-search" style="color: var(--text-muted);"></i>
-                <input type="text" name="search" class="form-control" placeholder="Search users..." value="<?php echo htmlspecialchars($search); ?>" style="flex: 1;">
+                <input type="text" id="user-search" name="search" class="form-control" placeholder="Search users..." value="<?php echo htmlspecialchars($search); ?>" style="flex: 1;" autocomplete="off">
             </div>
             <div class="filter-group">
-                <select name="status" class="form-select">
+                <label for="user-status" class="sr-only">Status</label>
+                <select id="user-status" name="status" class="form-select">
                     <option value="">All Status</option>
                     <option value="active" <?php echo $status === 'active' ? 'selected' : ''; ?>>Active</option>
                     <option value="inactive" <?php echo $status === 'inactive' ? 'selected' : ''; ?>>Inactive</option>

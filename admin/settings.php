@@ -22,6 +22,8 @@ if (!admin_verify_session()) {
 
 admin_require_permission('manage_settings');
 
+$conn = db_connect();
+
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $csrf_token = $_POST['csrf_token'] ?? '';
@@ -65,12 +67,12 @@ include 'includes/header.php';
                 <div class="card-header"><h2>General Settings</h2></div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label class="form-label">Site Name</label>
-                        <input type="text" class="form-control" name="settings[site_name]" value="<?php echo htmlspecialchars($settings['site_name']['setting_value'] ?? ''); ?>">
+                        <label class="form-label" for="site_name">Site Name</label>
+                        <input type="text" class="form-control" id="site_name" name="settings[site_name]" value="<?php echo htmlspecialchars($settings['site_name']['setting_value'] ?? ''); ?>" autocomplete="organization">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Site Description</label>
-                        <textarea class="form-control" name="settings[site_description]" rows="3"><?php echo htmlspecialchars($settings['site_description']['setting_value'] ?? ''); ?></textarea>
+                        <label class="form-label" for="site_description">Site Description</label>
+                        <textarea class="form-control" id="site_description" name="settings[site_description]" rows="3" autocomplete="off"><?php echo htmlspecialchars($settings['site_description']['setting_value'] ?? ''); ?></textarea>
                     </div>
                 </div>
             </div>
@@ -79,26 +81,26 @@ include 'includes/header.php';
                 <div class="card-header"><h2>Registration & Security</h2></div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label class="form-label">Maintenance Mode</label>
-                        <select class="form-select" name="settings[maintenance_mode]">
+                        <label class="form-label" for="maintenance_mode">Maintenance Mode</label>
+                        <select class="form-select" id="maintenance_mode" name="settings[maintenance_mode]" autocomplete="off">
                             <option value="0" <?php echo ($settings['maintenance_mode']['setting_value'] ?? '') === '0' ? 'selected' : ''; ?>>Disabled</option>
                             <option value="1" <?php echo ($settings['maintenance_mode']['setting_value'] ?? '') === '1' ? 'selected' : ''; ?>>Enabled</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Registration Enabled</label>
-                        <select class="form-select" name="settings[registration_enabled]">
+                        <label class="form-label" for="registration_enabled">Registration Enabled</label>
+                        <select class="form-select" id="registration_enabled" name="settings[registration_enabled]" autocomplete="off">
                             <option value="1" <?php echo ($settings['registration_enabled']['setting_value'] ?? '') === '1' ? 'selected' : ''; ?>>Enabled</option>
                             <option value="0" <?php echo ($settings['registration_enabled']['setting_value'] ?? '') === '0' ? 'selected' : ''; ?>>Disabled</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Max Upload Size (bytes)</label>
-                        <input type="number" class="form-control" name="settings[max_upload_size]" value="<?php echo htmlspecialchars($settings['max_upload_size']['setting_value'] ?? '20971520'); ?>">
+                        <label class="form-label" for="max_upload_size">Max Upload Size (bytes)</label>
+                        <input type="number" class="form-control" id="max_upload_size" name="settings[max_upload_size]" value="<?php echo htmlspecialchars($settings['max_upload_size']['setting_value'] ?? '20971520'); ?>" autocomplete="off">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Session Lifetime (seconds)</label>
-                        <input type="number" class="form-control" name="settings[session_lifetime]" value="<?php echo htmlspecialchars($settings['session_lifetime']['setting_value'] ?? '86400'); ?>">
+                        <label class="form-label" for="session_lifetime">Session Lifetime (seconds)</label>
+                        <input type="number" class="form-control" id="session_lifetime" name="settings[session_lifetime]" value="<?php echo htmlspecialchars($settings['session_lifetime']['setting_value'] ?? '86400'); ?>" autocomplete="off">
                     </div>
                 </div>
             </div>
@@ -111,15 +113,15 @@ include 'includes/header.php';
     </div>
     
     <div class="col-lg-4">
-        <div class="admin-card">
+            <div class="admin-card">
             <div class="card-header"><h2>System Info</h2></div>
             <div class="card-body">
                 <table class="table table-borderless">
-                    <tr><td class="text-muted">PHP Version</td><td><?php echo phpversion(); ?></td></tr>
-                    <tr><td class="text-muted">MySQL Version</td><td><?php echo mysqli_get_server_info($conn); ?></td></tr>
-                    <tr><td class="text-muted">Server Software</td><td><?php echo $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown'; ?></td></tr>
-                    <tr><td class="text-muted">Max Upload</td><td><?php echo ini_get('upload_max_filesize'); ?></td></tr>
-                    <tr><td class="text-muted">Memory Limit</td><td><?php echo ini_get('memory_limit'); ?></td></tr>
+                    <tr><td style="color: var(--text-muted);">PHP Version</td><td><?php echo phpversion(); ?></td></tr>
+                    <tr><td style="color: var(--text-muted);">MySQL Version</td><td><?php echo mysqli_get_server_info($conn); ?></td></tr>
+                    <tr><td style="color: var(--text-muted);">Server Software</td><td><?php echo $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown'; ?></td></tr>
+                    <tr><td style="color: var(--text-muted);">Max Upload</td><td><?php echo ini_get('upload_max_filesize'); ?></td></tr>
+                    <tr><td style="color: var(--text-muted);">Memory Limit</td><td><?php echo ini_get('memory_limit'); ?></td></tr>
                 </table>
             </div>
         </div>

@@ -66,6 +66,11 @@ foreach ($groups as $group) {
     $last_msg = $group['last_message'];
     $from_me = $group['last_message_sender'] ? ((int)$group['last_message_sender'] === $user_id) : false;
     
+    $lock = db_fetch_single(
+        "SELECT id FROM chat_locks WHERE user_id = ? AND chat_type = 'group' AND target_id = ?",
+        [$user_id, $group['id']]
+    );
+    
     $formatted_groups[] = [
         'id' => (int)$group['id'],
         'name' => $group['name'],
@@ -77,7 +82,8 @@ foreach ($groups as $group) {
         'unread_count' => (int)$group['unread_count'],
         'last_message' => $last_msg ? truncate_text($last_msg, 40) : null,
         'last_message_time' => $group['last_message_time'] ? time_ago($group['last_message_time']) : null,
-        'last_message_from_me' => $from_me
+        'last_message_from_me' => $from_me,
+        'is_locked' => !empty($lock)
     ];
 }
 

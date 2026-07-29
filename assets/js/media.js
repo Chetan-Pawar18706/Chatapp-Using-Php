@@ -99,6 +99,12 @@ const MediaModule = {
                         <button class="action-btn download-btn" title="Download">
                             <i class="fas fa-download"></i>
                         </button>
+                        <button class="action-btn archive-btn" title="Archive">
+                            <i class="fas fa-box-archive"></i>
+                        </button>
+                        <button class="action-btn secret-btn" title="Move to Secret Folder">
+                            <i class="fas fa-lock"></i>
+                        </button>
                         <button class="action-btn delete-btn" title="Delete">
                             <i class="fas fa-trash"></i>
                         </button>
@@ -129,6 +135,34 @@ const MediaModule = {
                 const mediaId = lightbox.dataset.mediaId;
                 if (mediaId && confirm('Are you sure you want to delete this file?')) {
                     this.deleteMedia(mediaId);
+                }
+            });
+            
+            // Archive button
+            lightbox.querySelector('.archive-btn').addEventListener('click', () => {
+                const mediaId = lightbox.dataset.mediaId;
+                const category = lightbox.dataset.category;
+                if (mediaId) {
+                    if (category === 'archives') {
+                        this.restoreMedia(mediaId);
+                    } else {
+                        this.archiveMedia(mediaId);
+                    }
+                }
+            });
+            
+            // Secret folder button
+            lightbox.querySelector('.secret-btn').addEventListener('click', () => {
+                const mediaId = lightbox.dataset.mediaId;
+                if (mediaId) {
+                    const isSecret = lightbox.dataset.isSecret === '1';
+                    if (isSecret) {
+                        SecretFolder.toggleSecret(mediaId);
+                    } else {
+                        if (confirm('Move this file to Secret Folder?')) {
+                            SecretFolder.toggleSecret(mediaId);
+                        }
+                    }
                 }
             });
         }
@@ -483,6 +517,8 @@ const MediaModule = {
         if (!lightbox) return;
         
         lightbox.dataset.mediaId = data.id;
+        lightbox.dataset.category = data.category || '';
+        lightbox.dataset.isSecret = data.is_secret || '0';
         
         const mediaContainer = lightbox.querySelector('.lightbox-media');
         
@@ -495,6 +531,28 @@ const MediaModule = {
                     Your browser does not support video playback.
                 </video>
             `;
+        }
+        
+        const archiveBtn = lightbox.querySelector('.archive-btn');
+        if (archiveBtn) {
+            if (data.category === 'archives') {
+                archiveBtn.innerHTML = '<i class="fas fa-rotate-left"></i>';
+                archiveBtn.title = 'Restore from Archive';
+            } else {
+                archiveBtn.innerHTML = '<i class="fas fa-box-archive"></i>';
+                archiveBtn.title = 'Move to Archive';
+            }
+        }
+        
+        const secretBtn = lightbox.querySelector('.secret-btn');
+        if (secretBtn) {
+            if (data.is_secret == 1) {
+                secretBtn.innerHTML = '<i class="fas fa-lock-open"></i>';
+                secretBtn.title = 'Remove from Secret Folder';
+            } else {
+                secretBtn.innerHTML = '<i class="fas fa-lock"></i>';
+                secretBtn.title = 'Move to Secret Folder';
+            }
         }
         
         lightbox.classList.add('active');
@@ -555,6 +613,67 @@ const MediaModule = {
     },
     
     /**
+     * Archive Media (move to archives category)
+     */
+    archiveMedia: function(id) {
+        fetch('../api/archive-media.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `id=${id}&csrf_token=${this.csrfToken}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const item = document.querySelector(`.media-grid-item[data-id="${id}"]`);
+                if (item) {
+                    item.dataset.category = 'archives';
+                    item.style.display = 'none';
+                }
+                
+                this.closeLightbox();
+                this.showSuccess('File moved to archives');
+            } else {
+                this.showError(data.message);
+            }
+        })
+        .catch(error => {
+            this.showError('Failed to archive file');
+        });
+    },
+    
+    /**
+     * Restore Media (move back from archives)
+     */
+    restoreMedia: function(id) {
+        fetch('../api/archive-media.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `id=${id}&action=restore&csrf_token=${this.csrfToken}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const item = document.querySelector(`.media-grid-item[data-id="${id}"]`);
+                if (item) {
+                    item.dataset.category = data.category;
+                }
+                
+                this.closeLightbox();
+                this.showSuccess('File restored from archives');
+            } else {
+                this.showError(data.message);
+            }
+        })
+        .catch(error => {
+            this.showError('Failed to restore file');
+        });
+    },
+    
+    /**
      * Format File Size
      */
     formatSize: function(bytes) {
@@ -604,6 +723,140 @@ const MediaModule = {
      */
     onUploadComplete: null
 };
+
+const SecretFolder = {
+    csrfToken: null,
+    password: '',
+    unlocked: false,
+
+    init: function() {
+        this.csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+    },
+
+    setPassword: function() {
+        const input = document.getElementById('newSecretPassword');
+        const password = input?.value?.trim();
+        if (!password || password.length < 4) {
+            MediaModule.showError('Password must be at least 4 characters');
+            return;
+        }
+        fetch('/chatapp/api/secret-folder.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `action=set_password&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                MediaModule.showSuccess('Password set! Reloading...');
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                MediaModule.showError(data.message);
+            }
+        });
+    },
+
+    unlock: function() {
+        const input = document.getElementById('secretPasswordInput');
+        const password = input?.value?.trim();
+        if (!password) {
+            MediaModule.showError('Please enter a password');
+            return;
+        }
+        this.password = password;
+        fetch('/chatapp/api/secret-folder.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `action=verify&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.verified) {
+                this.unlocked = true;
+                this.loadFiles();
+            } else {
+                MediaModule.showError(data.message);
+            }
+        });
+    },
+
+    loadFiles: function() {
+        document.getElementById('secretLocked').style.display = 'none';
+        document.getElementById('secretGridWrapper').style.display = 'block';
+        fetch('/chatapp/api/secret-folder.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `action=get_files&password=${encodeURIComponent(this.password)}&csrf_token=${this.csrfToken}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                this.renderFiles(data.files);
+            }
+        });
+    },
+
+    renderFiles: function(files) {
+        const grid = document.getElementById('secretGrid');
+        const noMsg = document.getElementById('noSecretMsg');
+        if (!files || files.length === 0) {
+            grid.innerHTML = '';
+            noMsg.style.display = 'block';
+            return;
+        }
+        noMsg.style.display = 'none';
+        grid.innerHTML = files.map(f => {
+            let preview = '';
+            if (f.is_image) {
+                preview = `<img src="/chatapp/api/preview-media.php?id=${f.id}" alt="${f.original_name}" loading="lazy">`;
+            } else if (f.is_video) {
+                preview = `<div class="document-preview"><div class="doc-icon"><i class="fas fa-video"></i></div></div>`;
+            } else {
+                preview = `<div class="document-preview"><div class="doc-icon ${f.file_extension}"><i class="fas fa-file"></i></div></div>`;
+            }
+            return `<div class="media-grid-item" data-id="${f.id}" data-secret="1" onclick="MediaModule.openLightbox(${JSON.stringify(f).replace(/"/g, '&quot;')})">
+                ${preview}
+                <div class="file-info">
+                    <div class="file-name">${f.original_name}</div>
+                    <div class="file-size">${f.file_size_formatted}</div>
+                </div>
+            </div>`;
+        }).join('');
+        document.getElementById('secretCount').textContent = files.length + ' files';
+    },
+
+    toggleSecret: function(id) {
+        fetch('/chatapp/api/toggle-secret.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `id=${id}&password=${encodeURIComponent(this.password)}&csrf_token=${this.csrfToken}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                MediaModule.closeLightbox();
+                if (data.is_secret) {
+                    const item = document.querySelector(`.media-grid-item[data-id="${id}"]`);
+                    if (item) item.remove();
+                    MediaModule.showSuccess('File moved to secret folder');
+                } else {
+                    MediaModule.showSuccess('File restored from secret folder');
+                }
+                if (this.unlocked) this.loadFiles();
+            } else {
+                MediaModule.showError(data.message);
+            }
+        });
+    },
+
+    closeModal: function() {
+        document.getElementById('secretPasswordModal').classList.remove('active');
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    SecretFolder.init();
+});
 
 // Initialize on DOM load
 document.addEventListener('DOMContentLoaded', () => {

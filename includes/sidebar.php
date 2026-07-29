@@ -45,14 +45,16 @@ function render_sidebar($active_page, $user_data, $user_id) {
         </div>
         
         <div class="sidebar-user">
-            ' . $avatar_html . '
-            <div class="user-info">
-                <div class="user-name">' . $username . '</div>
-                <div class="user-status">
-                    <span class="status-dot online"></span>
-                    <span>Online</span>
+            <a href="profile.php" class="sidebar-user-link">
+                ' . $avatar_html . '
+                <div class="user-info">
+                    <div class="user-name">' . $username . '</div>
+                    <div class="user-status">
+                        <span class="status-dot online"></span>
+                        <span>Online</span>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         
         <nav class="sidebar-nav">
@@ -124,6 +126,10 @@ function render_top_navbar($page_title, $user_data, $user_id) {
                     </div>
                 </div>
                 <div class="dropdown-divider"></div>
+                <a href="profile.php" class="dropdown-item">
+                    <i class="fas fa-user"></i>
+                    <span>My Profile</span>
+                </a>
                 <a href="settings.php" class="dropdown-item">
                     <i class="fas fa-cog"></i>
                     <span>Settings</span>

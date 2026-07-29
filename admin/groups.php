@@ -20,6 +20,8 @@ if (!admin_verify_session()) {
     exit;
 }
 
+$conn = db_connect();
+
 // Get filter parameters
 $search = $_GET['search'] ?? '';
 $page = max(1, (int)($_GET['page'] ?? 1));
@@ -79,8 +81,9 @@ include 'includes/header.php';
     <div class="card-body">
         <form method="GET" class="filters-bar">
             <div class="filter-group" style="flex: 1;">
+                <label for="group-search" class="sr-only">Search groups</label>
                 <i class="fas fa-search" style="color: var(--text-muted);"></i>
-                <input type="text" name="search" class="form-control" placeholder="Search groups..." value="<?php echo htmlspecialchars($search); ?>" style="flex: 1;">
+                <input type="text" id="group-search" name="search" class="form-control" placeholder="Search groups..." value="<?php echo htmlspecialchars($search); ?>" style="flex: 1;" autocomplete="off">
             </div>
             <button type="submit" class="btn btn-primary"><i class="fas fa-filter"></i> Filter</button>
             <a href="groups.php" class="btn btn-secondary"><i class="fas fa-times"></i> Clear</a>

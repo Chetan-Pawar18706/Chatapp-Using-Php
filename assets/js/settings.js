@@ -346,13 +346,14 @@ const SettingsModule = {
             if (data.success) {
                 this.showToast(`${type === 'avatar' ? 'Profile' : 'Cover'} photo updated`, 'success');
                 
+                const newUrl = data.data.url + '?' + Date.now();
+                
                 // Update image
                 if (type === 'avatar') {
                     const avatarImg = document.querySelector('.profile-photo img');
                     if (avatarImg) {
-                        avatarImg.src = data.data.url + '?' + Date.now();
+                        avatarImg.src = newUrl;
                     } else {
-                        // Replace initials with image
                         const initials = document.querySelector('.profile-photo .avatar-initials');
                         if (initials) {
                             const img = document.createElement('img');
@@ -361,6 +362,10 @@ const SettingsModule = {
                             initials.replaceWith(img);
                         }
                     }
+                    // Update sidebar and navbar avatars
+                    document.querySelectorAll('.user-avatar img, .user-avatar-img, #navbarAvatar img, #sidebarAvatar img, .sidebar-user .user-avatar img').forEach(el => {
+                        el.src = newUrl;
+                    });
                 } else {
                     const coverImg = document.querySelector('.cover-photo');
                     if (coverImg) {

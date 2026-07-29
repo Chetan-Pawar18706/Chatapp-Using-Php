@@ -21,6 +21,9 @@ if (!admin_verify_session()) {
     exit;
 }
 
+// Database connection
+$conn = db_connect();
+
 // Get statistics
 $stats = [];
 

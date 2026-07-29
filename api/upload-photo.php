@@ -168,6 +168,11 @@ if (mysqli_stmt_execute($stmt)) {
         unlink(dirname(__DIR__) . '/' . $oldPhoto);
     }
     
+    // Update session data
+    if ($type === 'avatar' && isset($_SESSION['user_data'])) {
+        $_SESSION['user_data']['avatar'] = $relativePath;
+    }
+    
     // Log activity
     log_activity($user_id, 'photo_upload', 'Updated ' . $type . ' photo');
     

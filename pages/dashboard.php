@@ -286,6 +286,9 @@ $csrf_token = session_generate_csrf();
             <section class="content-section" id="section-chats">
                 <div class="section-header">
                     <h2>Chats</h2>
+                    <button class="icon-btn" id="lockedChatsBtn" title="Locked Chats" onclick="toggleDashboardLockedChats()">
+                        <i class="fas fa-lock"></i>
+                    </button>
                 </div>
                 <div class="card">
                     <div class="card-body">

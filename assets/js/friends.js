@@ -160,11 +160,11 @@ function createFriendItem(friend) {
     
     return `
         <div class="friend-item" data-user-id="${friend.id}">
-            <div class="friend-avatar">
+            <div class="friend-avatar" onclick="window.location.href='profile.php?user_id=${friend.id}'" style="cursor:pointer">
                 ${renderAvatar(friend.avatar, friend.username)}
                 <span class="status-indicator ${friend.is_online ? 'online' : 'offline'}"></span>
             </div>
-            <div class="friend-info">
+            <div class="friend-info" onclick="window.location.href='profile.php?user_id=${friend.id}'" style="cursor:pointer">
                 <div class="friend-name">
                     ${escapeHtml(friend.username)}
                     ${typingHtml}
@@ -259,11 +259,11 @@ function createReceivedRequestItem(req) {
     
     return `
         <div class="request-item" data-request-id="${req.friendship_id}">
-            <div class="request-avatar">
+            <div class="request-avatar" onclick="window.location.href='profile.php?user_id=${req.id}'" style="cursor:pointer">
                 ${renderAvatar(req.avatar, req.username)}
                 <span class="status-indicator ${req.is_online ? 'online' : 'offline'}"></span>
             </div>
-            <div class="request-info">
+            <div class="request-info" onclick="window.location.href='profile.php?user_id=${req.id}'" style="cursor:pointer">
                 <div class="request-name">${escapeHtml(req.username)}</div>
                 <div class="request-meta">
                     <span class="request-time"><i class="fas fa-clock"></i> ${req.request_date}</span>
@@ -288,11 +288,11 @@ function createSentRequestItem(req) {
     
     return `
         <div class="request-item" data-request-id="${req.friendship_id}">
-            <div class="request-avatar">
+            <div class="request-avatar" onclick="window.location.href='profile.php?user_id=${req.id}'" style="cursor:pointer">
                 ${renderAvatar(req.avatar, req.username)}
                 <span class="status-indicator ${req.is_online ? 'online' : 'offline'}"></span>
             </div>
-            <div class="request-info">
+            <div class="request-info" onclick="window.location.href='profile.php?user_id=${req.id}'" style="cursor:pointer">
                 <div class="request-name">${escapeHtml(req.username)}</div>
                 <div class="request-meta">
                     <span class="request-time"><i class="fas fa-clock"></i> ${req.request_date}</span>

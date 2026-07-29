@@ -53,15 +53,80 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeGroupInfo();
     initializeFileUpload();
     initializeAutoDelete();
+    GroupChatLock.init();
+    initializeLockedChatsBtn();
     
     loadGroupsList();
     
     if (GroupChat.selectedGroupId) {
-        openGroupChat(GroupChat.selectedGroupId);
+        checkAndOpenGroupChat(GroupChat.selectedGroupId);
     }
     
     startPolling();
 });
+
+let lockedGroupsMode = false;
+
+function initializeLockedChatsBtn() {
+    const btn = document.getElementById('lockedChatsBtn');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+        lockedGroupsMode = !lockedGroupsMode;
+        const title = document.querySelector('.sidebar-header h2');
+        if (lockedGroupsMode) {
+            btn.classList.add('active');
+            if (title) title.textContent = 'Locked Groups';
+            showLockedGroups();
+        } else {
+            btn.classList.remove('active');
+            if (title) title.textContent = 'Groups';
+            loadGroupsList();
+        }
+    });
+}
+
+function showLockedGroups() {
+    const locked = (GroupChat.groups || []).filter(g => g.is_locked);
+    const container = document.getElementById('groupsList');
+    if (!container) return;
+    
+    if (locked.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-lock"></i>
+                <p>No locked groups</p>
+            </div>
+        `;
+        return;
+    }
+    container.innerHTML = locked.map(group => createLockedGroupItem(group)).join('');
+}
+
+async function checkAndOpenGroupChat(groupId) {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
+                      (typeof GROUP_CONFIG !== 'undefined' ? GROUP_CONFIG.csrfToken : '');
+    const formData = new URLSearchParams();
+    formData.append('action', 'check');
+    formData.append('chat_type', 'group');
+    formData.append('target_id', groupId);
+    formData.append('csrf_token', csrfToken);
+    
+    try {
+        const response = await fetch('/chatapp/api/chat-lock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
+        });
+        const result = await response.json();
+        if (result.success && result.locked) {
+            GroupChatLock.promptPassword(groupId);
+        } else {
+            openGroupChat(groupId);
+        }
+    } catch(e) {
+        openGroupChat(groupId);
+    }
+}
 
 // =====================================================
 // Groups List Functions
@@ -90,7 +155,7 @@ function renderGroupsList(groups) {
         return;
     }
     
-    container.innerHTML = groups.map(group => createGroupListItem(group)).join('');
+    container.innerHTML = groups.map(group => createGroupListItem(group)).filter(html => html !== '').join('');
     
     if (GroupChat.selectedGroupId) {
         const activeItem = container.querySelector(`.group-item[data-group-id="${GroupChat.selectedGroupId}"]`);
@@ -98,7 +163,117 @@ function renderGroupsList(groups) {
     }
 }
 
+// =====================================================
+// Group Chat Lock Module
+// =====================================================
+const GroupChatLock = {
+    csrfToken: null,
+    pendingGroupId: null,
+
+    init: function() {
+        this.csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
+                         (typeof GROUP_CONFIG !== 'undefined' ? GROUP_CONFIG.csrfToken : '');
+    },
+
+    promptPassword: function(groupId) {
+        this.pendingGroupId = groupId;
+        const modal = document.getElementById('chatLockModal');
+        if (modal) {
+            modal.classList.add('active');
+            const input = document.getElementById('chatLockPassword');
+            if (input) { input.value = ''; input.focus(); }
+        }
+    },
+
+    closeModal: function() {
+        const modal = document.getElementById('chatLockModal');
+        if (modal) modal.classList.remove('active');
+        this.pendingGroupId = null;
+    },
+
+    verify: function() {
+        const password = document.getElementById('chatLockPassword')?.value;
+        if (!password || !this.pendingGroupId) return;
+        fetch('/chatapp/api/chat-lock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `action=verify&chat_type=group&target_id=${this.pendingGroupId}&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.verified) {
+                const gid = this.pendingGroupId;
+                this.closeModal();
+                openGroupChat(gid);
+            } else {
+                showToast(data.message || 'Incorrect password', 'error');
+                const input = document.getElementById('chatLockPassword');
+                if (input) { input.value = ''; input.focus(); }
+            }
+        })
+        .catch(err => {
+            showToast('Verification failed. Try again.', 'error');
+        });
+    },
+
+    setLock: function(groupId) {
+        const password = prompt('Set a password to lock this chat (min 4 chars):');
+        if (!password || password.length < 4) {
+            if (password !== null) showToast('Password must be at least 4 characters', 'error');
+            return;
+        }
+        fetch('/chatapp/api/chat-lock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `action=set&chat_type=group&target_id=${groupId}&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Chat locked');
+                location.reload();
+            } else {
+                showToast(data.message, 'error');
+            }
+        });
+    },
+
+    removeLock: function(groupId) {
+        const password = prompt('Enter password to unlock this chat:');
+        if (!password) return;
+        fetch('/chatapp/api/chat-lock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `action=remove&chat_type=group&target_id=${groupId}&password=${encodeURIComponent(password)}&csrf_token=${this.csrfToken}`
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Chat unlocked');
+                location.reload();
+            } else {
+                showToast(data.message, 'error');
+            }
+        });
+    }
+};
+
+function handleGroupClick(groupId, isLocked) {
+    if (isLocked === true || isLocked === 'true' || isLocked === 1 || isLocked === '1') {
+        GroupChatLock.promptPassword(groupId);
+    } else {
+        openGroupChat(groupId);
+    }
+}
+
 function createGroupListItem(group) {
+    const isLocked = group.is_locked === true || group.is_locked === 1;
+    
+    // Locked groups completely hidden from normal list
+    if (isLocked) {
+        return '';
+    }
+    
     const lastMessage = group.last_message || 'No messages yet';
     const fromMe = group.last_message_from_me;
     const unreadBadge = group.unread_count > 0 ? 
@@ -108,7 +283,8 @@ function createGroupListItem(group) {
     
     return `
         <div class="group-item ${GroupChat.selectedGroupId == group.id ? 'active' : ''}" 
-             data-group-id="${group.id}" onclick="openGroupChat(${group.id})">
+             data-group-id="${group.id}" data-locked="0"
+             onclick="handleGroupClick(${group.id}, false)">
             <div class="group-avatar">${group.avatar ? `<img src="${group.avatar}" alt="${escapeHtml(group.name)}" class="user-avatar-img">` : `${group.name.charAt(0).toUpperCase()}`}</div>
             <div class="group-info">
                 <div class="group-name">
@@ -118,6 +294,24 @@ function createGroupListItem(group) {
                 <div class="group-preview">
                     <span class="group-message ${messageClass}">${escapeHtml(lastMessage)}</span>
                     ${unreadBadge}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function createLockedGroupItem(group) {
+    return `
+        <div class="group-item group-item-locked" 
+             data-group-id="${group.id}" data-locked="1"
+             onclick="handleGroupClick(${group.id}, true)">
+            <div class="group-avatar"><i class="fas fa-lock"></i></div>
+            <div class="group-info">
+                <div class="group-name">
+                    <span>Locked Group</span>
+                </div>
+                <div class="group-preview">
+                    <span class="group-message"><i class="fas fa-lock"></i> Enter password to view</span>
                 </div>
             </div>
         </div>
@@ -153,7 +347,29 @@ async function openGroupChat(groupId) {
     await loadGroupMessages(groupId);
     scrollToBottom();
     markGroupMessagesRead(groupId);
-    clearUnreadBadge(groupId);
+    checkGroupLockStatus(groupId);
+}
+
+async function checkGroupLockStatus(groupId) {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
+                      (typeof GROUP_CONFIG !== 'undefined' ? GROUP_CONFIG.csrfToken : '');
+    try {
+        const response = await fetch('/chatapp/api/chat-lock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `action=check&chat_type=group&target_id=${groupId}&csrf_token=${csrfToken}`
+        });
+        const result = await response.json();
+        const lockChat = document.getElementById('menuLockChat');
+        const unlockChat = document.getElementById('menuUnlockChat');
+        if (result.success && result.locked) {
+            if (lockChat) lockChat.style.display = 'none';
+            if (unlockChat) unlockChat.style.display = 'block';
+        } else {
+            if (lockChat) lockChat.style.display = 'block';
+            if (unlockChat) unlockChat.style.display = 'none';
+        }
+    } catch(e) {}
 }
 
 async function markGroupMessagesRead(groupId) {
@@ -888,6 +1104,22 @@ function initializeGroupInfo() {
         if (searchBar) {
             searchBar.style.display = 'block';
             if (searchInput) searchInput.focus();
+        }
+        dropdown.style.display = 'none';
+    });
+    
+    // Lock Chat
+    document.getElementById('menuLockChat')?.addEventListener('click', function() {
+        if (GroupChat.selectedGroupId) {
+            GroupChatLock.setLock(GroupChat.selectedGroupId);
+        }
+        dropdown.style.display = 'none';
+    });
+
+    // Unlock Chat
+    document.getElementById('menuUnlockChat')?.addEventListener('click', function() {
+        if (GroupChat.selectedGroupId) {
+            GroupChatLock.removeLock(GroupChat.selectedGroupId);
         }
         dropdown.style.display = 'none';
     });

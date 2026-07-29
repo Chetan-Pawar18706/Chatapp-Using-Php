@@ -20,6 +20,8 @@ if (!admin_verify_session()) {
     exit;
 }
 
+$conn = db_connect();
+
 $status = $_GET['status'] ?? '';
 $page = max(1, (int)($_GET['page'] ?? 1));
 $per_page = ADMIN_PER_PAGE;
@@ -78,7 +80,8 @@ include 'includes/header.php';
     <div class="card-body">
         <form method="GET" class="filters-bar">
             <div class="filter-group">
-                <select name="status" class="form-select">
+                <label for="report-status" class="sr-only">Status</label>
+                <select id="report-status" name="status" class="form-select">
                     <option value="">All Status</option>
                     <option value="pending" <?php echo $status === 'pending' ? 'selected' : ''; ?>>Pending</option>
                     <option value="reviewed" <?php echo $status === 'reviewed' ? 'selected' : ''; ?>>Reviewed</option>
@@ -141,7 +144,7 @@ include 'includes/header.php';
                                 </button>
                             </div>
                             <?php else: ?>
-                            <span class="text-muted">Reviewed by <?php echo htmlspecialchars($report['reviewer_name'] ?? 'System'); ?></span>
+                            <span style="color: var(--text-muted);">Reviewed by <?php echo htmlspecialchars($report['reviewer_name'] ?? 'System'); ?></span>
                             <?php endif; ?>
                         </td>
                     </tr>

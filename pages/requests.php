@@ -176,5 +176,6 @@ $csrf_token = session_generate_csrf();
     <script src="../assets/js/app.js"></script>
     <script src="../assets/js/friends.js"></script>
     <script src="../assets/js/notifications.js"></script>
+    <?php echo render_sidebar_scripts(); ?>
 </body>
 </html>

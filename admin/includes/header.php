@@ -36,7 +36,7 @@ $current_page = basename($_SERVER['SCRIPT_NAME'], '.php');
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <!-- Admin CSS -->
-    <link href="assets/css/admin.css" rel="stylesheet">
+    <link href="assets/css/admin.css?v=<?php echo time(); ?>" rel="stylesheet">
 </head>
 <body>
     <div class="admin-wrapper">
@@ -125,6 +125,12 @@ $current_page = basename($_SERVER['SCRIPT_NAME'], '.php');
                         </a>
                     </li>
                     <?php endif; ?>
+                    <li class="<?php echo $current_page === 'profile' ? 'active' : ''; ?>">
+                        <a href="profile.php">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Profile</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
             

@@ -68,6 +68,9 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
                     <h2>Chats</h2>
                 </div>
                 <div class="header-actions">
+                    <button class="icon-btn" id="lockedChatsBtn" title="Locked Chats">
+                        <i class="fas fa-lock"></i>
+                    </button>
                     <button class="icon-btn" id="newChatBtn" title="New Chat">
                         <i class="fas fa-edit"></i>
                     </button>
@@ -141,14 +144,18 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
                                     <i class="fas fa-search"></i> Search Messages
                                 </button>
                                 <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" id="menuLockChat">
+                                    <i class="fas fa-lock"></i> Lock Chat
+                                </button>
+                                <button class="dropdown-item" id="menuUnlockChat" style="display: none;">
+                                    <i class="fas fa-unlock"></i> Unlock Chat
+                                </button>
+                                <div class="dropdown-divider"></div>
                                 <button class="dropdown-item" id="menuBlockUser">
                                     <i class="fas fa-ban"></i> Block User
                                 </button>
                                 <button class="dropdown-item" id="menuUnblockUser" style="display: none;">
                                     <i class="fas fa-unlock"></i> Unblock User
-                                </button>
-                                <button class="dropdown-item danger" id="menuBlockUser">
-                                    <i class="fas fa-ban"></i> Block User
                                 </button>
                             </div>
                         </div>
@@ -294,6 +301,24 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
     
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
+    
+    <!-- Chat Lock Modal -->
+    <div class="modal" id="chatLockModal">
+        <div class="modal-overlay" onclick="ChatLock.closeModal()"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="ChatLock.closeModal()">&times;</button>
+            <h3><i class="fas fa-lock"></i> Chat Locked</h3>
+            <p>Enter password to unlock this chat</p>
+            <input type="password" id="chatLockPassword" class="form-control" placeholder="Enter password" 
+                   onkeypress="if(event.key==='Enter') ChatLock.verify()">
+            <div class="secret-actions">
+                <button class="btn btn-secondary" onclick="ChatLock.closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="ChatLock.verify()">
+                    <i class="fas fa-unlock"></i> Unlock
+                </button>
+            </div>
+        </div>
+    </div>
     
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

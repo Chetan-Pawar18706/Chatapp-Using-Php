@@ -30,6 +30,14 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleOverlay();
         });
     }
+    
+    // Close sidebar on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+            toggleOverlay();
+        }
+    });
 });
 
 function toggleOverlay() {
@@ -353,6 +361,9 @@ function exportCSV(tableId, filename) {
 async function checkNotifications() {
     try {
         const response = await fetch(ADMIN.baseUrl + 'notifications.php');
+        if (!response.ok) return;
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) return;
         const data = await response.json();
         
         if (data.success && data.data.count > 0) {
@@ -360,7 +371,7 @@ async function checkNotifications() {
             document.getElementById('notifBadge').style.display = 'block';
         }
     } catch (error) {
-        console.error('Failed to check notifications:', error);
+        // Silently ignore notification errors
     }
 }
 

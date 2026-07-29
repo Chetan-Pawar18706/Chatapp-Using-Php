@@ -420,6 +420,45 @@ function showFormAlert(elementId, message, type) {
     }
 }
 
+let dashboardLockedMode = false;
+let dashboardAllChats = [];
+
+function toggleDashboardLockedChats() {
+    dashboardLockedMode = !dashboardLockedMode;
+    const btn = document.getElementById('lockedChatsBtn');
+    const title = document.querySelector('#section-chats .section-header h2');
+    
+    if (dashboardLockedMode) {
+        if (btn) btn.classList.add('active');
+        if (title) title.textContent = 'Locked Chats';
+        showDashboardLockedChats();
+    } else {
+        if (btn) btn.classList.remove('active');
+        if (title) title.textContent = 'Chats';
+        const container = document.getElementById('chatsFullList');
+        if (container && dashboardAllChats.length > 0) {
+            container.innerHTML = dashboardAllChats.map(chat => createChatItem(chat)).join('');
+        }
+    }
+}
+
+function showDashboardLockedChats() {
+    const locked = dashboardAllChats.filter(c => c.is_locked);
+    const container = document.getElementById('chatsFullList');
+    if (!container) return;
+    
+    if (locked.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-lock"></i>
+                <p>No locked chats</p>
+            </div>
+        `;
+        return;
+    }
+    container.innerHTML = locked.map(chat => createLockedChatItem(chat)).join('');
+}
+
 // =====================================================
 // Load Recent Chats
 // =====================================================
@@ -428,6 +467,7 @@ async function loadRecentChats(fullList = false) {
     
     if (result.success && result.data && result.data.chats) {
         const chats = result.data.chats;
+        dashboardAllChats = chats;
         
         // Update recent chats on dashboard
         const recentChatsList = document.getElementById('recentChatsList');
@@ -441,7 +481,7 @@ async function loadRecentChats(fullList = false) {
                     </div>
                 `;
             } else {
-                recentChatsList.innerHTML = chats.slice(0, 5).map(chat => createChatItem(chat)).join('');
+                recentChatsList.innerHTML = chats.slice(0, 5).map(chat => createChatItem(chat)).filter(html => html !== '').join('');
             }
         }
         
@@ -458,7 +498,18 @@ async function loadRecentChats(fullList = false) {
                         </div>
                     `;
                 } else {
-                    chatsFullList.innerHTML = chats.map(chat => createChatItem(chat)).join('');
+                    const rendered = chats.map(chat => createChatItem(chat)).filter(html => html !== '');
+                    if (rendered.length === 0) {
+                        chatsFullList.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-comments"></i>
+                                <p>No conversations yet</p>
+                                <span>Add friends to start chatting!</span>
+                            </div>
+                        `;
+                    } else {
+                        chatsFullList.innerHTML = rendered.join('');
+                    }
                 }
             }
         }
@@ -466,6 +517,13 @@ async function loadRecentChats(fullList = false) {
 }
 
 function createChatItem(chat) {
+    const isLocked = chat.is_locked === true || chat.is_locked === 1;
+    
+    // Locked chats hidden from normal list
+    if (isLocked) {
+        return '';
+    }
+    
     return `
         <div class="chat-item" onclick="openChat(${chat.user_id})">
             <div class="chat-avatar">
@@ -479,6 +537,22 @@ function createChatItem(chat) {
             <div class="chat-meta">
                 <div class="chat-time">${chat.last_message_time}</div>
                 ${chat.unread_count > 0 ? `<div class="chat-unread">${chat.unread_count}</div>` : ''}
+            </div>
+        </div>
+    `;
+}
+
+function createLockedChatItem(chat) {
+    return `
+        <div class="chat-item chat-item-locked" onclick="openChat(${chat.user_id})">
+            <div class="chat-avatar">
+                <div class="avatar-initials" style="background: var(--bg-tertiary); color: var(--text-secondary);">
+                    <i class="fas fa-lock"></i>
+                </div>
+            </div>
+            <div class="chat-info">
+                <div class="chat-name">Locked Chat</div>
+                <div class="chat-message"><i class="fas fa-lock"></i> Enter password to view</div>
             </div>
         </div>
     `;

@@ -35,8 +35,8 @@ mysqli_stmt_execute($user_stmt);
 $user_result = mysqli_stmt_get_result($user_stmt);
 $user = mysqli_fetch_assoc($user_result);
 
-// Get user's media
-$media_query = "SELECT * FROM media WHERE user_id = ? ORDER BY created_at DESC";
+// Get user's media (exclude secret files)
+$media_query = "SELECT * FROM media WHERE user_id = ? AND is_secret = 0 ORDER BY created_at DESC";
 $media_stmt = mysqli_prepare($conn, $media_query);
 mysqli_stmt_bind_param($media_stmt, 'i', $user_id);
 mysqli_stmt_execute($media_stmt);
@@ -57,6 +57,11 @@ $total_size = array_sum(array_column($media_files, 'file_size'));
 $image_count = count(array_filter($media_files, fn($m) => $m['category'] === 'images'));
 $video_count = count(array_filter($media_files, fn($m) => $m['category'] === 'videos'));
 $doc_count = count(array_filter($media_files, fn($m) => $m['category'] === 'documents'));
+
+// Secret folder
+$has_secret_password = !empty($user['secret_folder_password']);
+$secret_count_result = db_fetch_single("SELECT COUNT(*) as cnt FROM media WHERE user_id = ? AND is_secret = 1", [$user_id]);
+$secret_count = $secret_count_result['cnt'] ?? 0;
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="<?php echo htmlspecialchars(get_user_theme()); ?>">
@@ -340,8 +345,59 @@ $doc_count = count(array_filter($media_files, fn($m) => $m['category'] === 'docu
                     </div>
                 <?php endif; ?>
             </div>
+
+            <!-- Secret Folder -->
+            <div class="media-section secret-folder-section">
+                <h4>
+                    <i class="fas fa-lock"></i> Secret Folder
+                    <span class="secret-badge" id="secretCount"><?php echo $secret_count; ?> files</span>
+                </h4>
+
+                <?php if (!$has_secret_password): ?>
+                    <div class="secret-setup" id="secretSetup">
+                        <i class="fas fa-shield-alt"></i>
+                        <h5>Protect Your Sensitive Files</h5>
+                        <p>Set a password to create a secret folder for sensitive documents.</p>
+                        <div class="secret-password-row">
+                            <input type="password" id="newSecretPassword" class="form-control" placeholder="Set password (min 4 chars)">
+                            <button class="btn btn-primary" onclick="SecretFolder.setPassword()">
+                                <i class="fas fa-lock"></i> Set Password
+                            </button>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <div class="secret-locked" id="secretLocked" style="display: <?php echo $secret_count > 0 ? 'none' : 'block'; ?>">
+                        <i class="fas fa-lock"></i>
+                        <h5>Folder Locked</h5>
+                        <p>Enter your password to access the secret folder.</p>
+                        <div class="secret-password-row">
+                            <input type="password" id="secretPasswordInput" class="form-control" placeholder="Enter password">
+                            <button class="btn btn-primary" onclick="SecretFolder.unlock()">
+                                <i class="fas fa-unlock"></i> Unlock
+                            </button>
+                        </div>
+                    </div>
+                    <div class="secret-grid-wrapper" id="secretGridWrapper" style="display: none;">
+                        <div class="secret-grid" id="secretGrid"></div>
+                        <div class="no-secret" id="noSecretMsg" style="display: none;">
+                            <i class="fas fa-folder-open"></i>
+                            <p>No files in secret folder</p>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
         </div>
         </main>
+    </div>
+
+    <!-- Password Modal -->
+    <div class="modal" id="secretPasswordModal">
+        <div class="modal-overlay" onclick="SecretFolder.closeModal()"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="SecretFolder.closeModal()">&times;</button>
+            <h3><i class="fas fa-lock"></i> Secret Folder</h3>
+            <div id="secretModalBody"></div>
+        </div>
     </div>
 
     <!-- Scripts -->

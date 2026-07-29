@@ -20,6 +20,8 @@ if (!admin_verify_session()) {
     exit;
 }
 
+$conn = db_connect();
+
 $group_id = (int)($_GET['id'] ?? 0);
 
 if (!$group_id) {
@@ -81,7 +83,7 @@ include 'includes/header.php';
                     <i class="fas fa-user-group"></i>
                 </div>
                 <h3 class="mb-1"><?php echo htmlspecialchars($group['name']); ?></h3>
-                <p class="text-muted"><?php echo htmlspecialchars($group['description'] ?? 'No description'); ?></p>
+                <p style="color: var(--text-muted);"><?php echo htmlspecialchars($group['description'] ?? 'No description'); ?></p>
                 <?php echo admin_status_badge($group['status']); ?>
             </div>
         </div>
@@ -90,10 +92,10 @@ include 'includes/header.php';
             <div class="card-header"><h2>Info</h2></div>
             <div class="card-body">
                 <table class="table table-borderless">
-                    <tr><td class="text-muted">ID</td><td><?php echo $group['id']; ?></td></tr>
-                    <tr><td class="text-muted">Created by</td><td><?php echo htmlspecialchars($group['creator_name'] ?? 'Unknown'); ?></td></tr>
-                    <tr><td class="text-muted">Members</td><td><?php echo count($members); ?></td></tr>
-                    <tr><td class="text-muted">Created</td><td><?php echo admin_format_date($group['created_at']); ?></td></tr>
+                    <tr><td style="color: var(--text-muted);">ID</td><td><?php echo $group['id']; ?></td></tr>
+                    <tr><td style="color: var(--text-muted);">Created by</td><td><?php echo htmlspecialchars($group['creator_name'] ?? 'Unknown'); ?></td></tr>
+                    <tr><td style="color: var(--text-muted);">Members</td><td><?php echo count($members); ?></td></tr>
+                    <tr><td style="color: var(--text-muted);">Created</td><td><?php echo admin_format_date($group['created_at']); ?></td></tr>
                 </table>
             </div>
         </div>

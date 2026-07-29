@@ -92,7 +92,7 @@ function render_media_grid_item($media) {
     $extension = $media['file_extension'];
     $icon = get_file_icon($category, $extension);
     
-    $html = '<div class="media-grid-item" data-id="' . $id . '" onclick="MediaModule.openLightbox(' . htmlspecialchars(json_encode($media)) . ')">';
+    $html = '<div class="media-grid-item" data-id="' . $id . '" data-category="' . $category . '" onclick="MediaModule.openLightbox(' . htmlspecialchars(json_encode($media)) . ')">';
     
     if ($media['is_image']) {
         $html .= '<img src="/chatapp/api/preview-media.php?id=' . $id . '" alt="' . $name . '" loading="lazy">';

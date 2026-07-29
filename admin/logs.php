@@ -20,41 +20,55 @@ if (!admin_verify_session()) {
     exit;
 }
 
+$conn = db_connect();
 $tab = $_GET['tab'] ?? 'admin';
 $page = max(1, (int)($_GET['page'] ?? 1));
 $per_page = ADMIN_PER_PAGE;
+$logs = [];
+$total = 0;
+$total_pages = 1;
 
 if ($tab === 'security') {
-    $count_query = "SELECT COUNT(*) as total FROM security_log";
-    $total = mysqli_fetch_assoc(mysqli_query($conn, $count_query))['total'];
-    $total_pages = ceil($total / $per_page);
+    $count_result = mysqli_query($conn, "SELECT COUNT(*) as total FROM security_log");
+    $total = $count_result ? (int)mysqli_fetch_assoc($count_result)['total'] : 0;
+    $total_pages = max(1, ceil($total / $per_page));
     $offset = ($page - 1) * $per_page;
-    
+
     $query = "SELECT * FROM security_log ORDER BY created_at DESC LIMIT ? OFFSET ?";
     $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, 'ii', $per_page, $offset);
-    mysqli_stmt_execute($stmt);
-    $logs = [];
-    while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt))) {
-        $logs[] = $row;
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, 'ii', $per_page, $offset);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        if ($result) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $logs[] = $row;
+            }
+        }
+        mysqli_stmt_close($stmt);
     }
 } else {
-    $count_query = "SELECT COUNT(*) as total FROM admin_activity_log";
-    $total = mysqli_fetch_assoc(mysqli_query($conn, $count_query))['total'];
-    $total_pages = ceil($total / $per_page);
+    $count_result = mysqli_query($conn, "SELECT COUNT(*) as total FROM admin_activity_log");
+    $total = $count_result ? (int)mysqli_fetch_assoc($count_result)['total'] : 0;
+    $total_pages = max(1, ceil($total / $per_page));
     $offset = ($page - 1) * $per_page;
-    
+
     $query = "SELECT al.*, au.username as admin_name 
               FROM admin_activity_log al 
               LEFT JOIN admin_users au ON al.admin_id = au.id 
               ORDER BY al.created_at DESC 
               LIMIT ? OFFSET ?";
     $stmt = mysqli_prepare($conn, $query);
-    mysqli_stmt_bind_param($stmt, 'ii', $per_page, $offset);
-    mysqli_stmt_execute($stmt);
-    $logs = [];
-    while ($row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt))) {
-        $logs[] = $row;
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, 'ii', $per_page, $offset);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        if ($result) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $logs[] = $row;
+            }
+        }
+        mysqli_stmt_close($stmt);
     }
 }
 

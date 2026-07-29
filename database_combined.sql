@@ -49,6 +49,7 @@ CREATE TABLE `users` (
     `reset_token` VARCHAR(64) DEFAULT NULL,
     `reset_token_expires` DATETIME DEFAULT NULL,
     `remember_token` VARCHAR(64) DEFAULT NULL,
+    `secret_folder_password` VARCHAR(255) DEFAULT NULL,
     `email_verified` TINYINT(1) DEFAULT 0,
     `verification_token` VARCHAR(64) DEFAULT NULL,
     `status` ENUM('active', 'inactive', 'banned') DEFAULT 'active',
@@ -180,12 +181,14 @@ CREATE TABLE `media` (
     `category` ENUM('images', 'videos', 'documents', 'archives') NOT NULL,
     `receiver_id` INT UNSIGNED DEFAULT NULL,
     `group_id` INT UNSIGNED DEFAULT NULL,
+    `is_secret` TINYINT(1) NOT NULL DEFAULT 0,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     INDEX `idx_user_id` (`user_id`),
     INDEX `idx_receiver_id` (`receiver_id`),
     INDEX `idx_group_id` (`group_id`),
     INDEX `idx_category` (`category`),
+    INDEX `idx_is_secret` (`is_secret`),
     INDEX `idx_created_at` (`created_at`),
     CONSTRAINT `fk_media_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_media_receiver` FOREIGN KEY (`receiver_id`) REFERENCES `users`(`id`) ON DELETE SET NULL,
@@ -624,6 +627,23 @@ CREATE TABLE `system_settings` (
 -- Re-enable foreign key checks
 -- =====================================================
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- =====================================================
+-- Chat Locks
+-- =====================================================
+DROP TABLE IF EXISTS `chat_locks`;
+CREATE TABLE `chat_locks` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT UNSIGNED NOT NULL,
+    `chat_type` ENUM('chat', 'group') NOT NULL DEFAULT 'chat',
+    `target_id` INT UNSIGNED NOT NULL,
+    `password_hash` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY `uk_chat_lock` (`user_id`, `chat_type`, `target_id`),
+    INDEX `idx_user_id` (`user_id`),
+    CONSTRAINT `fk_chatlock_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
 -- Default Data

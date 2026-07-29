@@ -8,16 +8,18 @@
 
 define('APP_RUNNING', true);
 
-require_once dirname(__DIR__) . '/config/database.php';
-require_once dirname(__DIR__) . '/admin/config.php';
-require_once dirname(__DIR__) . '/admin/auth.php';
-require_once dirname(__DIR__) . '/admin/helpers.php';
+require_once dirname(dirname(__DIR__)) . '/config/database.php';
+require_once dirname(__DIR__) . '/config.php';
+require_once dirname(__DIR__) . '/auth.php';
+require_once dirname(__DIR__) . '/helpers.php';
 
 admin_session_init();
 
 if (!admin_verify_session()) {
     admin_send_error('Unauthorized', 401);
 }
+
+$conn = db_connect();
 
 // Get pending notifications count
 $count = 0;

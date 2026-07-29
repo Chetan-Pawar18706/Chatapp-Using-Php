@@ -21,6 +21,8 @@ if (!admin_verify_session()) {
     exit;
 }
 
+$conn = db_connect();
+
 $user_id = (int)($_GET['id'] ?? 0);
 
 if (!$user_id) {
@@ -116,12 +118,12 @@ include 'includes/header.php';
             <div class="card-body text-center">
                 <?php echo admin_user_avatar($user, 100); ?>
                 <h3 class="mt-3 mb-1"><?php echo htmlspecialchars($user['username']); ?></h3>
-                <p class="text-muted mb-3"><?php echo htmlspecialchars($user['email']); ?></p>
+                <p style="color: var(--text-muted); margin-bottom: 12px;"><?php echo htmlspecialchars($user['email']); ?></p>
                 
                 <?php echo admin_status_badge($user['status']); ?>
                 
                 <div class="mt-3">
-                    <small class="text-muted">
+                    <small style="color: var(--text-muted);">
                         Member since <?php echo admin_format_date($user['created_at'], 'M d, Y'); ?>
                     </small>
                 </div>
@@ -170,15 +172,15 @@ include 'includes/header.php';
             <div class="card-body">
                 <table class="table table-borderless">
                     <tr>
-                        <td class="text-muted">ID</td>
+                        <td style="color: var(--text-muted);">ID</td>
                         <td><?php echo $user['id']; ?></td>
                     </tr>
                     <tr>
-                        <td class="text-muted">Friend Code</td>
+                        <td style="color: var(--text-muted);">Friend Code</td>
                         <td><code><?php echo htmlspecialchars($user['friend_code']); ?></code></td>
                     </tr>
                     <tr>
-                        <td class="text-muted">Email Verified</td>
+                        <td style="color: var(--text-muted);">Email Verified</td>
                         <td>
                             <?php if ($user['email_verified']): ?>
                                 <span class="badge bg-success">Verified</span>
@@ -188,11 +190,11 @@ include 'includes/header.php';
                         </td>
                     </tr>
                     <tr>
-                        <td class="text-muted">Theme</td>
+                        <td style="color: var(--text-muted);">Theme</td>
                         <td><?php echo ucfirst($user['theme'] ?? 'dark'); ?></td>
                     </tr>
                     <tr>
-                        <td class="text-muted">Last Password Change</td>
+                        <td style="color: var(--text-muted);">Last Password Change</td>
                         <td><?php echo $user['last_password_change'] ? admin_format_date($user['last_password_change']) : 'Never'; ?></td>
                     </tr>
                 </table>

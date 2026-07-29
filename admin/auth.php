@@ -19,17 +19,12 @@ function admin_session_init() {
         return;
     }
     
-    ini_set('session.use_strict_mode', '1');
-    ini_set('session.use_only_cookies', '1');
-    ini_set('session.cookie_httponly', '1');
-    ini_set('session.cookie_secure', '0');
-    ini_set('session.cookie_samesite', 'Lax');
     ini_set('session.gc_maxlifetime', ADMIN_SESSION_LIFETIME);
     
     session_name(ADMIN_SESSION_NAME);
     session_set_cookie_params([
         'lifetime' => ADMIN_SESSION_LIFETIME,
-        'path' => '/admin',
+        'path' => '/',
         'domain' => '',
         'secure' => false,
         'httponly' => true,
@@ -130,6 +125,7 @@ function admin_login($username, $password, $remember = false) {
     mysqli_stmt_execute($update_stmt);
     
     // Set session data
+    $admin_settings = json_decode($admin['settings'] ?? '{}', true) ?: [];
     $_SESSION['admin_id'] = $admin['id'];
     $_SESSION['admin_username'] = $admin['username'];
     $_SESSION['admin_role'] = $admin['role'];
@@ -139,7 +135,9 @@ function admin_login($username, $password, $remember = false) {
         'email' => $admin['email'],
         'full_name' => $admin['full_name'],
         'role' => $admin['role'],
-        'avatar' => $admin['avatar']
+        'avatar' => $admin['avatar'],
+        'theme' => $admin_settings['theme'] ?? 'dark',
+        'settings' => $admin['settings'] ?? null
     ];
     $_SESSION['admin_login_time'] = time();
     $_SESSION['admin_ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
@@ -155,7 +153,7 @@ function admin_login($username, $password, $remember = false) {
         mysqli_stmt_bind_param($token_stmt, 'si', $token, $admin['id']);
         mysqli_stmt_execute($token_stmt);
         
-        setcookie('admin_remember', $token, $expires, '/admin/', '', false, true);
+        setcookie('admin_remember', $token, $expires, '/', '', false, true);
     }
     
     // Log activity
@@ -186,7 +184,7 @@ function admin_logout() {
             mysqli_stmt_bind_param($token_stmt, 'i', $admin_id);
             mysqli_stmt_execute($token_stmt);
             
-            setcookie('admin_remember', '', time() - 3600, '/admin/', '', false, true);
+            setcookie('admin_remember', '', time() - 3600, '/', '', false, true);
         }
     }
     
@@ -232,7 +230,7 @@ function admin_validate_remember() {
         mysqli_stmt_bind_param($update_stmt, 'si', $new_token, $admin['id']);
         mysqli_stmt_execute($update_stmt);
         
-        setcookie('admin_remember', $new_token, time() + ADMIN_REMEMBER_LIFETIME, '/admin/', '', false, true);
+        setcookie('admin_remember', $new_token, time() + ADMIN_REMEMBER_LIFETIME, '/', '', false, true);
         
         return $admin;
     }
@@ -245,20 +243,6 @@ function admin_validate_remember() {
  */
 function admin_verify_session() {
     if (!admin_is_logged_in()) {
-        return false;
-    }
-    
-    // Check IP
-    $current_ip = $_SERVER['REMOTE_ADDR'] ?? '';
-    if (isset($_SESSION['admin_ip']) && $_SESSION['admin_ip'] !== $current_ip) {
-        admin_logout();
-        return false;
-    }
-    
-    // Check User Agent
-    $current_ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
-    if (isset($_SESSION['admin_user_agent']) && $_SESSION['admin_user_agent'] !== $current_ua) {
-        admin_logout();
         return false;
     }
     

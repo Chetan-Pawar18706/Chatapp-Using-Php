@@ -20,6 +20,8 @@ if (!admin_verify_session()) {
     exit;
 }
 
+$conn = db_connect();
+
 $page = max(1, (int)($_GET['page'] ?? 1));
 $per_page = ADMIN_PER_PAGE;
 
