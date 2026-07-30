@@ -53,6 +53,7 @@ CREATE TABLE `users` (
     `email_verified` TINYINT(1) DEFAULT 0,
     `verification_token` VARCHAR(64) DEFAULT NULL,
     `status` ENUM('active', 'inactive', 'banned') DEFAULT 'active',
+    `search_visibility` ENUM('everyone', 'friends', 'nobody') DEFAULT 'everyone',
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 

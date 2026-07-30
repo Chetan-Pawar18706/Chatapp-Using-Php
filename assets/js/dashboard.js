@@ -763,30 +763,67 @@ function initializeSearch() {
             clearTimeout(searchTimeout);
             const query = this.value.trim();
             
-            if (query.length < 2) {
+            if (query.length < 1) {
                 searchResults.classList.remove('show');
+                searchResults.innerHTML = '';
                 return;
             }
             
             searchTimeout = setTimeout(async () => {
-                const result = await ChatApp.apiRequest(`/search-users.php?q=${encodeURIComponent(query)}`, 'GET');
+                const result = await ChatApp.apiRequest(`/search-suggestions.php?q=${encodeURIComponent(query)}`, 'GET');
                 
-                if (result.success && result.data.users.length > 0) {
-                    searchResults.innerHTML = result.data.users.map(user => `
-                        <div class="search-result-item" onclick="selectSearchUser(${user.id}, '${escapeHtml(user.username)}')">
-                            ${renderAvatar(user.avatar, user.username)}
-                            <div>
-                                <div class="user-name">${escapeHtml(user.username)}</div>
-                                <div class="user-code">${escapeHtml(user.friend_code)}</div>
+                if (result.success) {
+                    const { friends, users } = result.data;
+                    let html = '';
+                    
+                    if (friends.length > 0) {
+                        html += '<div class="search-section-label">Friends</div>';
+                        html += friends.map(user => `
+                            <div class="search-result-item" onclick="selectSearchUser(${user.id})">
+                                <div class="search-avatar ${user.is_online ? 'online' : ''}">
+                                    ${user.avatar ? `<img src="${user.avatar}" alt="${escapeHtml(user.username)}">` : `<span class="initials">${user.initials}</span>`}
+                                </div>
+                                <div class="search-user-info">
+                                    <div class="search-username">${escapeHtml(user.username)}</div>
+                                    <div class="search-status">
+                                        <span class="status-dot ${user.is_online ? 'online' : ''}"></span>
+                                        ${user.is_online ? 'Online' : 'Offline'}
+                                    </div>
+                                </div>
+                                <span class="friend-badge">Friend</span>
                             </div>
-                        </div>
-                    `).join('');
+                        `).join('');
+                    }
+                    
+                    if (users.length > 0) {
+                        html += '<div class="search-section-label">People</div>';
+                        html += users.map(user => `
+                            <div class="search-result-item" onclick="selectSearchUser(${user.id})">
+                                <div class="search-avatar ${user.is_online ? 'online' : ''}">
+                                    ${user.avatar ? `<img src="${user.avatar}" alt="${escapeHtml(user.username)}">` : `<span class="initials">${user.initials}</span>`}
+                                </div>
+                                <div class="search-user-info">
+                                    <div class="search-username">${escapeHtml(user.username)}</div>
+                                    <div class="search-status">
+                                        <span class="status-dot ${user.is_online ? 'online' : ''}"></span>
+                                        ${user.is_online ? 'Online' : 'Offline'}
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                    
+                    if (friends.length === 0 && users.length === 0) {
+                        html = '<div class="search-no-results">No users found</div>';
+                    }
+                    
+                    searchResults.innerHTML = html;
                     searchResults.classList.add('show');
                 } else {
-                    searchResults.innerHTML = '<div class="search-result-item">No users found</div>';
+                    searchResults.innerHTML = '<div class="search-no-results">No users found</div>';
                     searchResults.classList.add('show');
                 }
-            }, 300);
+            }, 200);
         });
         
         // Close search results when clicking outside
@@ -795,10 +832,17 @@ function initializeSearch() {
                 searchResults.classList.remove('show');
             }
         });
+        
+        // Focus shows results if there's content
+        searchInput.addEventListener('focus', function() {
+            if (this.value.trim().length >= 1 && searchResults.innerHTML) {
+                searchResults.classList.add('show');
+            }
+        });
     }
 }
 
-function selectSearchUser(userId, username) {
+function selectSearchUser(userId) {
     window.location.href = 'chat.php?user_id=' + userId;
 }
 

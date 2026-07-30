@@ -34,12 +34,20 @@ function search_users($query, $user_id, $limit = 20) {
             WHERE (username LIKE ? OR bio LIKE ?)
             AND id != ?
             AND status = 'active'
+            AND (
+                search_visibility = 'everyone'
+                OR (search_visibility = 'friends' AND id IN (
+                    SELECT CASE WHEN user_id = ? THEN friend_id ELSE user_id END
+                    FROM friendships
+                    WHERE (user_id = ? OR friend_id = ?) AND status = 'accepted'
+                ))
+            )
             ORDER BY relevance, username
             LIMIT ?";
     
     $stmt = mysqli_prepare($conn, $sql);
     $starts_with = $query . '%';
-    mysqli_stmt_bind_param($stmt, 'ssssii', $starts_with, $search_term, $search_term, $search_term, $user_id, $limit);
+    mysqli_stmt_bind_param($stmt, 'ssssiiiii', $starts_with, $search_term, $search_term, $search_term, $user_id, $user_id, $user_id, $user_id, $limit);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     

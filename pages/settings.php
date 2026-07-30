@@ -551,6 +551,50 @@ $csrf_token = session_generate_csrf();
                                 </div>
                             </div>
 
+                            <!-- Who Can Find Me in Search -->
+                            <div class="settings-section">
+                                <h4>Who Can Find You in Search</h4>
+                                <p class="section-desc">Control who can find you when searching for users</p>
+                                
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="search_visibility" value="everyone" <?php echo ($privacy['search_visibility'] ?? 'everyone') === 'everyone' ? 'checked' : ''; ?>>
+                                        <div class="radio-content">
+                                            <div class="radio-icon"><i class="fas fa-globe"></i></div>
+                                            <div class="radio-text">
+                                                <span class="radio-title">Everyone</span>
+                                                <span class="radio-desc">Any user can find you in search</span>
+                                            </div>
+                                        </div>
+                                        <div class="radio-check"><i class="fas fa-check"></i></div>
+                                    </label>
+                                    
+                                    <label class="radio-option">
+                                        <input type="radio" name="search_visibility" value="friends" <?php echo ($privacy['search_visibility'] ?? '') === 'friends' ? 'checked' : ''; ?>>
+                                        <div class="radio-content">
+                                            <div class="radio-icon"><i class="fas fa-user-friends"></i></div>
+                                            <div class="radio-text">
+                                                <span class="radio-title">Friends Only</span>
+                                                <span class="radio-desc">Only your friends can find you in search</span>
+                                            </div>
+                                        </div>
+                                        <div class="radio-check"><i class="fas fa-check"></i></div>
+                                    </label>
+                                    
+                                    <label class="radio-option">
+                                        <input type="radio" name="search_visibility" value="nobody" <?php echo ($privacy['search_visibility'] ?? '') === 'nobody' ? 'checked' : ''; ?>>
+                                        <div class="radio-content">
+                                            <div class="radio-icon"><i class="fas fa-eye-slash"></i></div>
+                                            <div class="radio-text">
+                                                <span class="radio-title">Hide from Everyone</span>
+                                                <span class="radio-desc">You won't appear in any search results</span>
+                                            </div>
+                                        </div>
+                                        <div class="radio-check"><i class="fas fa-check"></i></div>
+                                    </label>
+                                </div>
+                            </div>
+
                             <!-- Additional Privacy Options -->
                             <div class="settings-section">
                                 <h4>Additional Options</h4>

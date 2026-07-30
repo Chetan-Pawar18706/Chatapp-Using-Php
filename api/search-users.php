@@ -45,11 +45,19 @@ $sql = "SELECT id, username, friend_code, avatar, is_online
         WHERE (username LIKE ? OR email LIKE ? OR friend_code LIKE ?)
         AND id NOT IN ($placeholders)
         AND status = 'active'
+        AND (
+            search_visibility = 'everyone'
+            OR (search_visibility = 'friends' AND id IN (
+                SELECT CASE WHEN user_id = ? THEN friend_id ELSE user_id END
+                FROM friendships
+                WHERE (user_id = ? OR friend_id = ?) AND status = 'accepted'
+            ))
+        )
         LIMIT 10";
 
 $search_term = "%{$query}%";
-$params = array_merge([$search_term, $search_term, $search_term], $blocked_ids);
-$types = str_repeat('s', count($blocked_ids) + 3);
+$params = array_merge([$search_term, $search_term, $search_term], $blocked_ids, [$user_id, $user_id, $user_id]);
+$types = str_repeat('s', count($blocked_ids) + 3) . 'iii';
 $users = db_fetch_all($sql, $params, $types);
 
 $results = [];

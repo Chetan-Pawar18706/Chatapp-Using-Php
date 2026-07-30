@@ -55,6 +55,7 @@ $allow_friend_requests = isset($_POST['allow_friend_requests']) ? 1 : null;
 $allow_messages = $_POST['who_can_message'] ?? null;
 $show_read_receipts = isset($_POST['show_read_receipts']) ? 1 : null;
 $show_typing = isset($_POST['show_typing']) ? 1 : null;
+$search_visibility = $_POST['search_visibility'] ?? null;
 
 // Build update query based on provided fields
 $updates = [];
@@ -102,6 +103,16 @@ if ($allow_friend_requests !== null) $privacy_settings['allow_friend_requests'] 
 if ($allow_messages !== null) $privacy_settings['allow_messages'] = $allow_messages;
 if ($show_read_receipts !== null) $privacy_settings['show_read_receipts'] = $show_read_receipts;
 if ($show_typing !== null) $privacy_settings['show_typing'] = $show_typing;
+if ($search_visibility !== null) {
+    $valid_visibility = ['everyone', 'friends', 'nobody'];
+    if (in_array($search_visibility, $valid_visibility)) {
+        $privacy_settings['search_visibility'] = $search_visibility;
+        // Also update the column directly for faster queries
+        $updates[] = 'search_visibility = ?';
+        $params[] = $search_visibility;
+        $types .= 's';
+    }
+}
 
 // Store settings as JSON
 if (!empty($notification_settings) || !empty($privacy_settings) || !empty($extra_settings)) {
