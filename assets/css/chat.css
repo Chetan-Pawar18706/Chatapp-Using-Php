@@ -2116,3 +2116,250 @@ body > .sidebar.collapsed ~ .chat-app {
     justify-content: center;
     font-size: 16px;
 }
+
+/* =====================================================
+   Poll Styles
+   ===================================================== */
+.poll-btn {
+    color: var(--text-secondary);
+}
+
+.poll-btn:hover {
+    color: var(--primary);
+}
+
+.poll-inline {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.poll-inline:hover {
+    border-color: var(--primary);
+}
+
+.poll-question {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.poll-option-result {
+    position: relative;
+    padding: 0.6rem 0.75rem;
+    margin-bottom: 0.4rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+.poll-option-result:hover {
+    border-color: var(--primary);
+}
+
+.poll-option-result.voted {
+    border-color: var(--primary);
+}
+
+.poll-option-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: var(--primary-bg);
+    border-radius: var(--radius-sm);
+    transition: width 0.3s ease;
+}
+
+.poll-option-text {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    z-index: 1;
+}
+
+.poll-option-pct {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.poll-meta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.poll-expired {
+    color: var(--error-color);
+    font-weight: 500;
+}
+
+/* Modal form-control */
+#pollModal .form-control {
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 0.6rem 0.75rem;
+    border-radius: var(--radius-md);
+}
+
+#pollModal .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary-bg);
+}
+
+#pollModal select.form-control {
+    appearance: auto;
+}
+
+/* =====================================================
+   Voice Message Styles
+   ===================================================== */
+.voice-btn {
+    color: var(--text-secondary);
+}
+
+.voice-btn:hover {
+    color: var(--primary);
+}
+
+.voice-btn.recording {
+    color: var(--error-color);
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.voice-recording-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.voice-recording-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--error-color);
+    animation: pulse 1s infinite;
+}
+
+.voice-recording-time {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 40px;
+}
+
+.voice-cancel-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.voice-cancel-btn:hover {
+    background: var(--bg-hover);
+    color: var(--error-color);
+}
+
+.voice-send-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.voice-send-btn:hover {
+    background: var(--primary-hover);
+}
+
+/* Voice Message Bubble */
+.voice-message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 200px;
+}
+
+.voice-play-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+
+.voice-play-btn:hover {
+    background: var(--primary-hover);
+    transform: scale(1.05);
+}
+
+.voice-waveform {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.voice-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--bg-tertiary);
+    border-radius: 2px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.voice-progress-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+.voice-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}

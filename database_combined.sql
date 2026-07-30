@@ -663,6 +663,159 @@ CREATE TABLE `chat_locks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================
+-- 29. Stories / Status
+-- =====================================================
+DROP TABLE IF EXISTS `stories`;
+CREATE TABLE `stories` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT UNSIGNED NOT NULL,
+    `content` TEXT DEFAULT NULL,
+    `media_type` ENUM('image', 'video', 'text') DEFAULT 'text',
+    `media_path` VARCHAR(500) DEFAULT NULL,
+    `bg_color` VARCHAR(20) DEFAULT '#6366f1',
+    `text_color` VARCHAR(20) DEFAULT '#ffffff',
+    `font_size` INT DEFAULT 18,
+    `expires_at` DATETIME NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX `idx_user_id` (`user_id`),
+    INDEX `idx_expires_at` (`expires_at`),
+    INDEX `idx_created_at` (`created_at`),
+    CONSTRAINT `fk_story_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `story_views`;
+CREATE TABLE `story_views` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `story_id` INT UNSIGNED NOT NULL,
+    `user_id` INT UNSIGNED NOT NULL,
+    `viewed_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY `unique_view` (`story_id`, `user_id`),
+    INDEX `idx_story_id` (`story_id`),
+    CONSTRAINT `fk_storyview_story` FOREIGN KEY (`story_id`) REFERENCES `stories`(`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_storyview_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- 30. Polls
+-- =====================================================
+DROP TABLE IF EXISTS `polls`;
+CREATE TABLE `polls` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `message_id` INT UNSIGNED DEFAULT NULL,
+    `user_id` INT UNSIGNED NOT NULL,
+    `group_id` INT UNSIGNED DEFAULT NULL,
+    `receiver_id` INT UNSIGNED DEFAULT NULL,
+    `question` VARCHAR(500) NOT NULL,
+    `is_multiple` TINYINT(1) DEFAULT 0,
+    `is_anonymous` TINYINT(1) DEFAULT 0,
+    `expires_at` DATETIME DEFAULT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX `idx_user_id` (`user_id`),
+    INDEX `idx_group_id` (`group_id`),
+    INDEX `idx_receiver_id` (`receiver_id`),
+    INDEX `idx_message_id` (`message_id`),
+    CONSTRAINT `fk_poll_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_poll_group` FOREIGN KEY (`group_id`) REFERENCES `groups`(`id`) ON DELETE SET NULL,
+    CONSTRAINT `fk_poll_receiver` FOREIGN KEY (`receiver_id`) REFERENCES `users`(`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `poll_options`;
+CREATE TABLE `poll_options` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `poll_id` INT UNSIGNED NOT NULL,
+    `option_text` VARCHAR(255) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX `idx_poll_id` (`poll_id`),
+    CONSTRAINT `fk_pollopt_poll` FOREIGN KEY (`poll_id`) REFERENCES `polls`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `poll_votes`;
+CREATE TABLE `poll_votes` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `poll_id` INT UNSIGNED NOT NULL,
+    `option_id` INT UNSIGNED NOT NULL,
+    `user_id` INT UNSIGNED NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY `unique_vote` (`poll_id`, `user_id`),
+    INDEX `idx_poll_id` (`poll_id`),
+    INDEX `idx_option_id` (`option_id`),
+    CONSTRAINT `fk_pollvote_poll` FOREIGN KEY (`poll_id`) REFERENCES `polls`(`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_pollvote_option` FOREIGN KEY (`option_id`) REFERENCES `poll_options`(`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_pollvote_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- 31. Voice Messages
+-- =====================================================
+DROP TABLE IF EXISTS `voice_messages`;
+CREATE TABLE `voice_messages` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `message_id` INT UNSIGNED NOT NULL,
+    `user_id` INT UNSIGNED NOT NULL,
+    `file_path` VARCHAR(500) NOT NULL,
+    `duration` FLOAT DEFAULT 0,
+    `file_size` INT UNSIGNED DEFAULT 0,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX `idx_message_id` (`message_id`),
+    INDEX `idx_user_id` (`user_id`),
+    CONSTRAINT `fk_voicemsg_message` FOREIGN KEY (`message_id`) REFERENCES `messages`(`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_voicemsg_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- 32. Live Location Sharing
+-- =====================================================
+DROP TABLE IF EXISTS `live_locations`;
+CREATE TABLE `live_locations` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT UNSIGNED NOT NULL,
+    `receiver_id` INT UNSIGNED DEFAULT NULL,
+    `group_id` INT UNSIGNED DEFAULT NULL,
+    `latitude` DECIMAL(10, 8) NOT NULL,
+    `longitude` DECIMAL(11, 8) NOT NULL,
+    `accuracy` FLOAT DEFAULT NULL,
+    `expires_at` DATETIME NOT NULL,
+    `is_active` TINYINT(1) DEFAULT 1,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    INDEX `idx_user_id` (`user_id`),
+    INDEX `idx_receiver_id` (`receiver_id`),
+    INDEX `idx_group_id` (`group_id`),
+    INDEX `idx_expires_at` (`expires_at`),
+    CONSTRAINT `fk_loc_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_loc_receiver` FOREIGN KEY (`receiver_id`) REFERENCES `users`(`id`) ON DELETE SET NULL,
+    CONSTRAINT `fk_loc_group` FOREIGN KEY (`group_id`) REFERENCES `groups`(`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- 33. Snap Streaks
+-- =====================================================
+DROP TABLE IF EXISTS `streaks`;
+CREATE TABLE `streaks` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user1_id` INT UNSIGNED NOT NULL,
+    `user2_id` INT UNSIGNED NOT NULL,
+    `streak_count` INT UNSIGNED DEFAULT 1,
+    `last_message_date` DATE NOT NULL,
+    `freeze_count` INT UNSIGNED DEFAULT 0,
+    `started_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    UNIQUE KEY `unique_streak` (`user1_id`, `user2_id`),
+    INDEX `idx_user1` (`user1_id`),
+    INDEX `idx_user2` (`user2_id`),
+    CONSTRAINT `fk_streak_user1` FOREIGN KEY (`user1_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_streak_user2` FOREIGN KEY (`user2_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
 -- Default Data
 -- =====================================================
 

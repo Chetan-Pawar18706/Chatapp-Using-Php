@@ -238,6 +238,9 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
                         </button>
                         <input type="file" id="fileInput" class="hidden-file-input" 
                                accept=".jpg,.jpeg,.png,.gif,.webp,.mp4,.webm,.ogg,.mov,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar,.7z">
+                        <button class="icon-btn voice-btn" id="voiceBtn" title="Record voice message" onclick="toggleVoiceRecording()">
+                            <i class="fas fa-microphone"></i>
+                        </button>
                         <div class="auto-delete-wrapper">
                             <button class="icon-btn auto-delete-btn" id="autoDeleteBtn" title="Auto-delete timer">
                                 <i class="fas fa-clock"></i>
@@ -253,6 +256,9 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
                         </div>
                         <button class="icon-btn emoji-btn" id="emojiBtn" title="Emoji">
                             <i class="fas fa-smile"></i>
+                        </button>
+                        <button class="icon-btn poll-btn" id="pollBtn" title="Create Poll" onclick="openPollModal()">
+                            <i class="fas fa-chart-bar"></i>
                         </button>
                     </div>
                     <div class="message-input-wrapper">
@@ -276,6 +282,18 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
                 <!-- Emoji Picker (Hidden by default) -->
                 <div class="emoji-picker" id="emojiPicker" style="display: none;">
                     <div class="emoji-grid" id="emojiGrid"></div>
+                </div>
+                
+                <!-- Voice Recording Indicator -->
+                <div class="voice-recording-bar" id="voiceRecordingBar" style="display: none;">
+                    <div class="voice-recording-dot"></div>
+                    <span class="voice-recording-time" id="voiceRecordingTime">0:00</span>
+                    <button class="voice-cancel-btn" onclick="cancelVoiceRecording()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <button class="voice-send-btn" onclick="sendVoiceMessage()">
+                        <i class="fas fa-paper-plane"></i> Send
+                    </button>
                 </div>
             </div>
         </main>
@@ -319,6 +337,68 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
                 <button class="btn btn-secondary" onclick="ChatLock.closeModal()">Cancel</button>
                 <button class="btn btn-primary" id="chatLockSubmitBtn" onclick="ChatLock.submit()">
                     <i class="fas fa-unlock"></i> Unlock
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Poll Creation Modal -->
+    <div class="modal" id="pollModal" style="display: none;">
+        <div class="modal-overlay" onclick="closePollModal()"></div>
+        <div class="modal-content" style="max-width: 450px;">
+            <button class="modal-close" onclick="closePollModal()">&times;</button>
+            <h3><i class="fas fa-chart-bar"></i> Create Poll</h3>
+            
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Question</label>
+                <input type="text" id="pollQuestion" class="form-control" placeholder="Ask a question..." maxlength="500">
+            </div>
+            
+            <div id="pollOptionsContainer">
+                <div class="poll-option-input" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <input type="text" class="form-control poll-option" placeholder="Option 1" maxlength="255">
+                    <button class="btn btn-sm btn-danger" onclick="removePollOption(this)" style="padding: 0.5rem;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="poll-option-input" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <input type="text" class="form-control poll-option" placeholder="Option 2" maxlength="255">
+                    <button class="btn btn-sm btn-danger" onclick="removePollOption(this)" style="padding: 0.5rem;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <button class="btn btn-sm btn-secondary" onclick="addPollOption()" style="margin-bottom: 1rem;">
+                <i class="fas fa-plus"></i> Add Option
+            </button>
+            
+            <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                    <input type="checkbox" id="pollMultiple"> Multiple choices
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                    <input type="checkbox" id="pollAnonymous"> Anonymous
+                </label>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Expires in</label>
+                <select id="pollExpiry" class="form-control">
+                    <option value="0">Never</option>
+                    <option value="1">1 hour</option>
+                    <option value="6">6 hours</option>
+                    <option value="12">12 hours</option>
+                    <option value="24" selected>24 hours</option>
+                    <option value="48">2 days</option>
+                    <option value="168">7 days</option>
+                </select>
+            </div>
+            
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-secondary" onclick="closePollModal()" style="flex: 1;">Cancel</button>
+                <button class="btn btn-primary" onclick="submitPoll()" style="flex: 1;">
+                    <i class="fas fa-paper-plane"></i> Send Poll
                 </button>
             </div>
         </div>

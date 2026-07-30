@@ -1822,3 +1822,393 @@ window.addEventListener('beforeunload', function() {
         updateTypingStatus(false);
     }
 });
+
+// =====================================================
+// Poll Functions
+// =====================================================
+let pollOptionCount = 2;
+
+function openPollModal() {
+    document.getElementById('pollModal').style.display = 'flex';
+    document.getElementById('pollQuestion').focus();
+}
+
+function closePollModal() {
+    document.getElementById('pollModal').style.display = 'none';
+    document.getElementById('pollQuestion').value = '';
+    document.getElementById('pollMultiple').checked = false;
+    document.getElementById('pollAnonymous').checked = false;
+    document.getElementById('pollExpiry').value = '24';
+    
+    // Reset options
+    const container = document.getElementById('pollOptionsContainer');
+    container.innerHTML = `
+        <div class="poll-option-input" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <input type="text" class="form-control poll-option" placeholder="Option 1" maxlength="255">
+            <button class="btn btn-sm btn-danger" onclick="removePollOption(this)" style="padding: 0.5rem;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="poll-option-input" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <input type="text" class="form-control poll-option" placeholder="Option 2" maxlength="255">
+            <button class="btn btn-sm btn-danger" onclick="removePollOption(this)" style="padding: 0.5rem;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    `;
+    pollOptionCount = 2;
+}
+
+function addPollOption() {
+    if (pollOptionCount >= 10) {
+        ChatApp.showToast('Maximum 10 options allowed', 'error');
+        return;
+    }
+    
+    pollOptionCount++;
+    const container = document.getElementById('pollOptionsContainer');
+    const div = document.createElement('div');
+    div.className = 'poll-option-input';
+    div.style.cssText = 'display: flex; gap: 0.5rem; margin-bottom: 0.5rem;';
+    div.innerHTML = `
+        <input type="text" class="form-control poll-option" placeholder="Option ${pollOptionCount}" maxlength="255">
+        <button class="btn btn-sm btn-danger" onclick="removePollOption(this)" style="padding: 0.5rem;">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    container.appendChild(div);
+}
+
+function removePollOption(btn) {
+    const inputs = document.querySelectorAll('.poll-option-input');
+    if (inputs.length <= 2) {
+        ChatApp.showToast('At least 2 options required', 'error');
+        return;
+    }
+    btn.closest('.poll-option-input').remove();
+    pollOptionCount--;
+}
+
+async function submitPoll() {
+    const question = document.getElementById('pollQuestion').value.trim();
+    if (!question) {
+        ChatApp.showToast('Please enter a question', 'error');
+        return;
+    }
+    
+    const optionInputs = document.querySelectorAll('.poll-option');
+    const options = [];
+    optionInputs.forEach(input => {
+        const val = input.value.trim();
+        if (val) options.push(val);
+    });
+    
+    if (options.length < 2) {
+        ChatApp.showToast('At least 2 options required', 'error');
+        return;
+    }
+    
+    const isMultiple = document.getElementById('pollMultiple').checked ? 1 : 0;
+    const isAnonymous = document.getElementById('pollAnonymous').checked ? 1 : 0;
+    const expiresHours = parseInt(document.getElementById('pollExpiry').value);
+    
+    const result = await ChatApp.apiRequest('/create-poll.php', 'POST', {
+        question: question,
+        options: options,
+        is_multiple: isMultiple,
+        is_anonymous: isAnonymous,
+        receiver_id: Chat.selectedUserId,
+        expires_hours: expiresHours,
+        csrf_token: CHAT_CONFIG.csrfToken
+    });
+    
+    if (result.success) {
+        // Send poll as a special message
+        await sendPollMessage(result.data.poll_id, question);
+        closePollModal();
+        ChatApp.showToast('Poll created!', 'success');
+    } else {
+        ChatApp.showToast(result.message || 'Failed to create poll', 'error');
+    }
+}
+
+async function sendPollMessage(pollId, question) {
+    const content = `📊 POLL: ${question}`;
+    
+    // Update local message list
+    const tempId = 'temp_' + Date.now();
+    const newMessage = {
+        id: tempId,
+        sender_id: CHAT_CONFIG.currentUserId,
+        content: content,
+        message_type: 'text',
+        is_sender: true,
+        is_deleted: false,
+        status: 'sent',
+        timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+        poll_id: pollId
+    };
+    
+    Chat.messages.push(newMessage);
+    appendMessage(newMessage);
+    scrollToBottom();
+    
+    // Send to server
+    const result = await ChatApp.apiRequest('/send-message.php', 'POST', {
+        receiver_id: Chat.selectedUserId,
+        content: content,
+        message_type: 'text',
+        auto_delete: Chat.autoDelete,
+        csrf_token: CHAT_CONFIG.csrfToken
+    });
+    
+    if (result.success) {
+        // Replace temp ID with real ID
+        const msgIndex = Chat.messages.findIndex(m => m.id === tempId);
+        if (msgIndex !== -1) {
+            Chat.messages[msgIndex].id = result.data.message_id;
+        }
+        
+        const msgElement = document.querySelector(`.message[data-message-id="${tempId}"]`);
+        if (msgElement) {
+            msgElement.dataset.messageId = result.data.message_id;
+        }
+        
+        updateChatListLastMessage(Chat.selectedUserId, content);
+    }
+}
+
+function renderPollInline(pollId) {
+    return `<div class="poll-inline" id="poll-${pollId}" onclick="event.stopPropagation(); loadPollView(${pollId})">
+        <div class="poll-loading"><i class="fas fa-spinner fa-spin"></i> Loading poll...</div>
+    </div>`;
+}
+
+async function loadPollView(pollId) {
+    const result = await ChatApp.apiRequest(`/get-poll.php?id=${pollId}`, 'GET');
+    if (!result.success) return;
+    
+    const { poll, options, total_votes, has_voted } = result.data;
+    
+    let optionsHtml = options.map(opt => {
+        const width = opt.percentage;
+        return `<div class="poll-option-result ${opt.has_voted ? 'voted' : ''}" onclick="event.stopPropagation(); votePoll(${pollId}, ${opt.id})">
+            <div class="poll-option-bar" style="width: ${width}%"></div>
+            <div class="poll-option-text">
+                <span>${escapeHtml(opt.text)}</span>
+                <span class="poll-option-pct">${opt.percentage}%</span>
+            </div>
+        </div>`;
+    }).join('');
+    
+    const pollEl = document.getElementById(`poll-${pollId}`);
+    if (pollEl) {
+        pollEl.innerHTML = `
+            <div class="poll-question">${escapeHtml(poll.question)}</div>
+            ${optionsHtml}
+            <div class="poll-meta">
+                <span>${total_votes} vote${total_votes !== 1 ? 's' : ''}</span>
+                ${poll.is_anonymous ? '<span><i class="fas fa-eye-slash"></i> Anonymous</span>' : ''}
+                ${poll.is_expired ? '<span class="poll-expired">Expired</span>' : ''}
+            </div>
+        `;
+    }
+}
+
+async function votePoll(pollId, optionId) {
+    const result = await ChatApp.apiRequest('/vote-poll.php', 'POST', {
+        poll_id: pollId,
+        option_id: optionId,
+        csrf_token: CHAT_CONFIG.csrfToken
+    });
+    
+    if (result.success) {
+        loadPollView(pollId);
+    } else {
+        ChatApp.showToast(result.message || 'Failed to vote', 'error');
+    }
+}
+
+// =====================================================
+// Voice Message Functions
+// =====================================================
+let mediaRecorder = null;
+let audioChunks = [];
+let voiceRecordingTimer = null;
+let voiceRecordingSeconds = 0;
+let isRecordingVoice = false;
+
+async function toggleVoiceRecording() {
+    if (isRecordingVoice) {
+        stopVoiceRecording();
+    } else {
+        startVoiceRecording();
+    }
+}
+
+async function startVoiceRecording() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm;codecs=opus' });
+        audioChunks = [];
+        
+        mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+                audioChunks.push(event.data);
+            }
+        };
+        
+        mediaRecorder.start();
+        isRecordingVoice = true;
+        voiceRecordingSeconds = 0;
+        
+        // Show recording UI
+        document.getElementById('voiceRecordingBar').style.display = 'flex';
+        document.getElementById('voiceBtn').classList.add('recording');
+        
+        // Start timer
+        voiceRecordingTimer = setInterval(() => {
+            voiceRecordingSeconds++;
+            const mins = Math.floor(voiceRecordingSeconds / 60);
+            const secs = voiceRecordingSeconds % 60;
+            document.getElementById('voiceRecordingTime').textContent = 
+                `${mins}:${secs.toString().padStart(2, '0')}`;
+        }, 1000);
+        
+    } catch (err) {
+        ChatApp.showToast('Microphone access denied. Please allow microphone access.', 'error');
+    }
+}
+
+function stopVoiceRecording() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+    }
+    clearInterval(voiceRecordingTimer);
+    isRecordingVoice = false;
+    document.getElementById('voiceBtn').classList.remove('recording');
+}
+
+function cancelVoiceRecording() {
+    stopVoiceRecording();
+    audioChunks = [];
+    document.getElementById('voiceRecordingBar').style.display = 'none';
+}
+
+async function sendVoiceMessage() {
+    if (audioChunks.length === 0) return;
+    
+    stopVoiceRecording();
+    
+    const blob = new Blob(audioChunks, { type: 'audio/webm' });
+    const formData = new FormData();
+    formData.append('audio', blob, 'voice_message.webm');
+    formData.append('receiver_id', Chat.selectedUserId);
+    formData.append('duration', voiceRecordingSeconds);
+    formData.append('csrf_token', CHAT_CONFIG.csrfToken);
+    
+    // Show uploading state
+    const tempId = 'temp_voice_' + Date.now();
+    const tempMsg = {
+        id: tempId,
+        sender_id: CHAT_CONFIG.currentUserId,
+        content: '🎤 Voice message',
+        message_type: 'voice',
+        is_sender: true,
+        is_deleted: false,
+        status: 'sent',
+        timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+        duration: voiceRecordingSeconds
+    };
+    
+    Chat.messages.push(tempMsg);
+    appendMessage(tempMsg);
+    scrollToBottom();
+    
+    document.getElementById('voiceRecordingBar').style.display = 'none';
+    audioChunks = [];
+    
+    try {
+        const response = await fetch('../api/upload-voice.php', {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': CHAT_CONFIG.csrfToken },
+            body: formData,
+            credentials: 'same-origin'
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            const msgIndex = Chat.messages.findIndex(m => m.id === tempId);
+            if (msgIndex !== -1) {
+                Chat.messages[msgIndex].id = result.data.message_id;
+                Chat.messages[msgIndex].file_path = result.data.file_path;
+            }
+            
+            const msgElement = document.querySelector(`.message[data-message-id="${tempId}"]`);
+            if (msgElement) {
+                msgElement.dataset.messageId = result.data.message_id;
+            }
+            
+            updateChatListLastMessage(Chat.selectedUserId, '🎤 Voice message');
+        } else {
+            ChatApp.showToast(result.message || 'Failed to send voice message', 'error');
+            removeMessage(tempId);
+        }
+    } catch (error) {
+        ChatApp.showToast('Failed to send voice message', 'error');
+        removeMessage(tempId);
+    }
+}
+
+function playVoiceMessage(messageId, filePath) {
+    const audio = document.getElementById(`voice-audio-${messageId}`);
+    const playBtn = document.getElementById(`voice-play-${messageId}`);
+    const progress = document.getElementById(`voice-progress-${messageId}`);
+    
+    if (!audio) return;
+    
+    if (audio.paused) {
+        // Pause all other audio
+        document.querySelectorAll('.voice-audio').forEach(a => {
+            a.pause();
+            const btn = a.closest('.voice-message')?.querySelector('.voice-play-btn');
+            if (btn) btn.innerHTML = '<i class="fas fa-play"></i>';
+        });
+        
+        audio.play();
+        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    } else {
+        audio.pause();
+        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+    }
+}
+
+function updateVoiceProgress(messageId, value, duration) {
+    const progressFill = document.getElementById(`voice-progress-fill-${messageId}`);
+    const timeEl = document.getElementById(`voice-time-${messageId}`);
+    
+    if (progressFill) {
+        progressFill.style.width = `${value}%`;
+    }
+    
+    if (timeEl && duration) {
+        const current = (value / 100) * duration;
+        const mins = Math.floor(current / 60);
+        const secs = Math.floor(current % 60);
+        timeEl.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+}
+
+function formatVoiceDuration(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+function removeMessage(messageId) {
+    const msgElement = document.querySelector(`.message[data-message-id="${messageId}"]`);
+    if (msgElement) msgElement.remove();
+    Chat.messages = Chat.messages.filter(m => m.id !== messageId);
+}
