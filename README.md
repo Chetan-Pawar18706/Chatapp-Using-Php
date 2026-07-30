@@ -1,6 +1,6 @@
 # ChatApp
 
-A real-time chat application built with PHP, MySQL, and vanilla JavaScript. Features personal messaging, group chats, media sharing, admin panel, and a comprehensive security layer.
+A modern real-time chat application built with PHP, MySQL, and vanilla JavaScript. Features personal messaging, group chats, stories, polls, voice messages, live location, streaks, media sharing, admin panel, and a comprehensive security layer.
 
 ---
 
@@ -20,18 +20,59 @@ A real-time chat application built with PHP, MySQL, and vanilla JavaScript. Feat
 - Search users by name or friend code
 - Send, accept, reject, and cancel friend requests
 - Remove friends and block/unblock users
+- Instagram-style live search suggestions with privacy controls
 
 ### Personal Chat
 - Real-time messaging with AJAX polling
 - Emoji picker and message replies
-- Delete messages (single/bulk)
+- Delete messages (for me / for everyone)
 - Typing indicators and message status (sent, delivered, read)
+- Auto-delete messages (View Once / 12 Hours)
+- Save important messages (Snapchat-style bookmark)
 
 ### Group Chat
 - Create groups with name, description, and avatar
 - Invite/remove members, leave groups
 - Role-based permissions (Admin, Moderator, Member)
 - @mention support with autocomplete
+
+### Stories / Status
+- Share photos, videos, or text status
+- 24-hour auto-disappearing stories
+- Color picker for text stories
+- Viewers list with view counts
+- Instagram-style story viewer with progress bar
+
+### Polls in Chat
+- Create polls with multiple options
+- Single or multiple choice voting
+- Anonymous voting option
+- Configurable expiry time (1h, 6h, 12h, 24h, 2d, 7d)
+- Real-time vote counts and percentages
+
+### Voice Messages
+- Record audio directly from browser
+- Play/pause with progress bar
+- Duration display
+- Microphone permission handling
+
+### Live Location Sharing
+- Share real-time GPS location
+- Configurable duration (1h, 6h, 12h, 24h)
+- Works in both 1-on-1 and group chats
+- Automatic expiry
+
+### Snap Streaks
+- Daily messaging streaks with friends
+- Fire emoji streak counter
+- Streak freeze protection
+- Streak history tracking
+
+### Auto-Delete Messages
+- **View Once**: Delete immediately after receiver sees
+- **12 Hours**: Delete 12 hours after receiver reads
+- Based on read time (seen_at), not sent time
+- Saved messages are exempt from auto-delete
 
 ### Media Module
 - Drag-and-drop file uploads (images, videos, documents)
@@ -42,8 +83,15 @@ A real-time chat application built with PHP, MySQL, and vanilla JavaScript. Feat
 ### Profile and Settings
 - Avatar and cover photo upload
 - Bio and personal information editing
-- Theme switcher (dark/light)
+- Theme switcher (Dark, Light, Midnight, Ocean)
 - Password change, privacy controls, account deactivation
+
+### Privacy Controls
+- **Who Can Message You**: Everyone / Friends / Nobody
+- **Who Can See Your Online Status**: Everyone / Friends / Nobody
+- **Who Can See Your Profile**: Everyone / Friends / Nobody
+- **Who Can Find You in Search**: Everyone / Friends / Hide
+- Show/hide read receipts and typing indicators
 
 ### Notification System
 - Bell icon with unread count and dropdown
@@ -52,7 +100,9 @@ A real-time chat application built with PHP, MySQL, and vanilla JavaScript. Feat
 - Mark as read / mark all as read
 
 ### Global Search
-- Search across users, friends, groups, and messages
+- Instagram-style live search dropdown
+- Friends shown first with badge
+- Privacy-aware search visibility
 - Recent searches history
 - Keyboard shortcut (Ctrl+K) quick search
 
@@ -127,13 +177,13 @@ Start Apache and MySQL from XAMPP Control Panel (or your equivalent).
 3. Import the schema:
 
 ```bash
-mysql -u root -p chatapp < database_import.sql
+mysql -u root -p chatapp < database_combined.sql
 ```
 
 Or in phpMyAdmin:
 - Select the `chatapp` database
 - Click **Import**
-- Choose `database_import.sql`
+- Choose `database_combined.sql`
 - Click **Go**
 
 ### 4. Configure Database Connection
@@ -149,7 +199,17 @@ Review and adjust settings in:
 
 ### 6. Set Directory Permissions
 
-Ensure the following directories are writable by the web server.
+Ensure the following directories are writable by the web server:
+```
+storage/uploads/
+storage/uploads/images/
+storage/uploads/videos/
+storage/uploads/documents/
+storage/uploads/avatars/
+storage/uploads/stories/
+storage/uploads/voice/
+storage/thumbnails/
+```
 
 ### 7. Access the Application
 
@@ -158,6 +218,32 @@ Open your browser and navigate to:
 ```
 http://localhost/chatapp
 ```
+
+---
+
+## Pages
+
+| Page | URL | Description |
+| --- | --- | --- |
+| Landing | `index.php` | Welcome page with features overview |
+| Login | `login.php` | User login |
+| Register | `pages/register.php` | New user registration |
+| Dashboard | `pages/dashboard.php` | Main dashboard with stats |
+| Stories | `pages/stories.php` | View and create stories |
+| Chat | `pages/chat.php` | Personal 1-on-1 chat |
+| Group Chat | `pages/group-chat.php` | Group conversations |
+| Friends | `pages/friends.php` | Friends list |
+| Requests | `pages/requests.php` | Friend requests |
+| Search | `pages/search.php` | Global search |
+| Media | `pages/media.php` | Media gallery |
+| Notifications | `pages/notifications.php` | Notifications page |
+| Settings | `pages/settings.php` | Account settings |
+| Profile | `pages/profile.php` | User profile |
+| About | `pages/about.php` | About ChatApp |
+| Terms | `pages/terms.php` | Privacy Policy & Terms |
+| Forgot Password | `pages/forgot-password.php` | Password reset request |
+| Reset Password | `pages/reset-password.php` | Password reset form |
+| Admin Panel | `admin/index.php` | Admin dashboard |
 
 ---
 
@@ -181,6 +267,57 @@ All API endpoints are located in the `/api` directory and accept/return JSON. Re
 | GET | `api/get-messages.php` | Retrieve messages (polling) |
 | DELETE | `api/delete-message.php` | Delete a message |
 | POST | `api/typing.php` | Send typing indicator |
+| POST | `api/mark-read.php` | Mark messages as read |
+| POST | `api/save-message.php` | Save/unsave a message |
+
+### Group Endpoints
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `api/groups.php?action=create` | Create a group |
+| POST | `api/groups.php?action=invite` | Invite user to group |
+| POST | `api/groups.php?action=leave` | Leave a group |
+| POST | `api/groups.php?action=remove` | Remove member |
+| POST | `api/send-group-message.php` | Send group message |
+| GET | `api/get-group-messages.php` | Get group messages |
+
+### Stories Endpoints
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `api/create-story.php` | Create a story |
+| GET | `api/get-stories.php` | Get stories feed |
+| POST | `api/view-story.php` | Mark story as viewed |
+| POST | `api/delete-story.php` | Delete a story |
+
+### Polls Endpoints
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `api/create-poll.php` | Create a poll |
+| GET | `api/get-poll.php?id=X` | Get poll details |
+| POST | `api/vote-poll.php` | Vote on a poll |
+
+### Voice Message Endpoints
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `api/upload-voice.php` | Upload voice message |
+
+### Location Endpoints
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| POST | `api/share-location.php` | Share live location |
+| GET | `api/get-location.php` | Get shared locations |
+
+### Streaks Endpoints
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | `api/get-streaks.php` | Get user streaks |
+| POST | `api/update-streak.php` | Update streak on message |
+| POST | `api/freeze-streak.php` | Buy streak freeze |
 
 ### Friend Endpoints
 
@@ -193,23 +330,21 @@ All API endpoints are located in the `/api` directory and accept/return JSON. Re
 | POST | `api/friends.php?action=remove` | Remove friend |
 | POST | `api/friends.php?action=block` | Block/unblock user |
 
-### Group Endpoints
-
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| POST | `api/groups.php?action=create` | Create a group |
-| POST | `api/groups.php?action=invite` | Invite user to group |
-| POST | `api/groups.php?action=leave` | Leave a group |
-| POST | `api/groups.php?action=remove` | Remove member |
-| POST | `api/groups.php?action=message` | Send group message |
-
 ### Media Endpoints
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| POST | `api/media.php?action=upload` | Upload a file |
+| POST | `api/upload-media.php` | Upload a file |
 | GET | `api/media.php?action=list` | List media files |
 | DELETE | `api/media.php?action=delete` | Delete a file |
+
+### Search Endpoints
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| GET | `api/search-suggestions.php?q=term` | Live search suggestions |
+| GET | `api/global-search.php?q=term` | Global search |
+| GET | `api/search-users.php?q=term` | Search users |
 
 ### Notification Endpoints
 
@@ -220,23 +355,13 @@ All API endpoints are located in the `/api` directory and accept/return JSON. Re
 | POST | `api/notifications.php?action=read_all` | Mark all as read |
 | GET | `api/notifications.php?action=count` | Get unread count |
 
-### Search Endpoints
-
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| GET | `api/search.php?q=term` | Global search |
-| GET | `api/search.php?action=recent` | Recent searches |
-
 ### Profile and Settings Endpoints
 
 | Method | Endpoint | Description |
 | --- | --- | --- |
-| POST | `api/profile.php?action=avatar` | Update avatar |
-| POST | `api/profile.php?action=cover` | Update cover photo |
-| POST | `api/profile.php?action=bio` | Update bio |
-| POST | `api/settings.php?action=password` | Change password |
-| POST | `api/settings.php?action=privacy` | Update privacy |
-| POST | `api/settings.php?action=theme` | Switch theme |
+| POST | `api/upload-photo.php` | Update avatar/cover |
+| POST | `api/update-settings.php` | Update all settings |
+| POST | `api/update-profile.php` | Update profile info |
 
 ### Admin Endpoints
 
@@ -285,6 +410,35 @@ The admin panel provides:
 
 ---
 
+## Database Schema
+
+The application uses 30+ database tables including:
+
+| Table | Purpose |
+| --- | --- |
+| `users` | User accounts |
+| `messages` | Direct messages |
+| `group_messages` | Group messages |
+| `friendships` | Friend relationships |
+| `groups` | Chat groups |
+| `group_members` | Group membership |
+| `media` | Uploaded files |
+| `stories` | User stories/status |
+| `story_views` | Story view tracking |
+| `polls` | Chat polls |
+| `poll_options` | Poll options |
+| `poll_votes` | Poll votes |
+| `voice_messages` | Voice message data |
+| `live_locations` | Shared locations |
+| `streaks` | Messaging streaks |
+| `saved_messages` | Saved/bookmarked messages |
+| `notifications` | User notifications |
+| `message_reactions` | Message reactions |
+| `block_list` | Blocked users |
+| `chat_locks` | Locked chats |
+
+---
+
 ## Contributing
 
 1. Fork the repository
@@ -303,20 +457,11 @@ The admin panel provides:
 ## License
 
 This project is licensed under the MIT License.
-#   C h a t a p p - U s i n g - P h p 
- 
- #   C h a t a p p - U s i n g - P h p 
- 
- #   C h a t a p p - U s i n g - P h p  
- #   C h a t a p p - U s i n g - P h p  
- #   C h a t a p p - U s i n g - P h p  
- #   C h a t a p p - U s i n g - P h p  
- #   C h a t a p p - U s i n g - P h p  
- #   C h a t a p p - U s i n g - P h p  
- #   C h a t a p p - U s i n g - P h p  
- #   C h a t a p p - U s i n g - P h p  
- #   C h a t a p p - U s i n g - P h p  
- #   C h a t a p p - U s i n g - P h p  
- #   C h a t a p p - U s i n g - P h p  
- #   C h a t a p p - U s i n g - P h p  
+
+---
+
+## Credits
+
+Built with ❤️ using PHP, MySQL, Bootstrap, and vanilla JavaScript.
+#   C h a t a p p - U s i n g - P h p  
  

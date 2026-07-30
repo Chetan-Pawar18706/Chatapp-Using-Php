@@ -544,18 +544,18 @@ if (session_is_logged_in()) {
             <div class="col-lg-2 col-md-4 mb-4">
                 <div class="footer-links">
                     <h6>Support</h6>
-                    <a href="#">Help Center</a>
-                    <a href="#">Contact Us</a>
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
+                    <a href="pages/about.php">About Us</a>
+                    <a href="pages/about.php">Contact</a>
+                    <a href="pages/terms.php">Privacy Policy</a>
+                    <a href="pages/terms.php#terms">Terms of Service</a>
                 </div>
             </div>
             <div class="col-lg-2 col-md-4 mb-4">
                 <div class="footer-links">
                     <h6>Connect</h6>
-                    <a href="#"><i class="fab fa-github me-2"></i>GitHub</a>
-                    <a href="#"><i class="fab fa-twitter me-2"></i>Twitter</a>
-                    <a href="#"><i class="fab fa-discord me-2"></i>Discord</a>
+                    <a href="pages/about.php"><i class="fas fa-info-circle me-2"></i>About</a>
+                    <a href="pages/terms.php"><i class="fas fa-file-alt me-2"></i>Legal</a>
+                    <a href="pages/register.php"><i class="fas fa-user-plus me-2"></i>Sign Up</a>
                 </div>
             </div>
         </div>
@@ -563,9 +563,9 @@ if (session_is_logged_in()) {
             <div class="d-flex justify-content-between align-items-center flex-wrap">
                 <p class="mb-0">&copy; <?php echo date('Y'); ?> ChatApp. All rights reserved.</p>
                 <div class="footer-social">
-                    <a href="#"><i class="fab fa-github"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-discord"></i></a>
+                    <a href="pages/about.php"><i class="fas fa-info-circle"></i></a>
+                    <a href="pages/terms.php"><i class="fas fa-file-alt"></i></a>
+                    <a href="pages/register.php"><i class="fas fa-user-plus"></i></a>
                 </div>
             </div>
         </div>
