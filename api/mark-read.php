@@ -48,6 +48,14 @@ $result = db_execute($sql, [$sender_id, $user_id], 'ii');
 
 $affected = db_affected_rows();
 
+// Instantly delete view_once messages after marking as read (skip saved)
+$delete_view_once = "UPDATE messages SET is_deleted = 1 
+                     WHERE sender_id = ? AND receiver_id = ? 
+                     AND auto_delete = 'view_once' 
+                     AND is_deleted = 0
+                     AND id NOT IN (SELECT message_id FROM saved_messages)";
+db_execute($delete_view_once, [$sender_id, $user_id], 'ii');
+
 send_success('Messages marked as read', [
     'marked_count' => $affected
 ]);

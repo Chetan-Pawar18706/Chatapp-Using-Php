@@ -23,7 +23,7 @@ const Chat = {
     isTyping: false,
     searchTimeout: null,
     selectedFile: null,
-    autoDelete: 'none'
+    autoDelete: '12hours'
 };
 
 // =====================================================
@@ -708,12 +708,13 @@ function createMessageBubble(msg) {
     
     return `
         <div class="message ${messageClass}" data-message-id="${msg.id}">
-            <div class="message-bubble" oncontextmenu="showContextMenu(event, ${msg.id})" onclick="hideContextMenu()" ondblclick="showReactionPicker(event, ${msg.id})">
+            <div class="message-bubble ${msg.is_saved ? 'saved' : ''}" oncontextmenu="showContextMenu(event, ${msg.id})" onclick="hideContextMenu()" ondblclick="showReactionPicker(event, ${msg.id})">
                 ${replyHtml}
                 ${mediaHtml}
                 ${msg.content ? `<div class="message-text">${formatMessageContent(msg.content)}</div>` : ''}
                 <div class="message-meta">
                     <span class="message-time">${msg.timestamp}</span>
+                    ${msg.is_saved ? '<i class="fas fa-bookmark saved-icon"></i>' : ''}
                     ${statusHtml}
                 </div>
             </div>
@@ -871,12 +872,7 @@ function initializeAutoDelete() {
                 dropdown.querySelectorAll('.auto-delete-option').forEach(function(o) { o.classList.remove('active'); });
                 this.classList.add('active');
                 Chat.autoDelete = this.dataset.value;
-                
-                if (Chat.autoDelete !== 'none') {
-                    btn.classList.add('active-timer');
-                } else {
-                    btn.classList.remove('active-timer');
-                }
+                btn.classList.add('active-timer');
                 dropdown.style.display = 'none';
             });
         });
@@ -1120,12 +1116,51 @@ function showDeleteOptions(messageId) {
     if (!message) return;
     
     const deleteForEveryone = document.getElementById('deleteForEveryoneMenuItem');
+    const saveMenuItem = document.getElementById('saveMenuItem');
     
     // Only show "delete for everyone" for own messages within 7 days
     if (message.is_sender) {
         deleteForEveryone.style.display = 'block';
     } else {
         deleteForEveryone.style.display = 'none';
+    }
+    
+    // Update save button label
+    if (saveMenuItem) {
+        if (message.is_saved) {
+            saveMenuItem.innerHTML = '<i class="fas fa-bookmark"></i> Unsave';
+        } else {
+            saveMenuItem.innerHTML = '<i class="fas fa-bookmark"></i> Save';
+        }
+    }
+}
+
+async function toggleSaveMessage(messageId) {
+    const result = await ChatApp.apiRequest('/save-message.php', 'POST', {
+        message_id: messageId,
+        csrf_token: CHAT_CONFIG.csrfToken
+    });
+    
+    if (result.success) {
+        const message = Chat.messages.find(m => m.id === messageId);
+        if (message) {
+            message.is_saved = result.data.saved;
+        }
+        
+        // Update UI - show/hide saved indicator
+        const msgElement = document.querySelector(`.message[data-message-id="${messageId}"]`);
+        if (msgElement) {
+            const bubble = msgElement.querySelector('.message-bubble');
+            if (result.data.saved) {
+                bubble.classList.add('saved');
+                ChatApp.showToast('Message saved', 'success');
+            } else {
+                bubble.classList.remove('saved');
+                ChatApp.showToast('Message unsaved', 'success');
+            }
+        }
+    } else {
+        ChatApp.showToast(result.message || 'Failed to save message', 'error');
     }
 }
 
@@ -1208,6 +1243,13 @@ function initializeContextMenu() {
                 ChatApp.showToast('Message copied', 'success');
             }
         }
+        hideContextMenu();
+    });
+    
+    // Save/Unsave message
+    document.getElementById('saveMenuItem')?.addEventListener('click', async function() {
+        if (!Chat.selectedMessageId) return;
+        await toggleSaveMessage(Chat.selectedMessageId);
         hideContextMenu();
     });
     
@@ -1685,17 +1727,11 @@ async function loadChatInfo(userId) {
                     <h4>Auto-Delete Messages</h4>
                     <p class="info-section-desc">Set default auto-delete for new messages in this chat</p>
                     <div class="auto-delete-settings">
-                        <button class="auto-delete-setting ${Chat.autoDelete === 'none' ? 'active' : ''}" data-value="none" onclick="setChatAutoDelete('none')">
-                            <i class="fas fa-infinity"></i> Keep forever
+                        <button class="auto-delete-setting ${Chat.autoDelete === 'view_once' ? 'active' : ''}" data-value="view_once" onclick="setChatAutoDelete('view_once')">
+                            <i class="fas fa-eye"></i> View Once
                         </button>
-                        <button class="auto-delete-setting ${Chat.autoDelete === '24hours' ? 'active' : ''}" data-value="24hours" onclick="setChatAutoDelete('24hours')">
-                            <i class="fas fa-clock"></i> 24 hours
-                        </button>
-                        <button class="auto-delete-setting ${Chat.autoDelete === '7days' ? 'active' : ''}" data-value="7days" onclick="setChatAutoDelete('7days')">
-                            <i class="fas fa-clock"></i> 7 days
-                        </button>
-                        <button class="auto-delete-setting ${Chat.autoDelete === '30days' ? 'active' : ''}" data-value="30days" onclick="setChatAutoDelete('30days')">
-                            <i class="fas fa-clock"></i> 30 days
+                        <button class="auto-delete-setting ${Chat.autoDelete === '12hours' ? 'active' : ''}" data-value="12hours" onclick="setChatAutoDelete('12hours')">
+                            <i class="fas fa-clock"></i> 12 Hours
                         </button>
                     </div>
                 </div>

@@ -231,7 +231,7 @@ CREATE TABLE `messages` (
     `is_deleted` TINYINT(1) DEFAULT 0,
     `deleted_for_sender` TINYINT(1) DEFAULT 0,
     `deleted_for_receiver` TINYINT(1) DEFAULT 0,
-    `auto_delete` ENUM('none', '24hours', '1day', '7days', '30days') DEFAULT 'none',
+    `auto_delete` ENUM('view_once', '12hours') DEFAULT '12hours',
     `delivered_at` DATETIME DEFAULT NULL,
     `seen_at` DATETIME DEFAULT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -250,6 +250,22 @@ CREATE TABLE `messages` (
     CONSTRAINT `fk_message_receiver` FOREIGN KEY (`receiver_id`) REFERENCES `users`(`id`) ON DELETE SET NULL,
     CONSTRAINT `fk_message_reply` FOREIGN KEY (`reply_to_id`) REFERENCES `messages`(`id`) ON DELETE SET NULL,
     CONSTRAINT `fk_message_media` FOREIGN KEY (`media_id`) REFERENCES `media`(`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =====================================================
+-- 9b. Saved Messages (Snapchat-style save)
+-- =====================================================
+DROP TABLE IF EXISTS `saved_messages`;
+CREATE TABLE `saved_messages` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `message_id` INT UNSIGNED NOT NULL,
+    `user_id` INT UNSIGNED NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY `unique_save` (`message_id`, `user_id`),
+    INDEX `idx_user_id` (`user_id`),
+    CONSTRAINT `fk_savedmsg_message` FOREIGN KEY (`message_id`) REFERENCES `messages`(`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_savedmsg_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =====================================================

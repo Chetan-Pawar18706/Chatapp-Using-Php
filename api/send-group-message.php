@@ -31,13 +31,13 @@ if (!$input) {
 $group_id = (int)($input['group_id'] ?? 0);
 $content = trim($input['content'] ?? '');
 $reply_to_id = !empty($input['reply_to_id']) ? (int)$input['reply_to_id'] : null;
-$auto_delete = $input['auto_delete'] ?? 'none';
+$auto_delete = $input['auto_delete'] ?? '12hours';
 $csrf_token = $input['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
 
 // Validate auto_delete value
-$valid_auto_delete = ['none', '24hours', '1day', '7days', '30days'];
+$valid_auto_delete = ['view_once', '12hours'];
 if (!in_array($auto_delete, $valid_auto_delete)) {
-    $auto_delete = 'none';
+    $auto_delete = '12hours';
 }
 
 if (!session_validate_csrf($csrf_token)) {

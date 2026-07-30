@@ -22,36 +22,23 @@ if (php_sapi_name() !== 'cli') {
 
 $deleted = 0;
 
-// Delete 24-hour old messages
-$sql_24h = "UPDATE messages SET is_deleted = 1 
-            WHERE auto_delete = '24hours' 
-            AND created_at < DATE_SUB(NOW(), INTERVAL 24 HOUR) 
-            AND is_deleted = 0";
-db_execute($sql_24h, [], '');
+// Delete view_once messages immediately after seen (skip saved messages)
+$sql_view_once = "UPDATE messages SET is_deleted = 1 
+                  WHERE auto_delete = 'view_once' 
+                  AND seen_at IS NOT NULL 
+                  AND is_deleted = 0
+                  AND id NOT IN (SELECT message_id FROM saved_messages)";
+db_execute($sql_view_once, [], '');
 $deleted += mysqli_affected_rows($conn);
 
-// Delete 1-day old messages
-$sql_1day = "UPDATE messages SET is_deleted = 1 
-             WHERE auto_delete = '1day' 
-             AND created_at < DATE_SUB(NOW(), INTERVAL 1 DAY) 
-             AND is_deleted = 0";
-db_execute($sql_1day, [], '');
-$deleted += mysqli_affected_rows($conn);
-
-// Delete 7-day old messages
-$sql_7day = "UPDATE messages SET is_deleted = 1 
-             WHERE auto_delete = '7days' 
-             AND created_at < DATE_SUB(NOW(), INTERVAL 7 DAY) 
-             AND is_deleted = 0";
-db_execute($sql_7day, [], '');
-$deleted += mysqli_affected_rows($conn);
-
-// Delete 30-day old messages
-$sql_30day = "UPDATE messages SET is_deleted = 1 
-              WHERE auto_delete = '30days' 
-              AND created_at < DATE_SUB(NOW(), INTERVAL 30 DAY) 
-              AND is_deleted = 0";
-db_execute($sql_30day, [], '');
+// Delete 12-hour messages after receiver sees them (skip saved messages)
+$sql_12h = "UPDATE messages SET is_deleted = 1 
+            WHERE auto_delete = '12hours' 
+            AND seen_at IS NOT NULL 
+            AND seen_at < DATE_SUB(NOW(), INTERVAL 12 HOUR) 
+            AND is_deleted = 0
+            AND id NOT IN (SELECT message_id FROM saved_messages)";
+db_execute($sql_12h, [], '');
 $deleted += mysqli_affected_rows($conn);
 
 if (php_sapi_name() === 'cli') {

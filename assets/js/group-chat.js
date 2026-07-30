@@ -24,7 +24,7 @@ const GroupChat = {
     isTyping: false,
     searchTimeout: null,
     selectedFile: null,
-    autoDelete: 'none'
+    autoDelete: '12hours'
 };
 
 // =====================================================

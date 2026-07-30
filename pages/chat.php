@@ -243,17 +243,11 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
                                 <i class="fas fa-clock"></i>
                             </button>
                             <div class="auto-delete-dropdown" id="autoDeleteDropdown" style="display: none;">
-                                <button class="auto-delete-option active" data-value="none">
-                                    <i class="fas fa-infinity"></i> Keep forever
+                                <button class="auto-delete-option" data-value="view_once">
+                                    <i class="fas fa-eye"></i> View Once
                                 </button>
-                                <button class="auto-delete-option" data-value="24hours">
-                                    <i class="fas fa-clock"></i> 24 hours
-                                </button>
-                                <button class="auto-delete-option" data-value="7days">
-                                    <i class="fas fa-clock"></i> 7 days
-                                </button>
-                                <button class="auto-delete-option" data-value="30days">
-                                    <i class="fas fa-clock"></i> 30 days
+                                <button class="auto-delete-option active" data-value="12hours">
+                                    <i class="fas fa-clock"></i> 12 Hours
                                 </button>
                             </div>
                         </div>
@@ -293,6 +287,9 @@ $selected_user_id = (int)($_GET['user_id'] ?? 0);
             </button>
             <button class="context-item" id="copyMenuItem">
                 <i class="fas fa-copy"></i> Copy
+            </button>
+            <button class="context-item" id="saveMenuItem">
+                <i class="fas fa-bookmark"></i> Save
             </button>
             <button class="context-item delete-for-me" id="deleteForMeMenuItem">
                 <i class="fas fa-trash"></i> Delete for me

@@ -120,6 +120,28 @@ if (!empty($msg_ids)) {
             ];
         }
     } catch (Exception $e) {
+        // table doesn't exist, skip
+    }
+}
+
+// Fetch saved status for all messages
+$saved_map = [];
+if (!empty($msg_ids)) {
+    $placeholders = implode(',', array_fill(0, count($msg_ids), '?'));
+    $saved_types = str_repeat('i', count($msg_ids));
+    try {
+        $saved_sql = "SELECT message_id FROM saved_messages WHERE message_id IN ($placeholders) AND user_id = ?";
+        $saved_params = array_merge($msg_ids, [$user_id]);
+        $saved_types .= 'i';
+        $saved_rows = db_fetch_all($saved_sql, $saved_params, $saved_types);
+        foreach ($saved_rows as $s) {
+            $saved_map[(int)$s['message_id']] = true;
+        }
+    } catch (Exception $e) {
+        // table doesn't exist, skip
+    }
+}
+    } catch (Exception $e) {
         $reactions_map = [];
     }
 }
@@ -138,6 +160,14 @@ $total_messages = (int)($count_result['total'] ?? 0);
 $mark_read_sql = "UPDATE messages SET is_read = 1, seen_at = NOW() 
                   WHERE sender_id = ? AND receiver_id = ? AND is_read = 0";
 db_execute($mark_read_sql, [$other_user_id, $user_id], 'ii');
+
+// Instantly delete view_once messages after marking as read (skip saved)
+$delete_view_once = "UPDATE messages SET is_deleted = 1 
+                     WHERE sender_id = ? AND receiver_id = ? 
+                     AND auto_delete = 'view_once' 
+                     AND is_deleted = 0
+                     AND id NOT IN (SELECT message_id FROM saved_messages)";
+db_execute($delete_view_once, [$other_user_id, $user_id], 'ii');
 
 // Format messages
 $formatted_messages = [];
@@ -188,6 +218,7 @@ foreach ($messages as $msg) {
         'is_sender' => $is_sender,
         'is_deleted' => (bool)$msg['is_deleted'],
         'is_deleted_for_me' => $is_deleted_for_me,
+        'is_saved' => isset($saved_map[(int)$msg['id']]),
         'status' => $is_sender ? $status : null,
         'reactions' => $reactions_map[(int)$msg['id']] ?? [],
         'reply_to' => $reply_data,

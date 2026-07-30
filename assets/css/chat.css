@@ -788,6 +788,30 @@ body > .sidebar.collapsed ~ .chat-app {
     color: #60a5fa;
 }
 
+/* Saved message indicator */
+.message-bubble.saved {
+    border: 1px solid rgba(251, 191, 36, 0.4);
+}
+
+.message-bubble.saved::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 12px 12px 0;
+    border-color: transparent #f59e0b transparent transparent;
+    border-radius: 0 8px 0 0;
+}
+
+.saved-icon {
+    color: #f59e0b;
+    font-size: 0.65rem;
+    margin-right: 2px;
+}
+
 /* Message Context Menu Trigger */
 .message-bubble::after {
     content: '';
